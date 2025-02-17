@@ -157,6 +157,7 @@ AC_BINDLE_ENABLE_WARNINGS([-Wno-unknown-pragmas -Wno-missing-format-attribute -W
 AC_NETCALC_UTILITY
 AC_NETCALC_LIBRARY
 AC_NETCALC_DOCS
+AC_NETCALC_LEGACY
 
 # Creates outputs
 AC_CONFIG_FILES([Makefile])
@@ -173,6 +174,7 @@ AC_MSG_NOTICE([   Options:])
 AC_MSG_NOTICE([      Extra Documentation        ${ENABLE_DOCUMENATION}])
 AC_MSG_NOTICE([      netcalc                    ${ENABLE_UTILITY}])
 AC_MSG_NOTICE([      libnetcalc                 ${ENABLE_LIBRARY}])
+AC_MSG_NOTICE([      netcalc-dmstools           ${ENABLE_LEGACY}])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Please send suggestions to:   $PACKAGE_BUGREPORT])
 AC_MSG_NOTICE([ ])

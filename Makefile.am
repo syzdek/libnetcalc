@@ -86,7 +86,7 @@ pkgdata_DATA				=
 sbin_SCRIPTS				=
 sbin_PROGRAMS				=
 mod_LTLIBRARIES				=
-EXTRA_PROGRAMS				=
+EXTRA_PROGRAMS				= src/netcalc-dmstools
 EXTRA					=
 
 
@@ -118,6 +118,15 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 
 
 # conditional build
+if ENABLE_LEGACY
+   noinst_PROGRAMS			+= src/netcalc-dmstools
+endif
+
+
+# macros for examples/example-ipset
+src_netcalc_dmstools_DEPENDENCIES	= Makefile \
+					  config.h
+src_netcalc_dmstools_SOURCES		= src/netcalc-dmstools.c
 
 
 # Makefile includes

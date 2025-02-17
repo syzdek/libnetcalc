@@ -31,6 +31,28 @@
 #   acinclude.m4 - custom m4 macros used by configure.ac
 #
 
+# AC_NETCALC_LEGACY()
+# ______________________________________________________________________________
+AC_DEFUN([AC_NETCALC_LEGACY],[dnl
+   enableval=""
+   AC_ARG_ENABLE(
+      legacy,
+      [AS_HELP_STRING([--enable-legacy], [build legacy utility])],
+      [ ELEGACY=$enableval ],
+      [ ELEGACY=$enableval ]
+   )
+
+   if test "x${ELEGACY}" == "xno";then
+      ENABLE_LEGACY="skip"
+   else
+      ENABLE_LEGACY="build"
+   fi
+
+   AM_CONDITIONAL([ENABLE_LEGACY],  [test "$ENABLE_LEGACY"  = "build"])
+   AM_CONDITIONAL([DISABLE_LEGACY], [test "$ENABLE_LEGACY" != "build"])
+])dnl
+
+
 # AC_NETCALC_UTILITY()
 # ______________________________________________________________________________
 AC_DEFUN([AC_NETCALC_UTILITY],[dnl
