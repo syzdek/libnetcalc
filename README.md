@@ -79,11 +79,11 @@ New Release Checklist:
    * Commit configure.ac and ChangeLog changes to repository.
    * Create tag in git repository:
    
-       $ git tag -s v${MAJOR}.${MINOR}
+         $ git tag -s v${MAJOR}.${MINOR}
        
    * Push repository to publishing server:
    
-       $ git push --tags origin master:master next:next pu:pu
+         $ git push --tags origin master:master next:next pu:pu
 
  Creating Source Distribution Archives:
 
