@@ -1,5 +1,5 @@
 #
-#   Netcalc
+#   Network Calculations Library
 #   Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.
 #   All rights reserved.
 #
@@ -35,7 +35,7 @@ AC_PREREQ([2.65])
 
 AC_COPYRIGHT([Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.])
 AC_REVISION(0.1)
-AC_INIT([Corset Firewall],[0.0],[david@syzdek.net],[corset],[https://github.com/syzdek/corset/])
+AC_INIT([Network Calculations Library],[0.0],[david@syzdek.net],[libnetcalc],[https://github.com/syzdek/libnetcalc/])
 
 AC_SUBST([RELEASE_MONTH],["February 2025"])
 
