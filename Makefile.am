@@ -78,7 +78,7 @@ man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
 noinst_LIBRARIES			=
-noinst_HEADERS				=
+noinst_HEADERS				= include/netcalc.h
 noinst_PROGRAMS				=
 bin_PROGRAMS				=
 bin_SCRIPTS				=
@@ -96,7 +96,9 @@ BUILT_SOURCES				=
 TESTS					=
 XFAIL_TESTS				=
 EXTRA_MANS				=
-EXTRA_DIST				= $(doc_DATA)
+EXTRA_DIST				= $(doc_DATA) \
+					  $(noinst_HEADERS) \
+					  lib/libnetcalc/libnetcalc.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
 					  config.h.in~ $(srcdir)/config.h.in~ \
@@ -121,11 +123,40 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
 if ENABLE_LEGACY
    noinst_PROGRAMS			+= src/netcalc-dmstools
 endif
+if ENABLE_LIBRARY_A
+   noinst_LIBRARIES 			+= lib/libnetcalc.a
+endif
+if ENABLE_LIBRARY_LA
+   include_HEADERS 			+= include/netcalc.h
+   lib_LTLIBRARIES 			+= lib/libnetcalc.la
+endif
 
 
-# macros for examples/example-ipset
-src_netcalc_dmstools_DEPENDENCIES	= Makefile \
+# macros for lib/libnetcalc.a
+lib_libnetcalc_a_DEPENDENCIES		= Makefile \
 					  config.h
+lib_libnetcalc_a_CPPFLAGS		= $(AM_CPPFLAGS) \
+					  -I$(srcdir)/lib/libnetcalc
+lib_libnetcalc_a_SOURCES		= include/netcalc.h \
+					  lib/libnetcalc/libnetcalc.h \
+					  lib/libnetcalc/libnetcalc.c
+
+
+# macros for lib/libnetcalc.la
+lib_libnetcalc_la_DEPENDENCIES		= Makefile \
+					  config.h \
+					  lib/libnetcalc/libnetcalc.sym
+lib_libnetcalc_la_CPPFLAGS		= $(AM_CPPFLAGS) \
+					  -I$(srcdir)/lib/libnetcalc
+lib_libnetcalc_la_LDFLAGS		= -rpath'$(libdir)' \
+					  -version-info $(LIB_VERSION_INFO) \
+					  $(AM_LDFLAGS) \
+					  -export-symbols $(srcdir)/lib/libnetcalc/libnetcalc.sym
+lib_libnetcalc_la_SOURCES		= $(lib_libnetcalc_a_SOURCES)
+
+
+# macros for src/netcalc-dmstools
+src_netcalc_dmstools_DEPENDENCIES	= Makefile config.h
 src_netcalc_dmstools_SOURCES		= src/netcalc-dmstools.c
 
 
