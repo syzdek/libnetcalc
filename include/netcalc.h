@@ -84,7 +84,16 @@
 #define NETCALC_EBUFFLEN               -3
 #define NETCALC_EBADADDR               -4
 #define NETCALC_EINVAL                 -5
+#define NETCALC_EFIELD                 -6
 
+
+#define NETCALC_FLD_FAMILY             0
+#define NETCALC_FLD_FLAGS              1
+#define NETCALC_FLD_PORT               2
+#define NETCALC_FLD_CIDR               3
+#define NETCALC_FLD_SCOPE_NAME         4
+#define NETCALC_FLD_ADDR               5
+#define NETCALC_FLD_ADDRLEN            6
 
 
 #define NETCALC_FLG                    0x00000fff  // flag: mask for flags
@@ -133,6 +142,13 @@ netcalc_alloc(
 _NETCALC_F void
 netcalc_free(
          netcalc_net_t *               net );
+
+
+_NETCALC_F int
+netcalc_get_field(
+         netcalc_net_t  *              net,
+         int                           option,
+         void *                        outvalue );
 
 
 _NETCALC_F int

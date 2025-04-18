@@ -34,6 +34,7 @@ netcalc_strerror
 # memory functions
 netcalc_alloc
 netcalc_free
+netcalc_get_field
 netcalc_initialize
 #
 # end of symbol export file

@@ -299,6 +299,61 @@ netcalc_free(
 
 
 int
+netcalc_get_field(
+         netcalc_net_t  *              net,
+         int                           option,
+         void *                        outvalue )
+{
+   int      family;
+   void *   ptr;
+
+   assert( net      != NULL );
+   assert( outvalue != NULL );
+
+   family = (int)(net->net_flags & NETCALC_AF);
+
+   switch(option)
+   {
+      case NETCALC_FLD_ADDR:
+      if ((ptr = malloc(sizeof(netcalc_addr_t))) == NULL)
+         return(NETCALC_ENOMEM);
+      memcpy(ptr, &net->net_addr, sizeof(netcalc_addr_t));
+      *((netcalc_addr_t **)outvalue) = (netcalc_addr_t *)ptr;
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_ADDRLEN:
+      *((int *)outvalue) = (int)sizeof(netcalc_addr_t);
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_CIDR:
+      if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+         return(NETCALC_EFIELD);
+      *((int *)outvalue) = (int)net->net_cidr;
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_FAMILY:
+      *((int *)outvalue) = family;
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_FLAGS:
+      *((int *)outvalue) = (int)net->net_flags;
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_PORT:
+      if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+         return(NETCALC_EFIELD);
+      *((int *)outvalue) = (int)net->net_port;
+      return(NETCALC_SUCCESS);
+
+      default:
+      break;
+   };
+
+   return(NETCALC_EFIELD);
+}
+
+
+int
 netcalc_initialize(
          netcalc_net_t **              netp,
          const char *                  address,
@@ -893,6 +948,7 @@ netcalc_strerror(
 
       case NETCALC_EBADADDR:     return("bad address string");
       case NETCALC_EBUFFLEN:     return("buffer length exceeeded");
+      case NETCALC_EFIELD:       return("unknown or unsupported field");
       case NETCALC_EINVAL:       return("invalid argument");
       case NETCALC_ENOMEM:       return("out of virtual memory");
 
