@@ -86,14 +86,15 @@ pkgdata_DATA				=
 sbin_SCRIPTS				=
 sbin_PROGRAMS				=
 mod_LTLIBRARIES				=
-EXTRA_PROGRAMS				= src/netcalc-dmstools
+EXTRA_PROGRAMS				= src/netcalc-dmstools \
+					  tests/test-initialize
 EXTRA					=
 
 
 # lists
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT	=
 BUILT_SOURCES				=
-TESTS					=
+TESTS					= tests/test-initialize
 XFAIL_TESTS				=
 EXTRA_MANS				=
 EXTRA_DIST				= $(doc_DATA) \
@@ -158,6 +159,14 @@ lib_libnetcalc_la_SOURCES		= $(lib_libnetcalc_a_SOURCES)
 # macros for src/netcalc-dmstools
 src_netcalc_dmstools_DEPENDENCIES	= Makefile config.h
 src_netcalc_dmstools_SOURCES		= src/netcalc-dmstools.c
+
+
+# macros for tests/test-initialize
+tests_test_initialize_DEPENDENCIES	= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_initialize_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_initialize_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-initialize.c
 
 
 # Makefile includes
