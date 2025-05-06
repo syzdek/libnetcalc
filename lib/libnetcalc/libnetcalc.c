@@ -305,6 +305,7 @@ netcalc_get_field(
          void *                        outvalue )
 {
    int      family;
+   int      val_i;
    void *   ptr;
 
    assert( net      != NULL );
@@ -328,7 +329,10 @@ netcalc_get_field(
       case NETCALC_FLD_CIDR:
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
          return(NETCALC_EFIELD);
-      *((int *)outvalue) = (int)net->net_cidr;
+      val_i = (int)net->net_cidr;
+      if (family == NETCALC_AF_INET)
+         val_i = (val_i <= 96) ? 0 : (val_i - 96);
+      *((int *)outvalue) = val_i;
       return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_FAMILY:
@@ -379,6 +383,7 @@ netcalc_initialize(
    memset(&scope_name,  0, sizeof(scope_name));
    nbuff.net_scope_name = scope_name;
    nbuff.net_flags      = ((flags & NETCALC_AF)) ? flags : (flags | NETCALC_AF);
+   nbuff.net_cidr       = 128;
 
    // prepare string buffer
    addrlen = strlen(address);
@@ -674,7 +679,7 @@ netcalc_parse_inet(
    size_t         pos;
    size_t         digit;
    size_t         byte;
-   unsigned       cidr;
+   int            cidr;
    unsigned       dec;
    uint8_t *      addr8;
    char *         ptr;
@@ -683,6 +688,7 @@ netcalc_parse_inet(
    assert(str  != NULL);
 
    addr8 = n->net_addr.netcalc_addr.netcalc_addr8;
+   cidr  = -1;
 
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
@@ -690,9 +696,10 @@ netcalc_parse_inet(
       ptr[0] = '\0';
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
-      cidr = (unsigned)strtoul(&ptr[1], &ptr, 10);
+      cidr = (int)strtoul(&ptr[1], &ptr, 10);
       if ( (ptr[0] != '\0') || (cidr > 32) )
          return(NETCALC_EBADADDR);
+      cidr += 96;
       n->net_cidr = (uint8_t)cidr;
    };
 
@@ -721,7 +728,7 @@ netcalc_parse_inet(
          break;
 
          case ':':
-         if ((n->net_cidr))
+         if (cidr != -1)
             return(NETCALC_EBADADDR);
          if ( (byte != 3) || (digit == 0) )
             return(NETCALC_EBADADDR);
