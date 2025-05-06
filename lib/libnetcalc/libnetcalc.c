@@ -464,7 +464,7 @@ netcalc_initialize(
    {
       if ((net->net_scope_name = strdup(nbuff.net_scope_name)) == NULL)
       {
-         netcalc_free(*netp);
+         netcalc_free(net);
          return(NETCALC_ENOMEM);
       };
    };
@@ -473,6 +473,8 @@ netcalc_initialize(
    net->net_flags   = nbuff.net_flags;
    net->net_port    = nbuff.net_port;
    net->net_cidr    = nbuff.net_cidr;
+
+   *netp = net;
 
    return(0);
 }
