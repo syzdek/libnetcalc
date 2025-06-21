@@ -57,30 +57,6 @@
 
 #undef PROGRAM_NAME
 #define PROGRAM_NAME "netcalc-initialize"
-#ifndef PACKAGE_BUGREPORT
-#   define PACKAGE_BUGREPORT "david@syzdek.net"
-#endif
-#ifndef PACKAGE_COPYRIGHT
-#   define PACKAGE_COPYRIGHT ""
-#endif
-#ifndef PACKAGE_NAME
-#   define PACKAGE_NAME ""
-#endif
-#ifndef PACKAGE_VERSION
-#   define PACKAGE_VERSION ""
-#endif
-
-
-#undef MY_FAIL
-#undef MY_PASS
-#define MY_FAIL      1
-#define MY_PASS      0
-
-#undef MY_NOPORT
-#define MY_NOPORT    0xffff
-
-#undef MY_NOCIDR
-#define MY_NOCIDR    0xff
 
 
 //////////////////
