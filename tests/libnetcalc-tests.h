@@ -101,4 +101,14 @@ struct _test_data
    uint8_t           addr_fail;
 };
 
+
+/////////////////
+//             //
+//  Variables  //
+//             //
+/////////////////
+#pragma mark - Variables
+
+extern testdata_t test_data[];
+
 #endif /* end of header */

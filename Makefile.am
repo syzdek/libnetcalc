@@ -166,6 +166,7 @@ tests_test_initialize_DEPENDENCIES	= Makefile config.h \
 					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_initialize_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_initialize_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-data.c \
 					  tests/test-initialize.c
 
 
