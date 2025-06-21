@@ -52,4 +52,21 @@
 #include <netcalc.h>
 
 
+/////////////////
+//             //
+//  Datatypes  //
+//             //
+/////////////////
+#pragma mark - Datatypes
+
+typedef struct _test_data testdata_t;
+struct _test_data
+{
+   const char *      addr_str;
+   uint32_t          addr_flgs;
+   uint16_t          addr_port;
+   uint8_t           addr_cidr;
+   uint8_t           addr_fail;
+};
+
 #endif /* end of header */
