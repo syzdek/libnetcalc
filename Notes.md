@@ -6,20 +6,20 @@ EUI-48
 ------
 
   * Address Styles
-    - Colon Delimiter:  01:23:45:67:89:AB
-    - Dash Delimiter:   01-23-45-67-89-AB
-    - Dot Delimiter:    0123.4567.89AB
-    - No Delimiter:     0123456789AB
+    - Colon Delimiter:  01:23:45:67:89:ab
+    - Dash Delimiter:   01-23-45-67-89-ab
+    - Dot Delimiter:    0123.4567.89ab
+    - No Delimiter:     0123456789ab
 
 
 EUI-64
 ------
 
   * Address Styles
-    - Colon Delimiter:  01:23:45:67:89:AB:CD:EF
-    - Dash Delimiter:   01-23-45-67-89-AB-CD-EF
-    - Dot Delimiter:    0123.4567.89AB.CDEF
-    - No Delimiter:     0123456789ABCDEF
+    - Colon Delimiter:  01:23:45:67:89:ab:cd:ef
+    - Dash Delimiter:   01-23-45-67-89-ab-cd-ef
+    - Dot Delimiter:    0123.4567.89ab.cdef
+    - No Delimiter:     0123456789abcdef
 
 
 IPv4 Formats
