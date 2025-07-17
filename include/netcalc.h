@@ -44,6 +44,7 @@
 // MARK: - Headers
 
 #include <inttypes.h>
+#include <stddef.h>
 
 
 //////////////
