@@ -74,7 +74,7 @@
 ///////////////////
 // MARK: - Definitions
 
-#define NETCALC_ADDRESS_LENGTH         96
+#define NETCALC_ADDRESS_LENGTH         128
 #define NETCALC_SCOPE_NAME_LENGTH      48
 
 
