@@ -96,15 +96,37 @@
 #define NETCALC_FLD_ADDRLEN            6
 
 
-#define NETCALC_FLG                    0x00000fff  // flag: mask for flags
+#define NETCALC_FLG                    0x000fffff  // flag: mask for flags
 #define NETCALC_FLG_V4MAPPED           0x00000001  // flag: display IPv6 addresses as IPv4 mapped address
-#define NETCALC_RESERVED               0x00fff000  // RESERVED
-#define NETCALC_AF                     0xff000000  // af: mask for address familly
+#define NETCALC_FLG_COMPR              0x00000002  // flag: zero compression
+#define NETCALC_FLG_SUPR               0x00000004  // flag: zero suppression
+#define NETCALC_FLG_CIDR               0x00000008  // flag: append CIDR
+#define NETCALC_FLG_PORT               0x00000010  // flag: append port
+#define NETCALC_FLG_IFACE              0x00000020  // flag: append interface
+//                                     0x00000040  // flag: OPEN
+//                                     0x00000080  // flag: OPEN
+#define NETCALC_FLG_NOV4MAPPED         0x00000100  // flag: do not display IPv6 addresses as IPv4 mapped address
+#define NETCALC_FLG_NOCOMPR            0x00000200  // flag: no zero compression
+#define NETCALC_FLG_NOSUPR             0x00000400  // flag: no zero suppression
+#define NETCALC_FLG_NOCIDR             0x00000800  // flag: do not append CIDR
+#define NETCALC_FLG_NOPORT             0x00001000  // flag: do not append port
+#define NETCALC_FLG_NOIFACE            0x00002000  // flag: do not append interface
+//                                     0x00004000  // flag: OPEN
+//                                     0x00008000  // flag: OPEN
+#define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters
+#define NETCALC_DELIM_COLON            0x00010000  // delimiter: use colon delimiters with 1 byte chunks
+#define NETCALC_DELIM_DASH             0x00020000  // delimiter: use dash delimiters with 1 byte chunks
+#define NETCALC_DELIM_DOT              0x00040000  // delimiter: use dot delimiters with 2 byte chunks
+#define NETCALC_DELIM_NONE             0x00080000  // delimiter: do not use delimiters
+//                                     0x00f00000  // UNUSED
+#define NETCALC_AF                     0x0f000000  // af: mask for address familly
 #define NETCALC_AF_AUTO                0x00000000  // af: added for consistenency
-#define NETCALC_AF_INET                0x1000000  // af: IPv4 encapsulation [RFC2003]
-#define NETCALC_AF_INET6               0x2000000  // af: IPv6 encapsulation [RFC2473]
-#define NETCALC_AF_EUI48               0x4000000  // af: MAC-48/EUI-48 encapsulation
-#define NETCALC_AF_EUI64               0x8000000  // af: EUI-64 encapsulation
+#define NETCALC_AF_INET                0x01000000  // af: IPv4 encapsulation [RFC2003]
+#define NETCALC_AF_INET6               0x02000000  // af: IPv6 encapsulation [RFC2473]
+#define NETCALC_AF_EUI48               0x04000000  // af: MAC-48/EUI-48 encapsulation
+#define NETCALC_AF_EUI64               0x08000000  // af: EUI-64 encapsulation
+//                                     0x70000000  // UNUSED
+//                                     0x80000000  // DO NOT USE
 #define NETCALC_AF_MAC                 NETCALC_AF_EUI48
 
 
