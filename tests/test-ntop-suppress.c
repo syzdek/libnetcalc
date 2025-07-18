@@ -214,7 +214,7 @@ my_test(
 
    net      = NULL;
    dat_addr = dat->addr_ip_suppress;
-   flags    = NETCALC_FLG_SUPR;
+   flags    = NETCALC_FLG_SUPR | NETCALC_FLG_NOCOMPR;
 
    my_info("checking: \"%s\" ...\n", dat->addr_str);
 
