@@ -1208,8 +1208,8 @@ netcalc_parse_inet6(
             if ((zero))
                return(NETCALC_EBADADDR);
             zero++;
-            pos += 2;
-            for(fwd = pos, wyde_fwd = 1; ((str[fwd])); fwd++)
+            pos++;
+            for(fwd = pos+1, wyde_fwd = 1; ((str[fwd])); fwd++)
             {
                if (str[fwd] == ':')
                {
