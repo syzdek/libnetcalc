@@ -670,6 +670,7 @@ netcalc_parse_inet(
    assert(n       != NULL);
    assert(address != NULL);
 
+   memset(net_addr.netcalc_addr.netcalc_addr8, 0, sizeof(net_addr.netcalc_addr.netcalc_addr8));
    addr8 = net_addr.netcalc_addr.netcalc_addr8;
    cidr  = -1;
    port  = -1;
@@ -716,7 +717,7 @@ netcalc_parse_inet(
          case '.':
          if (digit == 0)
             return(NETCALC_EBADADDR);
-         addr8[15-byte] = dec;
+         addr8[12+byte] = dec;
          dec            = 0;
          digit          = 0;
          byte++;
@@ -735,8 +736,8 @@ netcalc_parse_inet(
 
    addr8[12+byte] = dec;
 
-   memcpy(&n->net_addr.netcalc_addr.netcalc_addr8[15], &net_addr.netcalc_addr.netcalc_addr8[15], sizeof(net_addr)-16);
-   n->net_cidr = (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
+   memcpy(&n->net_addr.netcalc_addr.netcalc_addr8[12], &net_addr.netcalc_addr.netcalc_addr8[12], 4);
+   n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
    n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
    return(0);
