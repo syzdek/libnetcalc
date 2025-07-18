@@ -742,15 +742,21 @@ netcalc_ntop_inet6(
    int         buff_len;
    int         pos;
    int         bracketed;
+   int         zero_off;
+   int         zero_len;
+   int         zero_max_off;
+   int         zero_max_len;
    uint8_t *   dat8;
    char        map[] = "0123456789abcdef";
 
    assert(net != NULL);
    assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
 
-   off         = 0;
-   bracketed   = 0;
-   dat8        = net->net_addr.addr8;
+   off            = 0;
+   bracketed      = 0;
+   dat8           = net->net_addr.addr8;
+   zero_max_off   = -1;
+   zero_max_len   = 0;
 
    // adjusting flags NETCALC_FLG_CIDR
    if (!(flags & (NETCALC_FLG_CIDR | NETCALC_FLG_NOCIDR)))
@@ -770,15 +776,55 @@ netcalc_ntop_inet6(
    if ((bracketed))
       dst[off++] = '[';
 
+   // calculates zero compression
+   if ((flags & NETCALC_FLG_COMPR))
+   {
+      zero_off = -1;
+      zero_len = 0;
+      for(idx = 0; (idx < 16); idx += 2)
+      {
+         if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
+         {
+            if (zero_off == -1)
+               continue;
+            if (zero_len > zero_max_len)
+            {  zero_max_off = zero_off;
+               zero_max_len = zero_len;
+            };
+            zero_off = -1;
+            zero_len = 0;
+         } else
+         {
+            if (zero_off == -1)
+               zero_off = idx;
+            zero_len += 2;
+         };
+      };
+      if ( (zero_off != -1) && (zero_len > zero_max_len) )
+      {  zero_max_off = zero_off;
+         zero_max_len = zero_len;
+      };
+      if (zero_max_len < 4)
+         zero_max_off = -1;
+   };
+
    for(idx = 0; (idx < 16); idx += 2)
    {
+      // apply zero compression
+      if (idx == zero_max_off)
+      {  idx += zero_max_len;
+         dst[off++] = ':';
+         if (idx >= 16)
+         {  dst[off++] = ':';
+            continue;
+         };
+      };
+
+      // apply delimiter
       if ( (!(idx % 2)) && ((idx)) )
          dst[off++] = ':';
-      if ( (!(dat8[idx+0])) && (!(dat8[idx+1])) && ((flags & NETCALC_FLG_SUPR)) )
-      {
-         dst[off++] = '0';
-         continue;
-      };
+
+      // save data
       if ( (((dat8[idx+0] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
       if ( ((dat8[idx+0])) || ((flags & NETCALC_FLG_NOSUPR)) )
