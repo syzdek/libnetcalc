@@ -118,7 +118,6 @@ main(
    int               opt_index;
    int               pos;
    int               errors;
-   uint32_t          family;
 
    // getopt options
    static const char *  short_opt = "hqVv";
@@ -131,8 +130,6 @@ main(
       {"verbose",          no_argument,       NULL, 'v' },
       { NULL, 0, NULL, 0 }
    };
-
-   family = NETCALC_AF;
 
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
    {
@@ -180,9 +177,8 @@ main(
    errors = 0;
 
    for(pos = 0; ((test_data[pos].addr_str)); pos++)
-      if ((test_data[pos].addr_flgs & family))
-         if ((my_test(&test_data[pos])))
-            errors++;
+      if ((my_test(&test_data[pos])))
+         errors++;
 
    return( ((errors)) ? 1 : 0 );
 }
