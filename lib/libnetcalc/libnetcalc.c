@@ -279,6 +279,38 @@ netcalc_alloc(
 }
 
 
+int
+netcalc_dup(
+         netcalc_net_t **              netp,
+         const netcalc_net_t *         src )
+{
+   netcalc_net_t *      net;
+
+   assert( netp != NULL );
+   assert( src  != NULL );
+
+   // allocate memory and copy data
+   if ((net = malloc(sizeof(netcalc_net_t))) == NULL)
+      return(NETCALC_ENOMEM);
+   memcpy(net, src, sizeof(netcalc_net_t));
+   net->net_scope_name = NULL;
+
+   // allocate memory and copy net_scope
+   if ( ((src->net_scope_name)) && ((src->net_scope_name[0])) )
+   {
+      if ((net->net_scope_name = strdup(src->net_scope_name)) == NULL)
+      {
+         netcalc_free(net);
+         return(NETCALC_ENOMEM);
+      };
+   };
+
+   *netp = net;
+
+   return(0);
+}
+
+
 void
 netcalc_free(
          netcalc_net_t *               net )
@@ -364,7 +396,6 @@ netcalc_initialize(
    char                 sbuff[NETCALC_ADDRESS_LENGTH];
    char                 scope_name[NETCALC_SCOPE_NAME_LENGTH];
    netcalc_net_t        nbuff;
-   netcalc_net_t *      net;
 
    assert(address != NULL);
 
@@ -463,30 +494,7 @@ netcalc_initialize(
       default:                return(NETCALC_EBADADDR);
    };
 
-   // return if result was not requested
-   if (netp == NULL)
-      return(0);
-
-   // allocate result
-   if ((net = malloc(sizeof(netcalc_net_t))) == NULL)
-      return(NETCALC_ENOMEM);
-   if ((nbuff.net_scope_name[0]))
-   {
-      if ((net->net_scope_name = strdup(nbuff.net_scope_name)) == NULL)
-      {
-         netcalc_free(net);
-         return(NETCALC_ENOMEM);
-      };
-   };
-   memset(net,             0,                sizeof(netcalc_net_t));
-   memcpy(&net->net_addr,  &nbuff.net_addr,  sizeof(netcalc_addr_t));
-   net->net_flags   = nbuff.net_flags;
-   net->net_port    = nbuff.net_port;
-   net->net_cidr    = nbuff.net_cidr;
-
-   *netp = net;
-
-   return(0);
+   return((netp == NULL) ? 0 : netcalc_dup(netp, &nbuff));
 }
 
 

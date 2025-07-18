@@ -29,6 +29,7 @@
 #   SUCH DAMAGE.
 #
 netcalc_alloc
+netcalc_dup
 netcalc_free
 netcalc_get_field
 netcalc_initialize

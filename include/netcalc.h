@@ -162,6 +162,12 @@ netcalc_alloc(
          void );
 
 
+_NETCALC_F int
+netcalc_dup(
+         netcalc_net_t **              netp,
+         const netcalc_net_t *         src );
+
+
 _NETCALC_F void
 netcalc_free(
          netcalc_net_t *               net );
