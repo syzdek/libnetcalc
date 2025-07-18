@@ -66,7 +66,7 @@
 static int
 netcalc_parse_eui(
          netcalc_net_t *               n,
-         char *                        str,
+         char *                        address,
          int                           family );
 
 
