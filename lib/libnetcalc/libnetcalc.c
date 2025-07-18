@@ -535,6 +535,7 @@ netcalc_parse_eui(
       default: return(NETCALC_EBADADDR);
    }
 
+   memset(&net_addr, 0, sizeof(netcalc_addr_t));
    delim = 0;
    addr8 = net_addr.netcalc_addr.netcalc_addr8;
    strncpy(str, address, sizeof(str));
