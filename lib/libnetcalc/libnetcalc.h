@@ -82,17 +82,12 @@
 //////////////////
 // MARK: - Data Types
 
-//struct _libnetcalc_address
 union _libnetcalc_address
 {
-   uint8_t                    netcalc_addr8[16];
-   uint16_t                   netcalc_addr16[8];
-   uint32_t                   netcalc_addr32[4];
-   uint64_t                   netcalc_addr64[2];
-#define addr_dat8               netcalc_addr8
-#define addr_dat16              netcalc_addr16
-#define addr_dat32              netcalc_addr32
-#define addr_dat64              netcalc_addr64
+   uint8_t                    addr8[16];
+   uint16_t                   addr16[8];
+   uint32_t                   addr32[4];
+   uint64_t                   addr64[2];
 };
 
 
@@ -103,10 +98,6 @@ struct _libnetcalc_network
    uint8_t                    net_cidr;
    uint8_t                    __pad;
    netcalc_addr_t             net_addr;
-#define net_addr8             net_addr.netcalc_addr8
-#define net_addr16            net_addr.netcalc_addr16
-#define net_addr32            net_addr.netcalc_addr32
-#define net_addr64            net_addr.netcalc_addr64
    char *                     net_scope_name;
 };
 
