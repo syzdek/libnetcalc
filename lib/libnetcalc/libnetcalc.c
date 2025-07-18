@@ -643,7 +643,7 @@ netcalc_parse_eui(
          return(NETCALC_EBADADDR);
    };
 
-   memcpy(&n->net_addr,       &net_addr,  sizeof(net_addr));
+   memcpy(&n->net_addr, &net_addr,  sizeof(net_addr));
    n->net_cidr = 0;
    n->net_port = 0;
 
