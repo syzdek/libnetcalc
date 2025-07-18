@@ -393,7 +393,7 @@ netcalc_get_field(
    switch(option)
    {
       case NETCALC_FLD_ADDR:
-         if ((ptr = malloc(sizeof(net->net_addr.netcalc_addr.netcalc_addr8))) == NULL)
+         if ((ptr = malloc(sizeof(net->net_addr.netcalc_addr8))) == NULL)
             return(NETCALC_ENOMEM);
          memcpy(ptr, &net->net_addr, sizeof(netcalc_addr_t) );
          *((uint8_t **)outvalue) = (uint8_t *)ptr;
@@ -846,7 +846,7 @@ netcalc_parse_eui(
 
    memset(&net_addr, 0, sizeof(netcalc_addr_t));
    delim = 0;
-   addr8 = net_addr.netcalc_addr.netcalc_addr8;
+   addr8 = net_addr.netcalc_addr8;
    strncpy(str, address, sizeof(str));
 
    for(pos = 0, digit = 0, byte = 0, hex = 0; ((str[pos])); pos++)
@@ -972,8 +972,8 @@ netcalc_parse_inet(
    assert(n       != NULL);
    assert(address != NULL);
 
-   memset(net_addr.netcalc_addr.netcalc_addr8, 0, sizeof(net_addr.netcalc_addr.netcalc_addr8));
-   addr8 = net_addr.netcalc_addr.netcalc_addr8;
+   memset(net_addr.netcalc_addr8, 0, sizeof(net_addr.netcalc_addr8));
+   addr8 = net_addr.netcalc_addr8;
    cidr  = -1;
    port  = -1;
    strncpy(str, address, sizeof(str));
@@ -1038,7 +1038,7 @@ netcalc_parse_inet(
 
    addr8[12+byte] = dec;
 
-   memcpy(&n->net_addr.netcalc_addr.netcalc_addr8[12], &net_addr.netcalc_addr.netcalc_addr8[12], 4);
+   memcpy(&n->net_addr.netcalc_addr8[12], &net_addr.netcalc_addr8[12], 4);
    n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
    n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
@@ -1078,7 +1078,7 @@ netcalc_parse_inet6(
 
    memset(&net_addr, 0, sizeof(netcalc_addr_t));
    zero        = 0;
-   addr8       = net_addr.netcalc_addr.netcalc_addr8;
+   addr8       = net_addr.netcalc_addr8;
    str         = sbuff;
    port        = -1;
    cidr        = -1;

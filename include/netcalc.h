@@ -138,7 +138,7 @@
 //////////////////
 // MARK: - Data Types
 
-typedef struct _libnetcalc_address     netcalc_addr_t;
+typedef union  _libnetcalc_address     netcalc_addr_t;
 typedef struct _libnetcalc_network     netcalc_net_t;
 
 
