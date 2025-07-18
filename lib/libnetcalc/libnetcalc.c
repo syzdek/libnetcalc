@@ -79,7 +79,7 @@ netcalc_parse_inet(
 static int
 netcalc_parse_inet6(
          netcalc_net_t *               n,
-         char *                        str );
+         char *                        address );
 
 
 /////////////////
@@ -721,54 +721,86 @@ netcalc_parse_inet(
 int
 netcalc_parse_inet6(
          netcalc_net_t *               n,
-         char *                        str )
+         char *                        address )
 {
-   size_t         pos;
-   size_t         fwd;
-   size_t         digit;
-   size_t         wyde;
-   size_t         wyde_fwd;
-   unsigned       cidr;
-   unsigned       hex;
-   unsigned       dec;
-   char *         ptr;
-   char *         scope_name;
-   uint8_t *      addr8;
-   int            zero;
+   size_t            pos;
+   size_t            fwd;
+   size_t            digit;
+   size_t            wyde;
+   size_t            wyde_fwd;
+   unsigned          hex;
+   unsigned          dec;
+   char *            tmp;
+   char *            str;
+   char *            ptr;
+   uint8_t *         addr8;
+   int               zero;
+   int               port;
+   int               cidr;
+   int               bracketed;
+   netcalc_addr_t    net_addr;
+   char              scope_name[NETCALC_SCOPE_NAME_LENGTH];
+   char              sbuff[NETCALC_ADDRESS_LENGTH];
 
-   assert(n    != NULL);
-   assert(str  != NULL);
+   assert(n       != NULL);
+   assert(address != NULL);
 
    if (!(n->net_flags & NETCALC_AF_INET6))
       return(NETCALC_EBADADDR);
 
    zero        = 0;
-   addr8       = n->net_addr.netcalc_addr.netcalc_addr8;
-   scope_name  = n->net_scope_name;
+   addr8       = net_addr.netcalc_addr.netcalc_addr8;
+   str         = sbuff;
+   port        = -1;
+   cidr        = -1;
+   bracketed   = 0;
+   strncpy(sbuff, address, sizeof(sbuff));
 
-   // check for port number
+   // check for bracketed address
    if (str[0] == '[')
    {
-      n->net_flags &= ~NETCALC_AF;
-      n->net_flags |=  NETCALC_AF_INET6;
-      str = &str[1];
+      bracketed   = 1;
+
+      // adjust start of string
+      str       = &str[1];
+
       if ((ptr = strchr(str, ']')) == NULL)
          return(NETCALC_EBADADDR);
-      ptr[0] = '\0';
-      if (ptr[1] == ':')
+      ptr[0]   = '\0';
+      tmp      = &ptr[1];
+
+      // check for port after bracketed address
+      if ((ptr = strchr(tmp, ':')) != NULL)
       {
-         n->net_port  = (uint16_t)strtol(&ptr[2], &ptr, 10);
-         if (ptr[0] != '\0')
+         ptr[0] = '\0';
+         if (ptr[1] == '\0')
+            return(NETCALC_EBADADDR);
+         port = (int)strtoul(&ptr[1], &ptr, 10);
+         if ( (ptr[0] != '\0') || (port > 0xffff) )
             return(NETCALC_EBADADDR);
       };
+
+      // check for CIDR after bracketed address
+      if ((ptr = strchr(tmp, '/')) != NULL)
+      {
+         ptr[0] = '\0';
+         if (ptr[1] == '\0')
+            return(NETCALC_EBADADDR);
+         cidr = (int)strtoul(&ptr[1], &ptr, 10);
+         if ( (ptr[0] != '\0') || (cidr > 128) )
+            return(NETCALC_EBADADDR);
+      };
+
+      if (tmp[0] != '\0')
+         return(NETCALC_EBADADDR);
    };
 
    // check for named scope
    if ((ptr = strchr(str, '%')) != NULL)
    {
       ptr[0] = '\0';
-      n->net_flags &= ~NETCALC_AF;
-      n->net_flags |=  NETCALC_AF_INET6;
+      if (ptr[1] == '\0')
+         return(NETCALC_EBADADDR);
       for(pos = 1; ((ptr[pos])); pos++)
       {
          if (pos >= NETCALC_SCOPE_NAME_LENGTH)
@@ -784,11 +816,11 @@ netcalc_parse_inet6(
                case '-':
                case '_':
                case ':':
-               scope_name[pos-1] = ptr[pos];
-               break;
+                  scope_name[pos-1] = ptr[pos];
+                  break;
 
                default:
-               return(NETCALC_EBADADDR);
+                  return(NETCALC_EBADADDR);
             }
          }
       };
@@ -798,15 +830,14 @@ netcalc_parse_inet6(
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
    {
-      if ((n->net_port))
+      if ( (!(bracketed)) && (scope_name[0] != '\0') )
          return(NETCALC_EBADADDR);
       ptr[0] = '\0';
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
-      cidr = (unsigned)strtoul(&ptr[1], &ptr, 10);
+      cidr = (int)strtoul(&ptr[1], &ptr, 10);
       if ( (ptr[0] != '\0') || (cidr > 128) )
          return(NETCALC_EBADADDR);
-      n->net_cidr = (uint8_t)cidr;
    };
 
    for(pos = 0, digit = 0, wyde = 0, dec = 0, hex = 0; ((str[pos])); pos++)
@@ -902,6 +933,11 @@ netcalc_parse_inet6(
 
    addr8[(wyde*2)+0] = (hex >> 16) & 0xff;
    addr8[(wyde*2)+1] = (hex >>  0) & 0xff;
+
+   memcpy(&n->net_addr,       &net_addr,  sizeof(net_addr));
+   memcpy(n->net_scope_name,  scope_name, sizeof(scope_name));
+   n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
+   n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
    return(0);
 }
