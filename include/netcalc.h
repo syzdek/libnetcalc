@@ -115,10 +115,10 @@
 //                                     0x00004000  // flag: OPEN
 //                                     0x00008000  // flag: OPEN
 #define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters
-#define NETCALC_DELIM_COLON            0x00010000  // delimiter: use colon delimiters with 1 byte chunks
-#define NETCALC_DELIM_DASH             0x00020000  // delimiter: use dash delimiters with 1 byte chunks
-#define NETCALC_DELIM_DOT              0x00040000  // delimiter: use dot delimiters with 2 byte chunks
-#define NETCALC_DELIM_NONE             0x00080000  // delimiter: do not use delimiters
+#define NETCALC_FLG_COLON              0x00010000  // delimiter: use colon delimiters with 1 byte chunks
+#define NETCALC_FLG_DASH               0x00020000  // delimiter: use dash delimiters with 1 byte chunks
+#define NETCALC_FLG_DOT                0x00040000  // delimiter: use dot delimiters with 2 byte chunks
+#define NETCALC_FLG_NODELIM            0x00080000  // delimiter: do not use delimiters
 //                                     0x00f00000  // UNUSED
 #define NETCALC_AF                     0x0f000000  // af: mask for address familly
 #define NETCALC_AF_AUTO                0x00000000  // af: added for consistenency
