@@ -335,31 +335,23 @@ netcalc_get_field(
    int      val_i;
    char *   str;
    void *   ptr;
-   size_t   off;
 
    assert( net      != NULL );
    assert( outvalue != NULL );
 
    family = (int)(net->net_flags & NETCALC_AF);
 
-   switch(family)
-   {  case NETCALC_AF_EUI48:  off = 10; break;
-      case NETCALC_AF_EUI64:  off =  8; break;
-      case NETCALC_AF_INET:   off = 12; break;
-      default:                off =  0; break;
-   };
-
    switch(option)
    {
       case NETCALC_FLD_ADDR:
          if ((ptr = malloc(sizeof(net->net_addr.netcalc_addr.netcalc_addr8))) == NULL)
             return(NETCALC_ENOMEM);
-         memcpy(ptr, &net->net_addr.netcalc_addr.netcalc_addr8[off], (sizeof(netcalc_addr_t)-off) );
+         memcpy(ptr, &net->net_addr, sizeof(netcalc_addr_t) );
          *((uint8_t **)outvalue) = (uint8_t *)ptr;
          return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_ADDRLEN:
-         *((int *)outvalue) = (int)(sizeof(netcalc_addr_t)-off);
+         *((int *)outvalue) = (int)sizeof(netcalc_addr_t);
          return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_CIDR:
