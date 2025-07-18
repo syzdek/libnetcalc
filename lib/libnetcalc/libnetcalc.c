@@ -767,6 +767,7 @@ netcalc_parse_inet6(
    if (!(n->net_flags & NETCALC_AF_INET6))
       return(NETCALC_EBADADDR);
 
+   memset(&net_addr, 0, sizeof(netcalc_addr_t));
    zero        = 0;
    addr8       = net_addr.netcalc_addr.netcalc_addr8;
    str         = sbuff;
@@ -889,8 +890,8 @@ netcalc_parse_inet6(
          case 'F': hex = (hex << 4) + 15; digit++; break;
 
          case ':':
-         addr8[(wyde*2)+0] = (hex >> 16) & 0xff;
-         addr8[(wyde*2)+1] = (hex >>  0) & 0xff;
+         addr8[(wyde*2)+0] = (hex >> 8) & 0xff;
+         addr8[(wyde*2)+1] = (hex >> 0) & 0xff;
          if (str[pos+1] == ':')
          {
             if (str[pos+2] == ':')
@@ -950,8 +951,8 @@ netcalc_parse_inet6(
    if (wyde != 7)
       return(NETCALC_EBADADDR);
 
-   addr8[(wyde*2)+0] = (hex >> 16) & 0xff;
-   addr8[(wyde*2)+1] = (hex >>  0) & 0xff;
+   addr8[(wyde*2)+0] = (hex >> 8) & 0xff;
+   addr8[(wyde*2)+1] = (hex >> 0) & 0xff;
 
    memcpy(&n->net_addr,       &net_addr,  sizeof(net_addr));
    memcpy(n->net_scope_name,  scope_name, sizeof(scope_name));
