@@ -45,6 +45,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include <netcalc.h>
 
@@ -67,15 +68,27 @@
 //////////////////
 // MARK: - Prototypes
 
-int
+extern int
 main(
          int                           argc,
          char *                        argv[] );
 
 
-int
+static void
+my_info(
+         const char *                  fmt,
+         ... );
+
+
+static int
 my_test(
          testdata_t *                  dat );
+
+
+static void
+my_verbose(
+         const char *                  fmt,
+         ... );
 
 
 /////////////////
@@ -106,16 +119,11 @@ main(
    int               pos;
    int               errors;
    uint32_t          family;
-   testdata_t        dat;
 
    // getopt options
-   static const char *  short_opt = "46EehqVv";
+   static const char *  short_opt = "hqVv";
    static struct option long_opt[] =
    {
-      {"ipv4",             no_argument,       NULL, '4' },
-      {"ipv6",             no_argument,       NULL, '6' },
-      {"eui48",            no_argument,       NULL, 'e' },
-      {"eui64",            no_argument,       NULL, 'E' },
       {"help",             no_argument,       NULL, 'h' },
       {"quiet",            no_argument,       NULL, 'q' },
       {"silent",           no_argument,       NULL, 'q' },
@@ -134,19 +142,10 @@ main(
          case 0:        /* long options toggles */
          break;
 
-         case '4': family = NETCALC_AF_INET;    break;
-         case '6': family = NETCALC_AF_INET;    break;
-         case 'E': family = NETCALC_AF_EUI64;   break;
-         case 'e': family = NETCALC_AF_EUI48;   break;
-
          case 'h':
          printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
          printf("       %s [OPTIONS] <string> <string> ... <string> \n", PROGRAM_NAME);
          printf("OPTIONS:\n");
-         printf("  -4, --ipv4                test for IPv4 address\n");
-         printf("  -6, --ipv6                test for IPv6 address\n");
-         printf("  -e, --eui48               test for EUI48 string/MAC address\n");
-         printf("  -E, --eui64               test for EUI64 string\n");
          printf("  -h, --help                print this help and exit\n");
          printf("  -q, --quiet, --silent     do not print messages\n");
          printf("  -V, --version             print version number and exit\n");
@@ -180,27 +179,27 @@ main(
 
    errors = 0;
 
-   if (optind == argc)
-   {
-      for(pos = 0; ((test_data[pos].addr_str)); pos++)
-         if ((test_data[pos].addr_flgs & family))
-            if ((my_test(&test_data[pos])))
-               errors++;
-   } else
-   {
-      dat.addr_flgs  = family;
-      dat.addr_port  = 0;
-      dat.addr_cidr  = 0;
-      dat.addr_fail  = 0;
-      for(pos = optind; (pos < argc); pos++)
-      {
-         dat.addr_str   = argv[pos];
-         if ((my_test(&dat)))
+   for(pos = 0; ((test_data[pos].addr_str)); pos++)
+      if ((test_data[pos].addr_flgs & family))
+         if ((my_test(&test_data[pos])))
             errors++;
-      };
-   };
 
    return( ((errors)) ? 1 : 0 );
+}
+
+
+void
+my_info(
+         const char *                  fmt,
+         ... )
+{
+   va_list  args;
+   if ((quiet))
+      return;
+   va_start(args, fmt);
+   vprintf(fmt, args);
+   va_end(args);
+   return;
 }
 
 
@@ -229,111 +228,101 @@ my_test(
    dat_iface      = dat->addr_ip_iface;
    dat_addr       = dat->addr_ip;
 
-   if (!(quiet))
-      printf("checking: \"%s\" (should %s) ...\n", dat->addr_str, ( ((dat->addr_fail)) ? "fail" : "pass" ) );
+   my_info("checking: \"%s\" (should %s) ...\n", dat->addr_str, ( ((dat->addr_fail)) ? "fail" : "pass" ) );
 
    rc = netcalc_initialize(&net, dat->addr_str, dat->addr_flgs);
    if ( ((rc)) && (dat->addr_fail == MY_PASS) )
-   {
-      if (!(quiet))
-         printf("   failure code:  %i (%s)\n", rc, netcalc_strerror(rc));
-      if ((verbose))
-         printf("\n");
+   {  my_info("   failure code:  %i (%s)\n", rc, netcalc_strerror(rc));
+      my_verbose("\n");
       return(1);
    };
    if ( (!(rc)) && (dat->addr_fail != MY_PASS) )
-   {
-      if (!(quiet))
-         printf("   success code:  %i (%s)\n", rc, netcalc_strerror(rc));
-      if ((verbose))
-         printf("\n");
+   {  my_info("   success code:  %i (%s)\n", rc, netcalc_strerror(rc));
+      my_verbose("\n");
       netcalc_free(net);
       return(1);
    };
-   if ((verbose))
-   {
-      printf("   status:        %s\n", netcalc_strerror(rc));
-      printf("   return code:   %i\n", rc);
-   };
+   my_verbose("   status:        %s\n", netcalc_strerror(rc));
+   my_verbose("   return code:   %i\n", rc);
    if ((rc))
-   {
-      if ((verbose))
-         printf("\n");
+   {  my_verbose("\n");
       return(0);
    };
 
    // check family
    netcalc_get_field(net, NETCALC_FLD_FAMILY, &net_family);
    if ( ((dat_family)) && (net_family != dat_family) )
-   {
-      printf("   family:        %08x\n", net_family);
+   {  printf("   family:        %08x\n", net_family);
       printf("   expected:      %08x\n", dat_family);
       return(1);
    };
-   if ((verbose))
-      printf("   family:        %08x\n", net_family);
+   my_verbose("   family:        %08x\n", net_family);
 
    // check address
    if ((dat_addr))
-   {
-      net_addr = netcalc_ntop(net, NULL, 0, (NETCALC_FLG_NOSUPR | NETCALC_FLG_NOCOMPR) );
+   {  net_addr = netcalc_ntop(net, NULL, 0, (NETCALC_FLG_NOSUPR | NETCALC_FLG_NOCOMPR) );
       if ((strcmp(dat_addr, net_addr)))
       {
          printf("   address:       %s\n", net_addr);
          printf("   expected:      %s\n", dat_addr);
          return(1);
       };
-      if ((verbose))
-         printf("   address:       %s\n", net_addr);
+      my_verbose("   address:       %s\n", net_addr);
    };
 
    // check port
    netcalc_get_field(net, NETCALC_FLD_PORT, &net_port);
    if (net_port != dat_port)
-   {
-      printf("   port:          %i\n", net_port);
+   {  printf("   port:          %i\n", net_port);
       printf("   expected:      %i\n", dat_port);
       return(1);
    };
-   if ((verbose))
-      printf("   port:          %i\n", net_port);
+   my_verbose("   port:          %i\n", net_port);
 
    // check cidr
    netcalc_get_field(net, NETCALC_FLD_CIDR, &net_cidr);
    if (net_cidr != dat_cidr)
-   {
-      printf("   cidr:          %i\n", net_cidr);
+   {  printf("   cidr:          %i\n", net_cidr);
       printf("   expected:      %i\n", dat_cidr);
       return(1);
    };
-   if ((verbose))
-      printf("   cidr:          %i\n", net_cidr);
+   my_verbose("   cidr:          %i\n", net_cidr);
 
    // check scope
    net_iface = NULL;
    netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME, &net_iface);
-   if (  ( ((net_iface)) && (!(dat_iface)) ) ||
-         ( (!(net_iface)) && ((dat_iface)) ) )
-   {
-      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
+   if (  ( ((net_iface)) && (!(dat_iface)) ) || ( (!(net_iface)) && ((dat_iface)) ) )
+   {  printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
       printf("   expected:      %s\n", (((dat_iface)) ? dat_iface : "(NULL)") );
       return(1);
    };
    if ( ((net_iface)) && ((dat_iface)) && ((strcmp(net_iface, dat_iface))) )
-   {
-      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
+   {  printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
       printf("   expected:      %s\n", (((dat_iface)) ? dat_iface : "(NULL)") );
       return(1);
    };
-   if ((verbose))
-      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
+   my_verbose("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
 
    netcalc_free(net);
 
-   if ((verbose))
-         printf("\n");
+   my_verbose("\n");
 
    return(0);
+}
+
+
+void
+my_verbose(
+         const char *                  fmt,
+         ... )
+{
+   va_list  args;
+   if (!(verbose))
+      return;
+   va_start(args, fmt);
+   vprintf(fmt, args);
+   va_end(args);
+   return;
 }
 
 
