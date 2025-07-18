@@ -218,6 +218,8 @@ my_test(
    int               dat_port;
    char *            net_iface;
    const char *      dat_iface;
+   const char *      net_addr;
+   const char *      dat_addr;
 
    net = NULL;
 
@@ -225,6 +227,7 @@ my_test(
    dat_family     = (int)(dat->addr_flgs & NETCALC_AF);
    dat_port       = (int)dat->addr_port;
    dat_iface      = dat->addr_ip_iface;
+   dat_addr       = dat->addr_ip;
 
    if (!(quiet))
       printf("checking: \"%s\" (should %s) ...\n", dat->addr_str, ( ((dat->addr_fail)) ? "fail" : "pass" ) );
@@ -269,6 +272,20 @@ my_test(
    };
    if ((verbose))
       printf("   family:        %08x\n", net_family);
+
+   // check address
+   if ((dat_addr))
+   {
+      net_addr = netcalc_ntop(net, NULL, 0, (NETCALC_FLG_NOSUPR | NETCALC_FLG_NOCOMPR) );
+      if ((strcmp(dat_addr, net_addr)))
+      {
+         printf("   address:       %s\n", net_addr);
+         printf("   expected:      %s\n", dat_addr);
+         return(1);
+      };
+      if ((verbose))
+         printf("   address:       %s\n", net_addr);
+   };
 
    // check port
    netcalc_get_field(net, NETCALC_FLD_PORT, &net_port);
