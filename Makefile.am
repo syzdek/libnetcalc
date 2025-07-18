@@ -88,7 +88,8 @@ pkgdata_DATA				=
 sbin_SCRIPTS				=
 sbin_PROGRAMS				=
 mod_LTLIBRARIES				=
-EXTRA_PROGRAMS				= src/netcalc-dmstools \
+EXTRA_PROGRAMS				= src/netcalc \
+					  src/netcalc-dmstools \
 					  tests/test-initialize
 EXTRA					=
 
@@ -133,6 +134,9 @@ if ENABLE_LIBRARY_LA
    include_HEADERS 			+= include/netcalc.h
    lib_LTLIBRARIES 			+= lib/libnetcalc.la
 endif
+if ENABLE_UTILITY
+   bin_PROGRAMS				+= src/netcalc
+endif
 
 
 # macros for lib/libnetcalc.a
@@ -156,6 +160,16 @@ lib_libnetcalc_la_LDFLAGS		= -rpath'$(libdir)' \
 					  $(AM_LDFLAGS) \
 					  -export-symbols $(srcdir)/lib/libnetcalc/libnetcalc.sym
 lib_libnetcalc_la_SOURCES		= $(lib_libnetcalc_a_SOURCES)
+
+
+# macros for src/netcalc
+src_netcalc_DEPENDENCIES		= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+src_netcalc_CPPFLAGS			= -DPROGRAM_NAME="\"netcalc\"" $(AM_CPPFLAGS)
+src_netcalc_LDADD			= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+src_netcalc_SOURCES			= src/netcalc-utility.h \
+					  src/netcalc.c \
+					  src/widget-debug.c
 
 
 # macros for src/netcalc-dmstools
