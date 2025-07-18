@@ -317,6 +317,22 @@ static uint32_t _netcalc_dflt_inet6_flags    = NETCALC_AF_INET6
 // MARK: - Functions
 
 int
+netcalc_dflt_flags(
+         int                           family )
+{
+   family &= NETCALC_AF;
+   switch(family)
+   {  case NETCALC_AF_EUI48: return(_netcalc_dflt_eui48_flags);
+      case NETCALC_AF_EUI64: return(_netcalc_dflt_eui64_flags);
+      case NETCALC_AF_INET:  return(_netcalc_dflt_inet_flags);
+      case NETCALC_AF_INET6: return(_netcalc_dflt_inet6_flags);
+      default: break;
+   };
+   return(0);
+}
+
+
+int
 netcalc_dup(
          netcalc_net_t **              netp,
          const netcalc_net_t *         src )
