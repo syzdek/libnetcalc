@@ -44,6 +44,7 @@
 #include <assert.h>
 #include <getopt.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <netcalc.h>
 
@@ -188,8 +189,8 @@ main(
    } else
    {
       dat.addr_flgs  = family;
-      dat.addr_port  = MY_NOPORT;
-      dat.addr_cidr  = MY_NOCIDR;
+      dat.addr_port  = 0;
+      dat.addr_cidr  = 0;
       dat.addr_fail  = 0;
       for(pos = optind; (pos < argc); pos++)
       {
@@ -215,15 +216,19 @@ my_test(
    int               dat_cidr;
    int               dat_family;
    int               dat_port;
+   char *            net_iface;
+   const char *      dat_iface;
 
    net = NULL;
 
    dat_cidr       = (int)dat->addr_cidr;
    dat_family     = (int)(dat->addr_flgs & NETCALC_AF);
    dat_port       = (int)dat->addr_port;
+   dat_iface      = dat->addr_ip_iface;
 
    if (!(quiet))
       printf("checking: \"%s\" (should %s) ...\n", dat->addr_str, ( ((dat->addr_fail)) ? "fail" : "pass" ) );
+
    rc = netcalc_initialize(&net, dat->addr_str, dat->addr_flgs);
    if ( ((rc)) && (dat->addr_fail == MY_PASS) )
    {
@@ -244,8 +249,8 @@ my_test(
    };
    if ((verbose))
    {
-         printf("   status:        %s\n", netcalc_strerror(rc));
-         printf("   return code:   %i\n", rc);
+      printf("   status:        %s\n", netcalc_strerror(rc));
+      printf("   return code:   %i\n", rc);
    };
    if ((rc))
    {
@@ -258,40 +263,53 @@ my_test(
    netcalc_get_field(net, NETCALC_FLD_FAMILY, &net_family);
    if ( ((dat_family)) && (net_family != dat_family) )
    {
-         printf("   family:        %08x\n", net_family);
-         printf("   expected:      %08x\n", dat_family);
-         return(1);
+      printf("   family:        %08x\n", net_family);
+      printf("   expected:      %08x\n", dat_family);
+      return(1);
    };
    if ((verbose))
       printf("   family:        %08x\n", net_family);
 
    // check port
-   if (dat_port != MY_NOPORT)
+   netcalc_get_field(net, NETCALC_FLD_PORT, &net_port);
+   if (net_port != dat_port)
    {
-      netcalc_get_field(net, NETCALC_FLD_PORT, &net_port);
-      if (net_port != dat_port)
-      {
-            printf("   port:          %i\n", net_port);
-            printf("   expected:      %i\n", dat_port);
-            return(1);
-      };
-      if ((verbose))
-         printf("   port:          %08x\n", net_port);
+      printf("   port:          %i\n", net_port);
+      printf("   expected:      %i\n", dat_port);
+      return(1);
    };
+   if ((verbose))
+      printf("   port:          %i\n", net_port);
 
    // check cidr
-   if (dat_cidr != MY_NOCIDR)
+   netcalc_get_field(net, NETCALC_FLD_CIDR, &net_cidr);
+   if (net_cidr != dat_cidr)
    {
-      netcalc_get_field(net, NETCALC_FLD_CIDR, &net_cidr);
-      if (net_cidr != dat_cidr)
-      {
-            printf("   cidr:          %i\n", net_cidr);
-            printf("   expected:      %i\n", dat_cidr);
-            return(1);
-      };
-      if ((verbose))
-         printf("   cidr:          %08x\n", net_cidr);
+      printf("   cidr:          %i\n", net_cidr);
+      printf("   expected:      %i\n", dat_cidr);
+      return(1);
    };
+   if ((verbose))
+      printf("   cidr:          %i\n", net_cidr);
+
+   // check scope
+   net_iface = NULL;
+   netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME, &net_iface);
+   if (  ( ((net_iface)) && (!(dat_iface)) ) ||
+         ( (!(net_iface)) && ((dat_iface)) ) )
+   {
+      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
+      printf("   expected:      %s\n", (((dat_iface)) ? dat_iface : "(NULL)") );
+      return(1);
+   };
+   if ( ((net_iface)) && ((dat_iface)) && ((strcmp(net_iface, dat_iface))) )
+   {
+      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
+      printf("   expected:      %s\n", (((dat_iface)) ? dat_iface : "(NULL)") );
+      return(1);
+   };
+   if ((verbose))
+      printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
 
    netcalc_free(net);
 

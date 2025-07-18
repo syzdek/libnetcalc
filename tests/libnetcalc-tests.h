@@ -77,12 +77,6 @@
 #define MY_FAIL      1
 #define MY_PASS      0
 
-#undef MY_NOPORT
-#define MY_NOPORT    0xffff
-
-#undef MY_NOCIDR
-#define MY_NOCIDR    0xff
-
 
 /////////////////
 //             //
@@ -94,7 +88,18 @@
 typedef struct _test_data testdata_t;
 struct _test_data
 {
-   const char *      addr_str;
+   const char *      addr_str;            // test string
+   const char *      addr_dflt;           // default notation
+   const char *      addr_eui_dot;        // EUI using dot delimiters
+   const char *      addr_eui_colon;      // EUI using colon delimiters
+   const char *      addr_eui_dash;       // EUI using dash delimiters
+   const char *      addr_eui_none;       // EUI without delimiters
+   const char *      addr_ip;             // full IP address
+   const char *      addr_ip_suppress;    // IP address with zero suppression
+   const char *      addr_ip_compress;    // IP address with zero compression
+   const char *      addr_ip_network;     // network address with CIDR
+   const char *      addr_ip_broadcast;   // broadcast address without CIDR
+   const char *      addr_ip_iface;       // interface name
    uint32_t          addr_flgs;
    uint16_t          addr_port;
    uint8_t           addr_cidr;
