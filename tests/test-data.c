@@ -504,7 +504,7 @@ testdata_t test_data[] =
       .addr_fail           = MY_PASS
    },
    {  .addr_str            = "::1/128",
-      .addr_dflt           = "::1/128",
+      .addr_dflt           = "::1",
       .addr_ip             = "0000:0000:0000:0000:0000:0000:0000:0001",
       .addr_ip_suppress    = "0:0:0:0:0:0:0:1",
       .addr_ip_compress    = "::0001",
