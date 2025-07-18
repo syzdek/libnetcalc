@@ -73,7 +73,7 @@ netcalc_parse_eui(
 static int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        str );
+         char *                        address );
 
 
 static int
@@ -629,21 +629,37 @@ netcalc_parse_eui(
 int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        str )
+         char *                        address )
 {
-   size_t         pos;
-   size_t         digit;
-   size_t         byte;
-   int            cidr;
-   unsigned       dec;
-   uint8_t *      addr8;
-   char *         ptr;
+   size_t            pos;
+   size_t            digit;
+   size_t            byte;
+   int               cidr;
+   int               port;
+   unsigned          dec;
+   uint8_t *         addr8;
+   char *            ptr;
+   netcalc_addr_t    net_addr;
+   char              str[NETCALC_ADDRESS_LENGTH];
 
-   assert(n    != NULL);
-   assert(str  != NULL);
+   assert(n       != NULL);
+   assert(address != NULL);
 
-   addr8 = n->net_addr.netcalc_addr.netcalc_addr8;
+   addr8 = net_addr.netcalc_addr.netcalc_addr8;
    cidr  = -1;
+   port  = -1;
+   strncpy(str, address, sizeof(str));
+
+   // check for port
+   if ((ptr = strchr(str, ':')) != NULL)
+   {
+      ptr[0] = '\0';
+      if (ptr[1] == '\0')
+         return(NETCALC_EBADADDR);
+      port = (int)strtoul(&ptr[1], &ptr, 10);
+      if ( (ptr[0] != '\0') || (port > 0xffff) )
+         return(NETCALC_EBADADDR);
+   };
 
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
@@ -655,7 +671,6 @@ netcalc_parse_inet(
       if ( (ptr[0] != '\0') || (cidr > 32) )
          return(NETCALC_EBADADDR);
       cidr += 96;
-      n->net_cidr = (uint8_t)cidr;
    };
 
    for(pos = 0, digit = 0, byte = 0, dec = 0; ((str[pos])); pos++)
@@ -682,20 +697,6 @@ netcalc_parse_inet(
          byte++;
          break;
 
-         case ':':
-         if (cidr != -1)
-            return(NETCALC_EBADADDR);
-         if ( (byte != 3) || (digit == 0) )
-            return(NETCALC_EBADADDR);
-         addr8[12+byte] = dec;
-         dec            = (unsigned)strtoul(&str[pos+1], &ptr, 10);
-         if ( (ptr[0] != '\0') || (dec > 0xffff) )
-            return(NETCALC_EBADADDR);
-         n->net_port   = (uint16_t)dec;
-         n->net_flags &= ~NETCALC_AF;
-         n->net_flags |= NETCALC_AF_INET;
-         return(0);
-
          default:
          return(NETCALC_EBADADDR);
       };
@@ -708,6 +709,10 @@ netcalc_parse_inet(
       return(NETCALC_EBADADDR);
 
    addr8[12+byte] = dec;
+
+   memcpy(&n->net_addr.netcalc_addr.netcalc_addr8[15], &net_addr.netcalc_addr.netcalc_addr8[15], sizeof(net_addr)-16);
+   n->net_cidr = (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
+   n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
    return(0);
 }
