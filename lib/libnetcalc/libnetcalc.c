@@ -1081,6 +1081,7 @@ netcalc_parse_inet6(
       return(NETCALC_EBADADDR);
 
    memset(&net_addr, 0, sizeof(netcalc_addr_t));
+   memset(scope_name, 0, sizeof(scope_name));
    zero        = 0;
    addr8       = net_addr.addr8;
    str         = sbuff;
