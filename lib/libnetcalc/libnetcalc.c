@@ -316,18 +316,6 @@ static uint32_t _netcalc_dflt_inet6_flags    = NETCALC_AF_INET6
 /////////////////
 // MARK: - Functions
 
-netcalc_net_t *
-netcalc_alloc(
-         void )
-{
-   netcalc_net_t *   net;
-   if ((net = malloc(sizeof(netcalc_net_t))) == NULL)
-      return(NULL);
-   memset(net, 0, sizeof(netcalc_net_t));
-   return(net);
-}
-
-
 int
 netcalc_dup(
          netcalc_net_t **              netp,

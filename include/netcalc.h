@@ -157,11 +157,6 @@ typedef struct _libnetcalc_network     netcalc_net_t;
 //////////////////
 // MARK: - Prototypes
 
-_NETCALC_F netcalc_net_t *
-netcalc_alloc(
-         void );
-
-
 _NETCALC_F int
 netcalc_dup(
          netcalc_net_t **              netp,
