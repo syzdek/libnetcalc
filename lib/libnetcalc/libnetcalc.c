@@ -501,20 +501,22 @@ netcalc_initialize(
 int
 netcalc_parse_eui(
          netcalc_net_t *               n,
-         char *                        str,
+         char *                        address,
          int                           family )
 {
-   size_t         pos;
-   size_t         digit;
-   size_t         byte;
-   size_t         byte_max;
-   size_t         off;
-   unsigned       hex;
-   uint8_t *      addr8;
-   char           delim;
+   size_t            pos;
+   size_t            digit;
+   size_t            byte;
+   size_t            byte_max;
+   size_t            off;
+   unsigned          hex;
+   uint8_t *         addr8;
+   char              delim;
+   char              str[NETCALC_ADDRESS_LENGTH];
+   netcalc_addr_t    net_addr;
 
-   assert(n    != NULL);
-   assert(str  != NULL);
+   assert(n       != NULL);
+   assert(address != NULL);
 
    switch(family)
    {
@@ -524,7 +526,8 @@ netcalc_parse_eui(
    }
 
    delim = 0;
-   addr8 = n->net_addr.netcalc_addr.netcalc_addr8;
+   addr8 = net_addr.netcalc_addr.netcalc_addr8;
+   strncpy(str, address, sizeof(str));
 
    for(pos = 0, digit = 0, byte = 0, hex = 0; ((str[pos])); pos++)
    {
@@ -621,6 +624,10 @@ netcalc_parse_eui(
       default:
          return(NETCALC_EBADADDR);
    };
+
+   memcpy(&n->net_addr,       &net_addr,  sizeof(net_addr));
+   n->net_cidr = 0;
+   n->net_port = 0;
 
    return(0);
 }
