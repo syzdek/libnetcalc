@@ -335,61 +335,67 @@ netcalc_get_field(
    int      val_i;
    char *   str;
    void *   ptr;
+   size_t   off;
 
    assert( net      != NULL );
    assert( outvalue != NULL );
 
    family = (int)(net->net_flags & NETCALC_AF);
 
+   switch(family)
+   {  case NETCALC_AF_EUI48:  off = 10; break;
+      case NETCALC_AF_EUI64:  off =  8; break;
+      case NETCALC_AF_INET:   off = 12; break;
+      default:                off =  0; break;
+   };
+
    switch(option)
    {
       case NETCALC_FLD_ADDR:
-      if ((ptr = malloc(sizeof(netcalc_addr_t))) == NULL)
-         return(NETCALC_ENOMEM);
-      memcpy(ptr, &net->net_addr, sizeof(netcalc_addr_t));
-      *((netcalc_addr_t **)outvalue) = (netcalc_addr_t *)ptr;
-      return(NETCALC_SUCCESS);
+         if ((ptr = malloc(sizeof(net->net_addr.netcalc_addr.netcalc_addr8))) == NULL)
+            return(NETCALC_ENOMEM);
+         memcpy(ptr, &net->net_addr.netcalc_addr.netcalc_addr8[off], (sizeof(netcalc_addr_t)-off) );
+         *((uint8_t **)outvalue) = (uint8_t *)ptr;
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_ADDRLEN:
-      *((int *)outvalue) = (int)sizeof(netcalc_addr_t);
-      return(NETCALC_SUCCESS);
+         *((int *)outvalue) = (int)(sizeof(netcalc_addr_t)-off);
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_CIDR:
-      if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-         return(NETCALC_EFIELD);
-      val_i = (int)net->net_cidr;
-      if (family == NETCALC_AF_INET)
-         val_i = (val_i <= 96) ? 0 : (val_i - 96);
-      *((int *)outvalue) = val_i;
-      return(NETCALC_SUCCESS);
+         val_i = (int)net->net_cidr;
+         switch(family)
+         {  case  NETCALC_AF_INET:  val_i = val_i - 96; break;
+            default: break;
+         };
+         *((int *)outvalue) = val_i;
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_FAMILY:
-      *((int *)outvalue) = family;
-      return(NETCALC_SUCCESS);
+         *((int *)outvalue) = family;
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_FLAGS:
-      *((int *)outvalue) = (int)net->net_flags;
-      return(NETCALC_SUCCESS);
+         *((int *)outvalue) = (int)net->net_flags;
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_PORT:
-      if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-         return(NETCALC_EFIELD);
-      *((int *)outvalue) = (int)net->net_port;
-      return(NETCALC_SUCCESS);
+         *((int *)outvalue) = (int)net->net_port;
+         return(NETCALC_SUCCESS);
 
       case NETCALC_FLD_SCOPE_NAME:
-      if (!(net->net_scope_name))
-      {
-         *((char **)outvalue) = NULL;
+         if (!(net->net_scope_name))
+         {
+            *((char **)outvalue) = NULL;
+            return(NETCALC_SUCCESS);
+         };
+         if ((str = strdup(net->net_scope_name)) == NULL)
+            return(NETCALC_ENOMEM);
+         *((char **)outvalue) = str;
          return(NETCALC_SUCCESS);
-      };
-      if ((str = strdup(net->net_scope_name)) == NULL)
-         return(NETCALC_ENOMEM);
-      *((char **)outvalue) = str;
-      return(NETCALC_SUCCESS);
 
       default:
-      break;
+         break;
    };
 
    return(NETCALC_EFIELD);
