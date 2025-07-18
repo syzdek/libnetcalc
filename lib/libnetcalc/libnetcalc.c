@@ -781,9 +781,9 @@ netcalc_ntop_inet6(
       };
       if ( (((dat8[idx+0] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
-      if ( (((dat8[idx+0] >> 0) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
+      if ( ((dat8[idx+0])) || ((flags & NETCALC_FLG_NOSUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 0) & 0x0f];
-      if ( (((dat8[idx+1] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
+      if ( ((dat8[idx+0])) || (((dat8[idx+1] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
          dst[off++] = map[(dat8[idx+1] >> 4) & 0x0f];
       dst[off++] = map[(dat8[idx+1] >> 0) & 0x0f];
    };
