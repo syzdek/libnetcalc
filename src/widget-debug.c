@@ -150,8 +150,8 @@ netcalc_widget_debug(
       netcalc_get_field(net, NETCALC_FLD_FLAGS,  &ival);
       netcalc_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
 
-      //str = netcalc_ntop(net, NULL, 0, 0);
-      //netcalc_widget_debug_print("Address",  str);
+      str = netcalc_ntop(net, NULL, 0, cnf->flags);
+      netcalc_widget_debug_print("Address",  str);
 
       netcalc_get_field(net, NETCALC_FLD_CIDR,        &ival);
       netcalc_widget_debug_print_int("Prefix length", ival);

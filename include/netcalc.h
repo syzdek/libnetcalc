@@ -188,6 +188,14 @@ netcalc_initialize(
 
 
 _NETCALC_F const char *
+netcalc_ntop(
+         netcalc_net_t *               net,
+         char *                        dst,
+         size_t                        size,
+         int                           flags );
+
+
+_NETCALC_F const char *
 netcalc_strerror(
          int                           errnum );
 
