@@ -333,6 +333,7 @@ netcalc_get_field(
 {
    int      family;
    int      val_i;
+   char *   str;
    void *   ptr;
 
    assert( net      != NULL );
@@ -374,6 +375,17 @@ netcalc_get_field(
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
          return(NETCALC_EFIELD);
       *((int *)outvalue) = (int)net->net_port;
+      return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_SCOPE_NAME:
+      if (!(net->net_scope_name))
+      {
+         *((char **)outvalue) = NULL;
+         return(NETCALC_SUCCESS);
+      };
+      if ((str = strdup(net->net_scope_name)) == NULL)
+         return(NETCALC_ENOMEM);
+      *((char **)outvalue) = str;
       return(NETCALC_SUCCESS);
 
       default:
