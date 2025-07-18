@@ -58,14 +58,13 @@
 // MARK: - Definitions
 
 #undef   NETCALC_SHORT_OPT
-#define  NETCALC_SHORT_OPT "hqVvXx"
+#define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FORMAT
-#define  NETCALC_SHORT_FORMAT "46CcEeSs"
+#define  NETCALC_SHORT_FORMAT "012346EeMmSsZz"
 
 #undef   NETCALC_LONG_OPT
 #define  NETCALC_LONG_OPT \
-   { "debug",           optional_argument,   NULL, 'D' }, \
    { "help",            no_argument,         NULL, 'h' }, \
    { "quiet",           no_argument,         NULL, 'q' }, \
    { "silent",          no_argument,         NULL, 'q' }, \
@@ -78,7 +77,11 @@
    { "ipv4",            no_argument,         NULL, '4' }, \
    { "ipv6",            no_argument,         NULL, '6' }, \
    { "eui48",           no_argument,         NULL, 'e' }, \
-   { "eui64",           no_argument,         NULL, 'E' }
+   { "mac",             no_argument,         NULL, 'e' }, \
+   { "colon",           no_argument,         NULL, '0' }, \
+   { "dash",            no_argument,         NULL, '1' }, \
+   { "dot",             no_argument,         NULL, '2' }, \
+   { "no-delimiter",    no_argument,         NULL, '3' }
 
 
 //////////////
@@ -333,6 +336,21 @@ netcalc_arguments(
          case 0:        /* long options toggles */
          break;
 
+         case '0':
+         case '1':
+         case '2':
+         case '3':
+            if ((cnf->flags & (NETCALC_FLG_COLON | NETCALC_FLG_DASH | NETCALC_FLG_DOT | NETCALC_FLG_NODELIM)))
+            {  fprintf(stderr, "%s: incompatible options `--colon', `--dash', `--dot' and `--no-delimiter'\n", netcalc_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+               return(1);
+            }
+            if (c == '0') cnf->flags |= NETCALC_FLG_COLON;
+            if (c == '1') cnf->flags |= NETCALC_FLG_DASH;
+            if (c == '2') cnf->flags |= NETCALC_FLG_DOT;
+            if (c == '3') cnf->flags |= NETCALC_FLG_NODELIM;
+            break;
+
          case '4':
             switch(cnf->flags & NETCALC_AF)
             {  case 0:                 str = NULL; break;
@@ -414,6 +432,26 @@ netcalc_arguments(
             };
             break;
 
+         case 'M':
+         case 'm':
+            if ((cnf->flags & (NETCALC_FLG_V4MAPPED | NETCALC_FLG_NOV4MAPPED)))
+            {  fprintf(stderr, "%s: incompatible options `-M' and `-m'\n", netcalc_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+               return(1);
+            }
+            cnf->flags |= (c == 'M') ? NETCALC_FLG_NOV4MAPPED : NETCALC_FLG_V4MAPPED;
+            break;
+
+         case 'S':
+         case 's':
+            if ((cnf->flags & (NETCALC_FLG_SUPR | NETCALC_FLG_NOSUPR)))
+            {  fprintf(stderr, "%s: incompatible options `-S' and `-s'\n", netcalc_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+               return(1);
+            }
+            cnf->flags |= (c == 'S') ? NETCALC_FLG_NOSUPR : NETCALC_FLG_SUPR;
+            break;
+
          case 'V':
             netcalc_widget_version(cnf);
             return(-1);
@@ -428,8 +466,14 @@ netcalc_arguments(
             };
             break;
 
-         case 'x':
-            cnf->ip_expand++;
+         case 'Z':
+         case 'z':
+            if ((cnf->flags & (NETCALC_FLG_COMPR | NETCALC_FLG_NOCOMPR)))
+            {  fprintf(stderr, "%s: incompatible options `-Z' and `-z'\n", netcalc_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+               return(1);
+            }
+            cnf->flags |= (c == 'Z') ? NETCALC_FLG_NOCOMPR : NETCALC_FLG_COMPR;
             break;
 
          case '?':
@@ -534,16 +578,21 @@ netcalc_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
-   if ((strchr(short_opt, '6'))) printf("  -C                        display without zero compression\n");
-   if ((strchr(short_opt, '6'))) printf("  -c                        display with zero compression\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
-   if ((strchr(short_opt, '6'))) printf("  -S                        display without zero suppression\n");
-   if ((strchr(short_opt, '6'))) printf("  -s                        display with zero suppression\n");
+   if ((strchr(short_opt, 'M'))) printf("  -M                        display without IPv4-mapped IPv6 address\n");
+   if ((strchr(short_opt, 'm'))) printf("  -m                        display with IPv4-mapped IPv6 address\n");
+   if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
+   if ((strchr(short_opt, 's'))) printf("  -s                        display with zero suppression\n");
    if ((strchr(short_opt, 'V'))) printf("  -V, --version             print version number and exit\n");
    if ((strchr(short_opt, 'v'))) printf("  -v, --verbose             print verbose messages\n");
+   if ((strchr(short_opt, 'Z'))) printf("  -Z                        display without zero compression\n");
+   if ((strchr(short_opt, 'z'))) printf("  -z                        display with zero compression\n");
+   if ((strchr(short_opt, '0'))) printf("  --colon                   display using colon delimiters\n");
+   if ((strchr(short_opt, '1'))) printf("  --dash                    display using dash delimiters\n");
+   if ((strchr(short_opt, '2'))) printf("  --dot                     display using dot delimiters\n");
    if (!(cnf->widget))
    {
       printf("WIDGETS:\n");
