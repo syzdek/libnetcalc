@@ -64,15 +64,10 @@
 // MARK: - Prototypes
 
 static int
-netcalc_parse_eui48(
+netcalc_parse_eui(
          netcalc_net_t *               n,
-         char *                        str );
-
-
-static int
-netcalc_parse_eui64(
-         netcalc_net_t *               n,
-         char *                        str );
+         char *                        str,
+         int                           family );
 
 
 static int
@@ -397,9 +392,11 @@ netcalc_initialize(
    //    EUI48:   xx-xx-xx-xx-xx-xx
    //             xx:xx:xx:xx:xx:xx
    //             xxxx.xxxx.xxxx
+   //             xxxxxxxxxxxx
    //    EUI48:   xx-xx-xx-xx-xx-xx-xx-xx
    //             xx:xx:xx:xx:xx:xx:xx:xx
    //             xxxx.xxxx.xxxx.xxxx
+   //             xxxxxxxxxxxxxxxx
    //    INET:    ddd.ddd.ddd.ddd
    //             ddd.ddd.ddd.ddd/cc
    //             ddd.ddd.ddd.ddd:ppppp
@@ -419,9 +416,9 @@ netcalc_initialize(
    //    * 'ppppp' can be a decimal value between 0 and 65535
    //    * IPv6 zero compression is supported, but not displayed.
    //
-   if ( (addrlen != 14) && (addrlen != 17) )
+   if ( (addrlen != 12) && (addrlen != 14) && (addrlen != 17) )
       nbuff.net_flags &= ~NETCALC_AF_EUI48;
-   if ( (addrlen != 23) && (addrlen != 19) )
+   if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
       nbuff.net_flags &= ~NETCALC_AF_EUI64;
    if ( (addrlen < 7) || (addrlen > 21) )
       nbuff.net_flags &= ~NETCALC_AF_INET;
@@ -433,13 +430,13 @@ netcalc_initialize(
    rc = NETCALC_SUCCESS;
    if ((nbuff.net_flags & NETCALC_AF_EUI48))
    {
-      nbuff.net_flags   = ((rc = netcalc_parse_eui48(&nbuff, str)) == NETCALC_SUCCESS)
+      nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
                         : (nbuff.net_flags & ~NETCALC_AF_EUI48);
    };
    if ((nbuff.net_flags & NETCALC_AF_EUI64))
    {
-      nbuff.net_flags   = ((rc = netcalc_parse_eui64(&nbuff, str)) == NETCALC_SUCCESS)
+      nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
                         : (nbuff.net_flags & ~NETCALC_AF_EUI64);
    };
@@ -455,8 +452,16 @@ netcalc_initialize(
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
                         : (nbuff.net_flags & ~NETCALC_AF_INET6 );
    };
-   if (!(nbuff.net_flags & NETCALC_AF))
-      return( ((rc)) ? rc : NETCALC_EBADADDR );
+   if ((rc))
+      return(rc);
+   switch(nbuff.net_flags & NETCALC_AF)
+   {
+      case NETCALC_AF_EUI48:  break;
+      case NETCALC_AF_EUI64:  break;
+      case NETCALC_AF_INET:   break;
+      case NETCALC_AF_INET6:  break;
+      default:                return(NETCALC_EBADADDR);
+   };
 
    // return if result was not requested
    if (netp == NULL)
@@ -486,19 +491,29 @@ netcalc_initialize(
 
 
 int
-netcalc_parse_eui48(
+netcalc_parse_eui(
          netcalc_net_t *               n,
-         char *                        str )
+         char *                        str,
+         int                           family )
 {
    size_t         pos;
    size_t         digit;
    size_t         byte;
+   size_t         byte_max;
+   size_t         off;
    unsigned       hex;
    uint8_t *      addr8;
    char           delim;
 
    assert(n    != NULL);
    assert(str  != NULL);
+
+   switch(family)
+   {
+      case NETCALC_AF_EUI48: off = 10; byte_max = 5; break;
+      case NETCALC_AF_EUI64: off =  8; byte_max = 7; break;
+      default: return(NETCALC_EBADADDR);
+   }
 
    delim = 0;
    addr8 = n->net_addr.netcalc_addr.netcalc_addr8;
@@ -533,139 +548,71 @@ netcalc_parse_eui48(
          case 'F': hex = (hex << 4) + 15; digit++; break;
 
          case '.':
-         if (delim == 0)
-            delim = '.';
-         if ( (digit != 4) || (delim != '.') )
-            return(NETCALC_EBADADDR);
-         addr8[10+byte]  = hex;
-         hex            = 0;
-         digit          = 0;
-         byte++;
-         break;
+            if (delim == 0)
+               delim = '.';
+            if ( (digit != 4) || (delim != '.') )
+               return(NETCALC_EBADADDR);
+            addr8[off+0+byte]  = ((hex >> 8) & 0xff);
+            addr8[off+1+byte]  = ((hex >> 0) & 0xff);
+            hex                = 0;
+            digit              = 0;
+            byte              += 2;
+            break;
 
          case '-':
          case ':':
-         if (delim == 0)
-            delim = str[pos];
-         if ( (digit != 2) || (delim != str[pos]) )
-            return(NETCALC_EBADADDR);
-         addr8[10+byte]  = hex;
-         hex            = 0;
-         digit          = 0;
-         byte++;
-         break;
+            if (delim == 0)
+               delim = str[pos];
+            if ( (digit != 2) || (delim != str[pos]) )
+               return(NETCALC_EBADADDR);
+            addr8[off+byte]   = hex;
+            hex               = 0;
+            digit             = 0;
+            byte++;
+            break;
 
          default:
-         return(NETCALC_EBADADDR);
+            return(NETCALC_EBADADDR);
       };
 
       if ( (digit > 2) && ((delim == ':') || (delim == '-')) )
          return(NETCALC_EBADADDR);
       if (digit > 4)
-         return(NETCALC_EBADADDR);
-      if (byte > 5)
-         return(NETCALC_EBADADDR);
-   };
-
-   if ( (digit != 2) && ((delim == ':') || (delim == '-')) )
-      return(NETCALC_EBADADDR);
-   if ( (digit != 4) && (delim == '.') )
-      return(NETCALC_EBADADDR);
-
-   addr8[10+byte]  = hex;
-
-   return(0);
-}
-
-
-int
-netcalc_parse_eui64(
-         netcalc_net_t *               n,
-         char *                        str )
-{
-   size_t         pos;
-   size_t         digit;
-   size_t         byte;
-   unsigned       hex;
-   uint8_t *      addr8;
-   char           delim;
-
-   assert(n    != NULL);
-   assert(str  != NULL);
-
-   delim = 0;
-   addr8 = n->net_addr.netcalc_addr.netcalc_addr8;
-
-   for(pos = 0, digit = 0, byte = 0, hex = 0; ((str[pos])); pos++)
-   {
-      switch(str[pos])
       {
-         case '0': hex = (hex << 4) +  0; digit++; break;
-         case '1': hex = (hex << 4) +  1; digit++; break;
-         case '2': hex = (hex << 4) +  2; digit++; break;
-         case '3': hex = (hex << 4) +  3; digit++; break;
-         case '4': hex = (hex << 4) +  4; digit++; break;
-         case '5': hex = (hex << 4) +  5; digit++; break;
-         case '6': hex = (hex << 4) +  6; digit++; break;
-         case '7': hex = (hex << 4) +  7; digit++; break;
-         case '8': hex = (hex << 4) +  8; digit++; break;
-         case '9': hex = (hex << 4) +  9; digit++; break;
-
-         case 'a': hex = (hex << 4) + 10; digit++; break;
-         case 'b': hex = (hex << 4) + 11; digit++; break;
-         case 'c': hex = (hex << 4) + 12; digit++; break;
-         case 'd': hex = (hex << 4) + 13; digit++; break;
-         case 'e': hex = (hex << 4) + 14; digit++; break;
-         case 'f': hex = (hex << 4) + 15; digit++; break;
-
-         case 'A': hex = (hex << 4) + 10; digit++; break;
-         case 'B': hex = (hex << 4) + 11; digit++; break;
-         case 'C': hex = (hex << 4) + 12; digit++; break;
-         case 'D': hex = (hex << 4) + 13; digit++; break;
-         case 'E': hex = (hex << 4) + 14; digit++; break;
-         case 'F': hex = (hex << 4) + 15; digit++; break;
-
-         case '.':
          if (delim == 0)
-            delim = '.';
-         if ( (digit != 4) || (delim != '.') )
+            delim = 1;
+         if (delim != 1)
             return(NETCALC_EBADADDR);
-         addr8[8+byte]  = hex;
-         hex            = 0;
-         digit          = 0;
-         byte++;
-         break;
-
-         case '-':
-         case ':':
-         if (delim == 0)
-            delim = str[pos];
-         if ( (digit != 2) || (delim != str[pos]) )
-            return(NETCALC_EBADADDR);
-         addr8[8+byte]  = hex;
-         hex            = 0;
-         digit          = 0;
-         byte++;
-         break;
-
-         default:
-         return(NETCALC_EBADADDR);
+         addr8[off+0+byte]  = ((hex >>  12) & 0xff);
+         addr8[off+1+byte]  = ((hex >>  4) & 0xff);
+         hex                = hex & 0x0f;
+         digit              = 1;
+         byte              += 2;
       };
-
-      if ( (digit > 2) && ((delim == ':') || (delim == '-')) )
-         return(NETCALC_EBADADDR);
-      if (digit > 4)
-         return(NETCALC_EBADADDR);
-      if (byte > 7)
+      if (byte > byte_max)
          return(NETCALC_EBADADDR);
    };
 
-   if ( (digit != 2) && ((delim == ':') || (delim == '-')) )
-      return(NETCALC_EBADADDR);
-   if ( (digit != 4) && (delim == '.') )
-      return(NETCALC_EBADADDR);
+   switch(delim)
+   {
+      case ':':
+      case '-':
+         if (digit != 2)
+            return(NETCALC_EBADADDR);
+         addr8[off+byte] = hex;
+         break;
 
-   addr8[10+byte]  = hex;
+      case 1:
+      case '.':
+         if (digit != 4)
+            return(NETCALC_EBADADDR);
+         addr8[off+0+byte] = ((hex >> 8) & 0xff);
+         addr8[off+1+byte] = ((hex >> 0) & 0xff);
+         break;
+
+      default:
+         return(NETCALC_EBADADDR);
+   };
 
    return(0);
 }
