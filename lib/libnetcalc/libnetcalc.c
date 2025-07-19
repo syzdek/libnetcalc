@@ -724,17 +724,8 @@ netcalc_ntop(
    size  = ((dst)) ? size : sizeof(dst_buffer);
    dst   = ((dst)) ? dst  : dst_buffer;
 
-   // retrieve default flags for family type
-   switch(net->net_flags & NETCALC_AF)
-   {
-      case NETCALC_AF_EUI48:  dflts = _netcalc_dflt_eui48_flags;   break;
-      case NETCALC_AF_EUI64:  dflts = _netcalc_dflt_eui64_flags;   break;
-      case NETCALC_AF_INET:   dflts = _netcalc_dflt_inet_flags;    break;
-      case NETCALC_AF_INET6:  dflts = _netcalc_dflt_inet6_flags;   break;
-      default:                dflts = 0;                           break;
-   };
-
    // set flags
+   dflts = netcalc_dflt_flags(net->net_flags & NETCALC_AF);
    flags = ((flags))
          ? flags
          : net->net_flags;
