@@ -809,16 +809,22 @@ netcalc_ntop_inet6(
    if (!(flags & (NETCALC_FLG_CIDR | NETCALC_FLG_NOCIDR)))
       flags |= (net->net_cidr == 128) ? NETCALC_FLG_NOCIDR : NETCALC_FLG_CIDR;
 
-   // adjusting flags NETCALC_FLG_CIDR
+   // adjusting flags NETCALC_FLG_PORT
    if (!(flags & (NETCALC_FLG_PORT | NETCALC_FLG_NOPORT)))
       flags |= (net->net_port > 0) ? NETCALC_FLG_PORT : NETCALC_FLG_NOPORT;
    if (!(net->net_port))
       flags = (flags & ~NETCALC_FLG_PORT) | NETCALC_FLG_NOPORT;
 
+   // adjusting flags NETCALC_FLG_IFACE
+   if (!(flags & (NETCALC_FLG_IFACE | NETCALC_FLG_NOIFACE)))
+      flags |= ( ((net->net_scope_name)) && ((net->net_scope_name[0])) ) ? NETCALC_FLG_IFACE : NETCALC_FLG_NOIFACE;
+   if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
+      flags = (flags & ~NETCALC_FLG_IFACE) | NETCALC_FLG_NOIFACE;
+
    // determine if brackets are needed
    if ((flags & NETCALC_FLG_PORT))
       bracketed = 1;
-   if ( ((flags & NETCALC_FLG_CIDR)) && ((net->net_scope_name)) && ((net->net_scope_name[0])) )
+   if ( ((flags & NETCALC_FLG_CIDR)) && ((flags & NETCALC_FLG_IFACE)) )
       bracketed = 1;
    if ((bracketed))
       dst[off++] = '[';
@@ -882,7 +888,7 @@ netcalc_ntop_inet6(
    };
 
    // append scope name
-   if ( ((net->net_scope_name)) && ((net->net_scope_name[0])) )
+   if ( ((flags & NETCALC_FLG_IFACE)) )
    {
       dst[off++] = '%';
       for(idx = 0; ((net->net_scope_name[idx])); idx++)
