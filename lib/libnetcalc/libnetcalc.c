@@ -57,9 +57,6 @@
 
 #define NETCALC_DFLT_FLAG(net, dflts, flgs) (((net&flgs)) ? (net&flgs) : (dflts&flgs))
 
-#define NETCALC_SET(flgs, flg)      ( (flgs & ~(flg << 8)) | flg )
-#define NETCALC_UNSET(flgs, flg)    ( (flgs & ~flg) | (flg << 8) )
-
 
 ///////////////////
 //               //

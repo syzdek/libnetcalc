@@ -68,6 +68,10 @@
 #endif
 
 
+#define NETCALC_SET(flgs, flg)      ( (flgs & ~(flg << 8)) | flg )
+#define NETCALC_UNSET(flgs, flg)    ( (flgs & ~flg) | (flg << 8) )
+
+
 ///////////////////
 //               //
 //  Definitions  //
