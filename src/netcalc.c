@@ -200,7 +200,6 @@ static netcalc_widget_t netcalc_widget_map[] =
       .func_usage = &netcalc_widget_null,
    },
 
-/*
    // info widget
    {  .name       = "info",
       .desc       = "display IP address information",
@@ -213,7 +212,6 @@ static netcalc_widget_t netcalc_widget_map[] =
       .func_exec  = &netcalc_widget_info,
       .func_usage = &netcalc_widget_null,
    },
-*/
 
    // version widget
    {  .name       = "version",

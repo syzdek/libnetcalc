@@ -179,7 +179,8 @@ src_netcalc_CPPFLAGS			= -DPROGRAM_NAME="\"netcalc\"" $(AM_CPPFLAGS)
 src_netcalc_LDADD			= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 src_netcalc_SOURCES			= src/netcalc-utility.h \
 					  src/netcalc.c \
-					  src/widget-debug.c
+					  src/widget-debug.c \
+					  src/widget-info.c
 
 
 # macros for src/netcalc-dmstools
