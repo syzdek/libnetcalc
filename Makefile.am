@@ -92,6 +92,7 @@ EXTRA_PROGRAMS				= src/netcalc \
 					  src/netcalc-dmstools \
 					  tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
+					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
 					  tests/test-parse
 EXTRA					=
@@ -102,6 +103,7 @@ AM_INSTALLCHECK_STD_OPTIONS_EXEMPT	=
 BUILT_SOURCES				=
 TESTS					= tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
+					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
 					  tests/test-parse
 XFAIL_TESTS				=
@@ -199,6 +201,15 @@ tests_test_ntop_dflt_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_ntop_dflt_SOURCES		= tests/libnetcalc-tests.h \
 					  tests/test-data.c \
 					  tests/test-ntop-dflt.c
+
+
+# macros for tests/test-ntop-network
+tests_test_ntop_network_DEPENDENCIES	= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_network_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_network_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-data.c \
+					  tests/test-ntop-network.c
 
 
 # macros for tests/test-ntop-suppress
