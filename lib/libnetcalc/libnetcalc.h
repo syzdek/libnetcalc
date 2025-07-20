@@ -70,10 +70,6 @@
 ///////////////////
 // MARK: - Definitions
 
-#define NETCALC_SET                    0x00fff000  // set:
-#define NETCALC_SET_PORT               0x00001000  // set: CIDR is set
-#define NETCALC_SET_CIDR               0x00002000  // set: port is set
-
 
 //////////////////
 //              //

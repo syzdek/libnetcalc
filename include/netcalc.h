@@ -131,6 +131,15 @@
 #define NETCALC_AF_MAC                 NETCALC_AF_EUI48
 
 
+#define NETCALC_TYPE_ADDRESS           0x00
+#define NETCALC_TYPE_NETWORK           0x01
+#define NETCALC_TYPE_BROADCAST         0x02
+#define NETCALC_TYPE_NETMASK           0x03
+#define NETCALC_TYPE_WILDCARD          0x04
+#define NETCALC_TYPE_FIRST             0x05
+#define NETCALC_TYPE_LAST              0x06
+
+
 //////////////////
 //              //
 //  Data Types  //
@@ -192,6 +201,7 @@ netcalc_ntop(
          netcalc_net_t *               net,
          char *                        dst,
          size_t                        size,
+         int                           type,
          int                           flags );
 
 

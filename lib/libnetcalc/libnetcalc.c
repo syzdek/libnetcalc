@@ -57,6 +57,9 @@
 
 #define NETCALC_DFLT_FLAG(net, dflts, flgs) (((net&flgs)) ? (net&flgs) : (dflts&flgs))
 
+#define NETCALC_SET(flgs, flg)      ( (flgs & ~(flg << 8)) | flg )
+#define NETCALC_UNSET(flgs, flg)    ( (flgs & ~flg) | (flg << 8) )
+
 
 ///////////////////
 //               //
@@ -564,9 +567,12 @@ netcalc_ntop(
          netcalc_net_t *               net,
          char *                        dst,
          size_t                        size,
+         int                           type,
          int                           flags )
 {
+   int                     pos;
    uint32_t                dflts;
+   netcalc_net_t           nbuff;
    static char             dst_buffer[NETCALC_ADDRESS_LENGTH];
 
    assert(net != NULL);
@@ -574,6 +580,56 @@ netcalc_ntop(
 
    size  = ((dst)) ? size : sizeof(dst_buffer);
    dst   = ((dst)) ? dst  : dst_buffer;
+
+   nbuff.net_cidr       = net->net_cidr;
+   nbuff.net_flags      = net->net_flags;
+   nbuff.net_port       = net->net_port;
+   nbuff.net_scope_name = net->net_scope_name;
+
+   switch(type)
+   {
+      case NETCALC_TYPE_ADDRESS:
+         memcpy(&nbuff.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
+         break;
+
+      case NETCALC_TYPE_BROADCAST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_NETMASK:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         memcpy(&nbuff.net_addr, &_netcalc_netmasks[net->net_cidr], sizeof(netcalc_addr_t));
+         break;
+
+      case NETCALC_TYPE_NETWORK:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_WILDCARD:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      default:
+         return(NULL);
+   };
+   net = &nbuff;
 
    // set flags
    dflts = netcalc_dflt_flags(net->net_flags & NETCALC_AF);

@@ -150,8 +150,20 @@ netcalc_widget_debug(
       netcalc_get_field(net, NETCALC_FLD_FLAGS,  &ival);
       netcalc_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
 
-      str = netcalc_ntop(net, NULL, 0, cnf->flags);
+      str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       netcalc_widget_debug_print("Address",  str);
+
+      str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_NETMASK, cnf->flags);
+      netcalc_widget_debug_print("Netmask",  str);
+
+      str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
+      netcalc_widget_debug_print("Wildcard",  str);
+
+      str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_NETWORK, cnf->flags);
+      netcalc_widget_debug_print("Network",  str);
+
+      str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_BROADCAST, cnf->flags);
+      netcalc_widget_debug_print("Broadcast",  str);
 
       netcalc_get_field(net, NETCALC_FLD_CIDR,        &ival);
       netcalc_widget_debug_print_int("Prefix length", ival);
