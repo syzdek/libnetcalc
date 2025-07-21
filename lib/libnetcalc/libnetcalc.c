@@ -1419,4 +1419,55 @@ netcalc_strerror(
 }
 
 
+int
+netcalc_superblock(
+         netcalc_net_t **              netp,
+         netcalc_net_t **              nets,
+         size_t                        nel )
+{
+   int                     byte;
+   int                     cidr;
+   int                     matches;
+   size_t                  idx;
+   netcalc_net_t           nbuff;
+   netcalc_addr_t *        ref;
+   const uint8_t *         addr8;
+
+   assert(netp != NULL);
+   assert(nets != NULL);
+   assert(nel  != 0);
+
+   for(idx = 0; (idx < nel); idx++)
+      assert(nets[idx] != NULL);
+
+   matches  = 1;
+   ref      = &nets[0]->net_addr;
+
+   memset(&nbuff, 0, sizeof(netcalc_net_t));
+   nbuff.net_flags = nets[0]->net_flags & NETCALC_AF;
+
+   cidr = 1;
+   while ((cidr < 129) && ((matches)))
+   {
+      addr8 = (const uint8_t *)&_netcalc_netmasks[cidr].addr8;
+      for(idx = 1; ((idx < nel) && ((matches))); idx++)
+      {
+         byte = (cidr-1) / 8;
+         if ( (ref->addr8[byte] & addr8[byte]) != (nets[idx]->net_addr.addr8[byte] & addr8[byte]) )
+            matches = 0;
+         else if (cidr > nets[idx]->net_cidr)
+            matches = 0;
+      };
+      if ((matches))
+         cidr++;
+   };
+   cidr--;
+
+   nbuff.net_cidr = cidr;
+   for(byte = 0; (byte < 16); byte++)
+      nbuff.net_addr.addr8[byte] = nets[0]->net_addr.addr8[byte] & _netcalc_netmasks[cidr].addr8[byte];
+
+   return(netcalc_dup(netp, &nbuff));
+}
+
 /* end of source */

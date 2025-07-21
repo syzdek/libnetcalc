@@ -219,4 +219,11 @@ netcalc_strerror(
          int                           errnum );
 
 
+_NETCALC_F int
+netcalc_superblock(
+         netcalc_net_t **              netp,
+         netcalc_net_t **              nets,
+         size_t                        nel );
+
+
 #endif /* end of header */

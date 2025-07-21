@@ -286,6 +286,9 @@ netcalc_widget_info_ip(
    assert(cnf  != NULL);
    assert(nets != NULL);
 
+   if (cnf->argc > 1)
+      netcalc_superblock(&nets[cnf->argc], nets, cnf->argc);
+
    if ((cnf->verbose))
       return(netcalc_widget_info_ip_verbose(cnf, nets));
 
@@ -317,6 +320,9 @@ netcalc_widget_info_ip(
       netcalc_ntop(nets[idx], recs[idx].netmask,   sizeof(((my_info_t *)0)->netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
       netcalc_ntop(nets[idx], recs[idx].wildcard,  sizeof(((my_info_t *)0)->wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
       netcalc_get_field(nets[idx], NETCALC_FLD_CIDR, &recs[idx].cidr);
+
+      if (idx == cnf->argc)
+         strncpy(recs[idx].address, "SUPERBLOCK", sizeof(((my_info_t *)0)->address));
 
       len_address    = (int)(((int)strlen(recs[idx].address)   > len_address)    ? strlen(recs[idx].address)   : len_address);
       len_broadcast  = (int)(((int)strlen(recs[idx].broadcast) > len_broadcast)  ? strlen(recs[idx].broadcast) : len_broadcast);
