@@ -1435,10 +1435,10 @@ netcalc_strfnet(
    int         modifiers;
    size_t      pos;
    size_t      off;
-   size_t      spacing;
+   size_t      padding;
    size_t      buff_len;
    size_t      buff_pos;
-   size_t      left;
+   size_t      pad_to_right;
    char        buff[NETCALC_ADDRESS_LENGTH];
 
    assert(net != NULL);
@@ -1462,53 +1462,53 @@ netcalc_strfnet(
       if (!(fmt[++pos]))
          continue;
 
-      // applies modifies
+      // applies modifiers
       mflgs       = flags;
       modifiers   = 1;
-      spacing     = 0;
-      left        = 0;
+      padding     = 0;
+      pad_to_right        = 0;
       while ((modifiers))
-      {  switch(fmt[pos++])
-         {  case 'Z': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_COMPR); break;
-            case 'z': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_COMPR); break;
-            case 'M': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_V4MAPPED);  break;
-            case 'm': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_V4MAPPED);  break;
-            case 'S': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_SUPR);  break;
-            case 's': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_SUPR);  break;
+      {  // do not allow multiple padding modifiers
+         if ( ( (fmt[pos] >= '0') && (fmt[pos] <= '9') ) || (fmt[pos] == '-') )
+            if ( ((padding)) || ((pad_to_right)) )
+               return(0);
+
+         // process padding modifiers
+         while ( ( (fmt[pos] >= '0') && (fmt[pos] <= '9') ) || (fmt[pos] == '-') )
+         {
+            if (fmt[pos] == '-') // left adjustment
+            {  if ( ((pad_to_right)) || ((padding)) )
+                  return(0);
+               pad_to_right = 1;
+            } else               // padding size
+            {  padding *= 10;
+               padding += fmt[pos] - '0';
+            };
+            pos++;
+         };
+
+         // process character modifiers
+         switch(fmt[pos])
+         {  case 'Z': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_COMPR);       break;
+            case 'z': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_COMPR);       break;
+            case 'M': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_V4MAPPED);    break;
+            case 'm': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_V4MAPPED);    break;
+            case 'S': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_SUPR);        break;
+            case 's': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_SUPR);        break;
 
             case 'B': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_NODELIM; break;
-            case 'L': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_COLON; break;
-            case 'A': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH; break;
-            case 'O': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DOT; break;
+            case 'L': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_COLON;   break;
+            case 'A': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH;    break;
+            case 'O': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DOT;  break;
 
             default: // applies spacing modifer
-               pos--;
-               if ( ( (fmt[pos] >= '0') && (fmt[pos] <= '9') ) || (fmt[pos] == '-') )
-               {  spacing = 0;
-                  while ((modifiers))
-                  {  switch(fmt[pos++])
-                     {  case '-': left = 1; break;
-                        case '0': spacing *= 10; spacing += 0; break;
-                        case '1': spacing *= 10; spacing += 1; break;
-                        case '2': spacing *= 10; spacing += 2; break;
-                        case '3': spacing *= 10; spacing += 3; break;
-                        case '4': spacing *= 10; spacing += 4; break;
-                        case '5': spacing *= 10; spacing += 5; break;
-                        case '6': spacing *= 10; spacing += 6; break;
-                        case '7': spacing *= 10; spacing += 7; break;
-                        case '8': spacing *= 10; spacing += 8; break;
-                        case '9': spacing *= 10; spacing += 9; break;
-                        default:
-                           pos--;
-                           modifiers = 0;
-                     };
-                  };
-                  modifiers = 1;
-                  continue;
-               };
                modifiers = 0;
                break;
          };
+
+         // move to next modifier
+         if ((modifiers))
+            pos++;
       };
 
       mflgs &= NETCALC_FLG_COMPR | NETCALC_FLG_SUPR | NETCALC_DELIM;
@@ -1612,29 +1612,25 @@ netcalc_strfnet(
             netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_WILDCARD, mflgs);
             break;
 
+         // unknown option
          default:
-            if ((off+1) < maxsize)
-            {  s[off+0] = fmt[pos];
-               s[off+1] = '\0';
-            };
-            off++;
-            continue;
+            return(0);
       };
 
-      // adjust for spacing
+      // apply padding to string
       buff_len = strlen(buff);
-      spacing  = (spacing < (sizeof(buff)-1)) ? spacing : (sizeof(buff)-1);
-      if ( buff_len < spacing )
-      {  if ((left))
-         {  for(buff_pos = buff_len; (buff_pos < spacing); buff_pos++)
+      padding  = (padding < (sizeof(buff)-1)) ? padding : (sizeof(buff)-1);
+      if ( buff_len < padding )
+      {  if ((pad_to_right))
+         {  for(buff_pos = buff_len; (buff_pos < padding); buff_pos++)
                buff[buff_pos] = ' ';
          } else
          {  for(buff_pos = buff_len; (buff_pos > 0); buff_pos--)
-               buff[buff_pos + (spacing - buff_len) - 1] = buff[buff_pos-1];
-            for(buff_pos = (spacing - buff_len); (buff_pos > 0); buff_pos--)
+               buff[buff_pos + (padding - buff_len) - 1] = buff[buff_pos-1];
+            for(buff_pos = (padding - buff_len); (buff_pos > 0); buff_pos--)
                buff[buff_pos-1] = ' ';
          };
-         buff[spacing] = '\0';
+         buff[padding] = '\0';
       };
 
       off = netcalc_strlcat(s, buff, maxsize);
