@@ -35,6 +35,7 @@ netcalc_get_field
 netcalc_initialize
 netcalc_ntop
 netcalc_strerror
+netcalc_strfnet
 netcalc_superblock
 #
 # end of symbol export file

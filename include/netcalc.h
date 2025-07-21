@@ -219,6 +219,15 @@ netcalc_strerror(
          int                           errnum );
 
 
+_NETCALC_F size_t
+netcalc_strfnet(
+         netcalc_net_t *               net,
+         char *                        s,
+         size_t                        maxsize,
+         const char *                  format,
+         int                           flags );
+
+
 _NETCALC_F int
 netcalc_superblock(
          netcalc_net_t **              netp,

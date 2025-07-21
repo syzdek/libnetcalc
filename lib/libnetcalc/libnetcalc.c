@@ -1424,6 +1424,229 @@ netcalc_strerror(
 
 
 size_t
+netcalc_strfnet(
+         netcalc_net_t *               net,
+         char *                        s,
+         size_t                        maxsize,
+         const char *                  fmt,
+         int                           flags )
+{
+   int         mflgs;
+   int         modifiers;
+   size_t      pos;
+   size_t      off;
+   size_t      spacing;
+   size_t      buff_len;
+   size_t      buff_pos;
+   size_t      left;
+   char        buff[NETCALC_ADDRESS_LENGTH];
+
+   assert(net != NULL);
+
+   maxsize = ((s)) ? maxsize : 0;
+   if ((maxsize))
+      s[0] = '\0';
+
+   for(pos = 0, off = 0; ((fmt[pos])); pos++)
+   {
+      // copy non-keywords
+      if (fmt[pos] != '%')
+      {  if ((off+1) < maxsize)
+         {  s[off+0] = fmt[pos];
+            s[off+1] = '\0';
+         };
+         off++;
+         continue;
+      };
+
+      if (!(fmt[++pos]))
+         continue;
+
+      // applies modifies
+      mflgs       = flags;
+      modifiers   = 1;
+      spacing     = 0;
+      left        = 0;
+      while ((modifiers))
+      {  switch(fmt[pos++])
+         {  case 'Z': mflgs = NETCALC_UNSET( flags, NETCALC_FLG_COMPR); break;
+            case 'z': mflgs = NETCALC_SET(   flags, NETCALC_FLG_COMPR); break;
+            case 'S': mflgs = NETCALC_UNSET( flags, NETCALC_FLG_SUPR);  break;
+            case 's': mflgs = NETCALC_SET(   flags, NETCALC_FLG_SUPR);  break;
+
+            case 'B': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_NODELIM; break;
+            case 'L': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_COLON; break;
+            case 'A': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH; break;
+            case 'O': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DOT; break;
+
+            default: // applies spacing modifer
+               pos--;
+               if ( ( (fmt[pos] >= '0') && (fmt[pos] <= '9') ) || (fmt[pos] == '-') )
+               {  spacing = 0;
+                  while ((modifiers))
+                  {  switch(fmt[pos++])
+                     {  case '-': left = 1; break;
+                        case '0': spacing *= 10; spacing += 0; break;
+                        case '1': spacing *= 10; spacing += 1; break;
+                        case '2': spacing *= 10; spacing += 2; break;
+                        case '3': spacing *= 10; spacing += 3; break;
+                        case '4': spacing *= 10; spacing += 4; break;
+                        case '5': spacing *= 10; spacing += 5; break;
+                        case '6': spacing *= 10; spacing += 6; break;
+                        case '7': spacing *= 10; spacing += 7; break;
+                        case '8': spacing *= 10; spacing += 8; break;
+                        case '9': spacing *= 10; spacing += 9; break;
+                        default:
+                           pos--;
+                           modifiers = 0;
+                     };
+                  };
+                  modifiers = 1;
+                  continue;
+               };
+               modifiers = 0;
+               break;
+         };
+      };
+
+      mflgs &= NETCALC_FLG_COMPR | NETCALC_FLG_SUPR | NETCALC_DELIM;
+
+      // process key words
+      switch(fmt[pos])
+      {
+         case '%':
+            buff[0] = '%';
+            buff[1] = '\0';
+            break;
+
+         // copy address without interface, CIDR, or port
+         case 'a':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ADDRESS, mflgs);
+            break;
+
+         // copy broadcast
+         case 'b':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_BROADCAST, mflgs);
+            break;
+
+         // copy CIDR with delimiter
+         case 'c':
+            if (net->net_cidr == 128)
+               continue;
+            snprintf(buff, sizeof(buff), "/%i", (int)net->net_cidr);
+            break;
+
+         // copy CIDR without delimiter
+         case 'C':
+            snprintf(buff, sizeof(buff), "%i", (int)net->net_cidr);
+            break;
+
+         // copy address with default options
+         case 'd':
+            mflgs |= NETCALC_FLG_IFACE | NETCALC_FLG_CIDR | NETCALC_FLG_PORT;
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ADDRESS, mflgs);
+            break;
+
+         // copy family
+         case 'F':
+            snprintf(buff, sizeof(buff), "EUI48");
+            switch(net->net_flags & NETCALC_AF)
+            {  case NETCALC_AF_EUI48: snprintf(buff, sizeof(buff), "EUI48");  break;
+               case NETCALC_AF_EUI64: snprintf(buff, sizeof(buff), "EUI64");  break;
+               case NETCALC_AF_INET:  snprintf(buff, sizeof(buff), "IPv4");   break;
+               case NETCALC_AF_INET6: snprintf(buff, sizeof(buff), "IPv6");   break;
+               default: snprintf(buff, sizeof(buff), "unknown"); break;
+            };
+            break;
+
+         // copy first usable address
+         case 'f':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_FIRST, mflgs);
+            break;
+
+         // copy interface without delimiter
+         case 'I':
+            if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
+               continue;
+            snprintf(buff, sizeof(buff), "%s", net->net_scope_name);
+            break;
+
+         // copy interface with delimiter
+         case 'i':
+            if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
+               continue;
+            snprintf(buff, sizeof(buff), "%%%s", net->net_scope_name);
+            break;
+
+         // copy first usable address
+         case 'l':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_LAST, mflgs);
+            break;
+
+         // copy netmask
+         case 'N':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_NETMASK, mflgs);
+            break;
+
+         // copy network address without interface, CIDR, or port
+         case 'n':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_NETWORK, mflgs);
+            break;
+
+         // copy port without delimiter
+         case 'P':
+            snprintf(buff, sizeof(buff), "%i", (int)net->net_port);
+            break;
+
+         // copy port with delimiter
+         case 'p':
+            if (!(net->net_port))
+               continue;
+            snprintf(buff, sizeof(buff), ":%i", (int)net->net_port);
+            break;
+
+         // copy wildcard
+         case 'W':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_WILDCARD, mflgs);
+            break;
+
+         default:
+            if ((off+1) < maxsize)
+            {  s[off+0] = fmt[pos];
+               s[off+1] = '\0';
+            };
+            off++;
+            continue;
+      };
+
+      // adjust for spacing
+      buff_len = strlen(buff);
+      spacing  = (spacing < (sizeof(buff)-1)) ? spacing : (sizeof(buff)-1);
+      if ( buff_len < spacing )
+      {  if ((left))
+         {  for(buff_pos = buff_len; (buff_pos < spacing); buff_pos++)
+               buff[buff_pos] = ' ';
+         } else
+         {  for(buff_pos = buff_len; (buff_pos > 0); buff_pos--)
+               buff[buff_pos + (spacing - buff_len) - 1] = buff[buff_pos-1];
+            for(buff_pos = (spacing - buff_len); (buff_pos > 0); buff_pos--)
+               buff[buff_pos-1] = ' ';
+         };
+         buff[spacing] = '\0';
+      };
+
+      off = netcalc_strlcat(s, buff, maxsize);
+   };
+
+   // NULL terminate string
+   if ((s))
+      s[ (off < maxsize) ? off : (maxsize - 1) ] = '\0';
+
+   return(off);
+}
+
+
+size_t
 netcalc_strlcat(
          char * restrict               dst,
          const char * restrict         src,
