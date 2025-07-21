@@ -105,12 +105,14 @@
 #define NETCALC_FLG_V4MAPPED           0x00000001  // flag: display IPv6 addresses as IPv4 mapped address
 #define NETCALC_FLG_COMPR              0x00000002  // flag: zero compression
 #define NETCALC_FLG_SUPR               0x00000004  // flag: zero suppression
-#define NETCALC_FLG_CIDR               0x00000008  // flag: append CIDR
-#define NETCALC_FLG_PORT               0x00000010  // flag: append port
-#define NETCALC_FLG_IFACE              0x00000020  // flag: append interface
-//                                     0x00000040  // flag: OPEN
+#define NETCALC_FLG_IFACE              0x00000008  // flag: append interface
+#define NETCALC_FLG_CIDR               0x00000010  // flag: append CIDR
+#define NETCALC_FLG_CIDR_ALWAYS        0x00000020  // flag: always append CIDR
+#define NETCALC_FLG_PORT               0x00000040  // flag: append port
 //                                     0x00000080  // flag: OPEN
-#define NETCALC_FLG_CIDR_ALWAYS        0x00000100  // flag: always append CIDR
+//                                     0x00000080  // flag: OPEN
+//                                     0x00001000  // flag: OPEN
+//                                     0x00002000  // flag: OPEN
 //                                     0x00004000  // flag: OPEN
 //                                     0x00008000  // flag: OPEN
 #define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters
