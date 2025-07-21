@@ -376,6 +376,8 @@ netcalc_widget_info_ip_verbose(
 {
    int                  idx;
    int                  ival;
+   int                  family;
+   int                  cidr;
    int                  flags;
    const char *         str;
    char                 buff[512];
@@ -385,14 +387,16 @@ netcalc_widget_info_ip_verbose(
 
    for(idx = 0; ((nets[idx])); idx++)
    {
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &ival);
+      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
+      netcalc_get_field(nets[idx], NETCALC_FLD_CIDR,     &cidr);
+
       if (idx < cnf->argc)
       {
-         str = (ival == NETCALC_AF_INET) ? "IPv4 String" : "IPv6 String";
+         str = (family == NETCALC_AF_INET) ? "IPv4 String" : "IPv6 String";
          netcalc_widget_info_print(str, cnf->argv[idx]);
       } else
       {
-         printf("%s SUPERBLOCK\n", (ival == NETCALC_AF_INET) ? "IPv4" : "IPv6");
+         printf("%s SUPERBLOCK\n", (family == NETCALC_AF_INET) ? "IPv4" : "IPv6");
       };
 
       flags = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
@@ -418,8 +422,7 @@ netcalc_widget_info_ip_verbose(
       str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
       netcalc_widget_info_print("Wildcard", str);
 
-      netcalc_get_field(nets[idx], NETCALC_FLD_CIDR, &ival);
-      snprintf(buff, sizeof(buff), "%i", ival);
+      snprintf(buff, sizeof(buff), "%i", cidr);
       netcalc_widget_info_print("CIDR", buff);
 
       netcalc_get_field(nets[idx], NETCALC_FLD_PORT, &ival);
@@ -427,6 +430,14 @@ netcalc_widget_info_ip_verbose(
       {
          snprintf(buff, sizeof(buff), "%i", ival);
          netcalc_widget_info_print("Port", buff);
+      };
+
+      if ( ((family == NETCALC_AF_INET6) && (cidr < 128)) || ((family == NETCALC_AF_INET) && (cidr < 32)) )
+      {
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_FIRST, cnf->flags);
+         netcalc_widget_info_print("Usable Range", str);
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_LAST, cnf->flags);
+         netcalc_widget_info_print(NULL, str);
       };
 
       printf("\n");
@@ -443,7 +454,9 @@ netcalc_widget_info_print(
          const char *                  val )
 {
    char  buff[512];
-   snprintf(buff, sizeof(buff), "%s:", fld);
+   buff[0] = '\0';
+   if ((fld))
+      snprintf(buff, sizeof(buff), "%s:", fld);
    printf("%-20s %s\n", buff, val);
    return;
 }

@@ -582,6 +582,28 @@ netcalc_ntop(
             nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
          break;
 
+      case NETCALC_TYPE_FIRST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
+         if (net->net_cidr < 127)
+            nbuff.net_addr.addr8[15]++;
+         break;
+
+      case NETCALC_TYPE_LAST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         if (net->net_cidr < 127)
+            nbuff.net_addr.addr8[15]--;
+         break;
+
       case NETCALC_TYPE_NETMASK:
          flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
