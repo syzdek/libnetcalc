@@ -122,8 +122,6 @@ netcalc_widget_info_print(
 /////////////////
 // MARK: - Variables
 
-const char *      prog_name;
-
 
 /////////////////
 //             //
@@ -144,7 +142,6 @@ netcalc_widget_info(
    size_t               size;
    netcalc_net_t **     nets;
 
-   prog_name   = netcalc_prog_name(cnf);
    net_family  = 0;
 
    // allocates memory
@@ -152,7 +149,7 @@ netcalc_widget_info(
    size  = sizeof(netcalc_net_t *) * len;
    if ((nets = malloc(size)) == NULL)
    {
-      fprintf(stderr, "%s: out of virtual memory\n", prog_name);
+      fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
       return(1);
    };
    memset(nets, 0, size);
@@ -162,7 +159,7 @@ netcalc_widget_info(
    {
       if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {
-         fprintf(stderr, "%s: %s: %s\n", prog_name, cnf->argv[idx], netcalc_strerror(rc));
+         fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          netcalc_nets_free(nets);
          return(1);
       };
@@ -171,7 +168,7 @@ netcalc_widget_info(
          net_family = ival;
       if (net_family != ival)
       {
-         fprintf(stderr, "%s: incompatible address families provided\n", prog_name);
+         fprintf(stderr, "%s: incompatible address families provided\n", netcalc_prog_name(cnf));
          netcalc_nets_free(nets);
          return(1);
       };
@@ -185,7 +182,7 @@ netcalc_widget_info(
       case NETCALC_AF_INET:   rc = netcalc_widget_info_ip(    cnf, nets); break;
       case NETCALC_AF_INET6:  rc = netcalc_widget_info_ip(    cnf, nets); break;
       default:
-         fprintf(stderr, "%s: unknown or unsupported address family\n", prog_name);
+         fprintf(stderr, "%s: unknown or unsupported address family\n", netcalc_prog_name(cnf));
          rc = 1;
          break;
    };
@@ -288,7 +285,7 @@ netcalc_widget_info_ip(
    size = sizeof(my_info_t) * nets_len;
    if ((recs = malloc(size)) == NULL)
    {
-      fprintf(stderr, "%s: out of virtual memory\n", cnf->prog_name);
+      fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
       return(1);
    };
    memset(recs, 0, size);
