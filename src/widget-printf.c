@@ -172,11 +172,13 @@ netcalc_widget_printf_usage(
    printf("  %%P    is replaced by port number without delimiter.\n");
    printf("  %%p    is conditionally replaced by port number with delimiter.\n");
    printf("  %%W    is replaced by wildcard.\n");
-   printf("FORMAT MODIFIES:\n");
-   printf("  %%B    do not use delimiters (EUI48 and EUI64)\n");
-   printf("  %%O    use dot delimiters (EUI48 and EUI64)\n");
-   printf("  %%L    use colon delimiters (EUI48 and EUI64)\n");
+   printf("FORMAT MODIFIERS:\n");
    printf("  %%A    use dash delimiters (EUI48 and EUI64)\n");
+   printf("  %%B    do not use delimiters (EUI48 and EUI64)\n");
+   printf("  %%L    use colon delimiters (EUI48 and EUI64)\n");
+   printf("  %%M    disable IPv4-mapped IPv6 address\n");
+   printf("  %%m    enable IPv4-mapped IPv6 address\n");
+   printf("  %%O    use dot delimiters (EUI48 and EUI64)\n");
    printf("  %%S    disable zero suppression\n");
    printf("  %%s    enable zero suppression\n");
    printf("  %%Z    disable zero compression\n");

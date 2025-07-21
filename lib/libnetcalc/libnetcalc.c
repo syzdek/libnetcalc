@@ -1471,6 +1471,8 @@ netcalc_strfnet(
       {  switch(fmt[pos++])
          {  case 'Z': mflgs = NETCALC_UNSET( flags, NETCALC_FLG_COMPR); break;
             case 'z': mflgs = NETCALC_SET(   flags, NETCALC_FLG_COMPR); break;
+            case 'M': mflgs = NETCALC_UNSET( flags, NETCALC_FLG_V4MAPPED);  break;
+            case 'm': mflgs = NETCALC_SET(   flags, NETCALC_FLG_V4MAPPED);  break;
             case 'S': mflgs = NETCALC_UNSET( flags, NETCALC_FLG_SUPR);  break;
             case 's': mflgs = NETCALC_SET(   flags, NETCALC_FLG_SUPR);  break;
 
