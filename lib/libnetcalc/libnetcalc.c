@@ -1338,10 +1338,7 @@ netcalc_parse_inet6(
             for(fwd = pos+1, wyde_fwd = 1; ((str[fwd])); fwd++)
             {
                if (str[fwd] == ':')
-               {
                   wyde_fwd++;
-                  digit = 0;
-               }
                else if (str[fwd] == '.')
                   dec++;
                else if  (  ( (str[fwd] >= '0') && (str[fwd] <= '9') ) ||
