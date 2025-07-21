@@ -216,7 +216,7 @@ netcalc_widget_info_eui48(
    {
       netcalc_widget_info_print("Family",  "EUI48");
 
-      net_addr_str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, 0);
+      net_addr_str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       netcalc_widget_info_print("Address",  net_addr_str);
 
       printf("\n");
@@ -241,7 +241,7 @@ netcalc_widget_info_eui64(
    {
       netcalc_widget_info_print("Family",  "EUI64");
 
-      net_addr_str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, 0);
+      net_addr_str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       netcalc_widget_info_print("Address",  net_addr_str);
 
       printf("\n");
@@ -311,11 +311,11 @@ netcalc_widget_info_ip(
 
    for(idx = 0; ((nets[idx])); idx++)
    {
-      netcalc_ntop(nets[idx], recs[idx].address,   sizeof(((my_info_t *)0)->address),    NETCALC_TYPE_ADDRESS,   0);
+      netcalc_ntop(nets[idx], recs[idx].address,   sizeof(((my_info_t *)0)->address),    NETCALC_TYPE_ADDRESS,   cnf->flags);
       netcalc_ntop(nets[idx], recs[idx].network,   sizeof(((my_info_t *)0)->network),    NETCALC_TYPE_NETWORK,   NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
       netcalc_ntop(nets[idx], recs[idx].broadcast, sizeof(((my_info_t *)0)->broadcast),  NETCALC_TYPE_BROADCAST, NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
-      netcalc_ntop(nets[idx], recs[idx].netmask,   sizeof(((my_info_t *)0)->netmask),    NETCALC_TYPE_NETMASK,   0);
-      netcalc_ntop(nets[idx], recs[idx].wildcard,  sizeof(((my_info_t *)0)->wildcard),   NETCALC_TYPE_WILDCARD,  0);
+      netcalc_ntop(nets[idx], recs[idx].netmask,   sizeof(((my_info_t *)0)->netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
+      netcalc_ntop(nets[idx], recs[idx].wildcard,  sizeof(((my_info_t *)0)->wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
       netcalc_get_field(nets[idx], NETCALC_FLD_CIDR, &recs[idx].cidr);
 
       len_address    = (int)(((int)strlen(recs[idx].address)   > len_address)    ? strlen(recs[idx].address)   : len_address);
