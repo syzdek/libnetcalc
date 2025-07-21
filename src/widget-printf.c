@@ -140,7 +140,11 @@ netcalc_widget_printf(
    // print address family information
    for(idx = 0; ((nets[idx])); idx++)
    {
-      netcalc_strfnet(nets[idx], buff, sizeof(buff), cnf->argv[0], flags);
+      if (!(netcalc_strfnet(nets[idx], buff, sizeof(buff), cnf->argv[0], flags)))
+      {
+         fprintf(stderr, "%s: invalid format syntax or format character\n", netcalc_prog_name(cnf));
+         return(1);
+      };
       printf("%s\n", buff);
    };
 
