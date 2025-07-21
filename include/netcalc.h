@@ -135,6 +135,7 @@
 
 
 // defaults flags
+#define NETCALC_DFLTS                        (NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT | NETCALC_FLG_IFACE)
 #define NETCALC_DFLT_EUI48                   (NETCALC_FLG_COLON)
 #define NETCALC_DFLT_EUI64                   (NETCALC_FLG_DOT)
 #define NETCALC_DFLT_INET                    (NETCALC_FLG_SUPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT)

@@ -272,6 +272,7 @@ main(
    cnf->argc         = argc;
    cnf->argv         = argv;
    cnf->prog_name    = prog_name;
+   cnf->flags        = NETCALC_DFLTS;
 
    // skip argument processing if called via alias
    if ((cnf->widget = netcalc_widget_lookup(cnf->prog_name, 1)) != NULL)
@@ -294,6 +295,8 @@ main(
          return(1);
       };
    };
+
+   cnf->flags &= ~cnf->flags_negate;
 
    // initial processing of widget cli arguments
    if ((rc = netcalc_arguments(cnf, cnf->argc, cnf->argv)) != 0)
