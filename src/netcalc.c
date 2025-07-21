@@ -61,7 +61,7 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FORMAT
-#define  NETCALC_SHORT_FORMAT "012346EeMmSsZz"
+#define  NETCALC_SHORT_FORMAT "012346EeMSsZz"
 
 #undef   NETCALC_LONG_OPT
 #define  NETCALC_LONG_OPT \
@@ -431,13 +431,7 @@ netcalc_arguments(
             break;
 
          case 'M':
-         case 'm':
-            if ((cnf->flags & (NETCALC_FLG_V4MAPPED | NETCALC_FLG_NOV4MAPPED)))
-            {  fprintf(stderr, "%s: incompatible options `-M' and `-m'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
-               return(1);
-            }
-            cnf->flags |= (c == 'M') ? NETCALC_FLG_NOV4MAPPED : NETCALC_FLG_V4MAPPED;
+            cnf->flags |= NETCALC_FLG_V4MAPPED;
             break;
 
          case 'S':
@@ -580,8 +574,7 @@ netcalc_usage(
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
-   if ((strchr(short_opt, 'M'))) printf("  -M                        display without IPv4-mapped IPv6 address\n");
-   if ((strchr(short_opt, 'm'))) printf("  -m                        display with IPv4-mapped IPv6 address\n");
+   if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
    if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
    if ((strchr(short_opt, 's'))) printf("  -s                        display with zero suppression\n");
    if ((strchr(short_opt, 'V'))) printf("  -V, --version             print version number and exit\n");

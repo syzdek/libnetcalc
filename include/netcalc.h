@@ -110,7 +110,6 @@
 #define NETCALC_FLG_IFACE              0x00000020  // flag: append interface
 //                                     0x00000040  // flag: OPEN
 //                                     0x00000080  // flag: OPEN
-#define NETCALC_FLG_NOV4MAPPED         0x00000100  // flag: do not display IPv6 addresses as IPv4 mapped address
 #define NETCALC_FLG_NOCOMPR            0x00000200  // flag: no zero compression
 #define NETCALC_FLG_NOSUPR             0x00000400  // flag: no zero suppression
 #define NETCALC_FLG_NOCIDR             0x00000800  // flag: do not append CIDR

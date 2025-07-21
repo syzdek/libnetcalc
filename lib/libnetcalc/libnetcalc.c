@@ -300,10 +300,8 @@ static uint32_t _netcalc_dflt_eui48_flags    = NETCALC_AF_EUI48
 static uint32_t _netcalc_dflt_eui64_flags    = NETCALC_AF_EUI48
                                              | NETCALC_FLG_DOT;
 static uint32_t _netcalc_dflt_inet_flags     = NETCALC_AF_INET
-                                             | NETCALC_FLG_NOV4MAPPED
                                              | NETCALC_FLG_SUPR;
 static uint32_t _netcalc_dflt_inet6_flags    = NETCALC_AF_INET6
-                                             | NETCALC_FLG_NOV4MAPPED
                                              | NETCALC_FLG_COMPR
                                              | NETCALC_FLG_SUPR
                                              | NETCALC_FLG_IFACE;
@@ -635,7 +633,6 @@ netcalc_ntop(
          : net->net_flags;
    flags = (net->net_flags & NETCALC_AF)
          | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_DELIM))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_V4MAPPED | NETCALC_FLG_NOV4MAPPED))
          | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_COMPR    | NETCALC_FLG_NOCOMPR))
          | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_SUPR     | NETCALC_FLG_NOSUPR))
          | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_CIDR     | NETCALC_FLG_NOCIDR))
