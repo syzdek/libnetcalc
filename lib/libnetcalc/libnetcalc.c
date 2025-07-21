@@ -294,19 +294,6 @@ const netcalc_net_t _netcalc_lo_in6 =
 };
 
 
-// defaults flags
-static uint32_t _netcalc_dflt_eui48_flags    = NETCALC_AF_EUI48
-                                             | NETCALC_FLG_COLON;
-static uint32_t _netcalc_dflt_eui64_flags    = NETCALC_AF_EUI48
-                                             | NETCALC_FLG_DOT;
-static uint32_t _netcalc_dflt_inet_flags     = NETCALC_AF_INET
-                                             | NETCALC_FLG_SUPR;
-static uint32_t _netcalc_dflt_inet6_flags    = NETCALC_AF_INET6
-                                             | NETCALC_FLG_COMPR
-                                             | NETCALC_FLG_SUPR
-                                             | NETCALC_FLG_IFACE;
-
-
 /////////////////
 //             //
 //  Functions  //
@@ -320,10 +307,10 @@ netcalc_dflt_flags(
 {
    family &= NETCALC_AF;
    switch(family)
-   {  case NETCALC_AF_EUI48: return(_netcalc_dflt_eui48_flags);
-      case NETCALC_AF_EUI64: return(_netcalc_dflt_eui64_flags);
-      case NETCALC_AF_INET:  return(_netcalc_dflt_inet_flags);
-      case NETCALC_AF_INET6: return(_netcalc_dflt_inet6_flags);
+   {  case NETCALC_AF_EUI48: return(NETCALC_DFLT_EUI48);
+      case NETCALC_AF_EUI64: return(NETCALC_DFLT_EUI64);
+      case NETCALC_AF_INET:  return(NETCALC_DFLT_INET);
+      case NETCALC_AF_INET6: return(NETCALC_DFLT_INET6);
       default: break;
    };
    return(0);

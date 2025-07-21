@@ -134,6 +134,13 @@
 #define NETCALC_AF_MAC                 NETCALC_AF_EUI48
 
 
+// defaults flags
+#define NETCALC_DFLT_EUI48                   (NETCALC_FLG_COLON)
+#define NETCALC_DFLT_EUI64                   (NETCALC_FLG_DOT)
+#define NETCALC_DFLT_INET                    (NETCALC_FLG_SUPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT)
+#define NETCALC_DFLT_INET6                   (NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT | NETCALC_FLG_IFACE)
+
+
 #define NETCALC_TYPE_ADDRESS           0x00
 #define NETCALC_TYPE_NETWORK           0x01
 #define NETCALC_TYPE_BROADCAST         0x02
