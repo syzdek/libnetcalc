@@ -147,6 +147,11 @@ struct _netcalc_widget
 //////////////////
 // MARK: - Prototypes
 
+extern void
+netcalc_nets_free(
+         netcalc_net_t **              nets );
+
+
 extern char *
 netcalc_prog_name(
          netcalc_config_t *            cnf );

@@ -97,11 +97,6 @@ netcalc_widget_info_eui64(
          netcalc_net_t **              nets );
 
 
-static void
-netcalc_widget_info_free(
-         netcalc_net_t **              nets );
-
-
 static int
 netcalc_widget_info_ip(
          netcalc_config_t *            cnf,
@@ -168,7 +163,7 @@ netcalc_widget_info(
       if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {
          fprintf(stderr, "%s: %s: %s\n", prog_name, cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_widget_info_free(nets);
+         netcalc_nets_free(nets);
          return(1);
       };
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &ival);
@@ -177,7 +172,7 @@ netcalc_widget_info(
       if (net_family != ival)
       {
          fprintf(stderr, "%s: incompatible address families provided\n", prog_name);
-         netcalc_widget_info_free(nets);
+         netcalc_nets_free(nets);
          return(1);
       };
    };
@@ -195,7 +190,7 @@ netcalc_widget_info(
          break;
    };
 
-   netcalc_widget_info_free(nets);
+   netcalc_nets_free(nets);
 
    return(rc);
 }
@@ -248,20 +243,6 @@ netcalc_widget_info_eui64(
    };
 
    return(0);
-}
-
-
-void
-netcalc_widget_info_free(
-         netcalc_net_t **              nets )
-{
-   int      pos;
-   if (!(nets))
-      return;
-   for(pos = 0; ((nets[pos])); pos++)
-      netcalc_free(nets[pos]);
-   free(nets);
-   return;
 }
 
 

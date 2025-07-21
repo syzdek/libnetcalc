@@ -501,6 +501,20 @@ netcalc_arguments(
 }
 
 
+void
+netcalc_nets_free(
+         netcalc_net_t **              nets )
+{
+   int      pos;
+   if (!(nets))
+      return;
+   for(pos = 0; ((nets[pos])); pos++)
+      netcalc_free(nets[pos]);
+   free(nets);
+   return;
+}
+
+
 char *
 netcalc_prog_name(
          netcalc_config_t *            cnf )
