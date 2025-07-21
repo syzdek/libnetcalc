@@ -635,9 +635,9 @@ netcalc_ntop_eui(
          size_t                        size,
          int                           flags )
 {
-   int      idx;
-   int      idx_start;
-   int      off;
+   size_t   idx;
+   size_t   idx_start;
+   size_t   off;
    int      delim;
    char     map[] = "0123456789abcdef";
 
@@ -661,6 +661,8 @@ netcalc_ntop_eui(
 
    for(idx = idx_start, off = 0; (idx < 16); idx++)
    {
+      if (size < (off + 3))
+         return(NULL);
       switch(delim)
       {
          case NETCALC_FLG_DOT:
@@ -685,6 +687,9 @@ netcalc_ntop_eui(
             break;
       };
    };
+
+   if (size < (off + 1))
+      return(NULL);
    dst[off] = '\0';
 
    return(dst);
