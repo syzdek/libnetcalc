@@ -553,7 +553,6 @@ netcalc_ntop(
          int                           flags )
 {
    int                     pos;
-   uint32_t                dflts;
    netcalc_net_t           nbuff;
    static char             dst_buffer[NETCALC_ADDRESS_LENGTH];
 
@@ -613,19 +612,6 @@ netcalc_ntop(
    };
    net = &nbuff;
 
-   // set flags
-   dflts = netcalc_dflt_flags(net->net_flags & NETCALC_AF);
-   flags = ((flags))
-         ? flags
-         : net->net_flags;
-   flags = (net->net_flags & NETCALC_AF)
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_DELIM))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_COMPR    | NETCALC_FLG_NOCOMPR))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_SUPR     | NETCALC_FLG_NOSUPR))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_CIDR     | NETCALC_FLG_NOCIDR))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_PORT     | NETCALC_FLG_NOPORT))
-         | NETCALC_DFLT_FLAG(flags, dflts, (NETCALC_FLG_IFACE    | NETCALC_FLG_NOIFACE));
-
    switch(net->net_flags & NETCALC_AF)
    {
       case NETCALC_AF_EUI48:  return(netcalc_ntop_eui(net, dst, size, flags));
@@ -658,10 +644,20 @@ netcalc_ntop_eui(
    assert(net != NULL);
    assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
 
-   delim       = (flags & NETCALC_DELIM);
-   idx_start   = ((net->net_flags & NETCALC_AF_EUI64))
-               ? 8
-               : 10;
+   delim = (flags & NETCALC_DELIM);
+   switch(net->net_flags & NETCALC_AF)
+   {
+      case NETCALC_AF_EUI64:
+         idx_start = 8;
+         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI64 & NETCALC_DELIM);
+         break;
+
+      case NETCALC_AF_EUI48:
+      default:
+         idx_start = 10;
+         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI48 & NETCALC_DELIM);
+         break;
+   };
 
    for(idx = idx_start, off = 0; (idx < 16); idx++)
    {
@@ -714,21 +710,19 @@ netcalc_ntop_inet(
    off = 0;
 
    // adjusting flags NETCALC_FLG_CIDR
-   if (!(flags & (NETCALC_FLG_CIDR | NETCALC_FLG_NOCIDR)))
-      flags |= (net->net_cidr == 128) ? NETCALC_FLG_NOCIDR : NETCALC_FLG_CIDR;
+   if ((flags & NETCALC_FLG_CIDR))
+      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
 
-   // adjusting flags NETCALC_FLG_CIDR
-   if (!(flags & (NETCALC_FLG_PORT | NETCALC_FLG_NOPORT)))
-      flags |= (net->net_port > 0) ? NETCALC_FLG_PORT : NETCALC_FLG_NOPORT;
+   // adjusting flags NETCALC_FLG_PORT
    if (!(net->net_port))
-      flags = (flags & ~NETCALC_FLG_PORT) | NETCALC_FLG_NOPORT;
+      flags = flags & ~NETCALC_FLG_PORT;
 
    for(idx = 12; (idx < 16); idx++)
    {
-      if ((flags & NETCALC_FLG_NOSUPR))
-         buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
-      else
+      if ((flags & NETCALC_FLG_SUPR))
          buff_len = snprintf(buff, sizeof(buff), "%i", net->net_addr.addr8[idx]);
+      else
+         buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
       if ((off))
          dst[off++] = '.';
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -736,7 +730,7 @@ netcalc_ntop_inet(
    };
 
    // append CIDR
-   if ((flags & NETCALC_FLG_CIDR))
+   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
    {
       buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -786,26 +780,22 @@ netcalc_ntop_inet6(
    zero_max_off   = -1;
    zero_max_len   = 0;
 
-   // adjusting flags NETCALC_FLG_CIDR
-   if (!(flags & (NETCALC_FLG_CIDR | NETCALC_FLG_NOCIDR)))
-      flags |= (net->net_cidr == 128) ? NETCALC_FLG_NOCIDR : NETCALC_FLG_CIDR;
+   // adjusting flags NETCALC_FLG_CIDR and NETCALC_FLG_CIDR_ALWAYS
+   if ((flags & NETCALC_FLG_CIDR))
+      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
 
    // adjusting flags NETCALC_FLG_PORT
-   if (!(flags & (NETCALC_FLG_PORT | NETCALC_FLG_NOPORT)))
-      flags |= (net->net_port > 0) ? NETCALC_FLG_PORT : NETCALC_FLG_NOPORT;
    if (!(net->net_port))
-      flags = (flags & ~NETCALC_FLG_PORT) | NETCALC_FLG_NOPORT;
+      flags = flags & ~NETCALC_FLG_PORT;
 
    // adjusting flags NETCALC_FLG_IFACE
-   if (!(flags & (NETCALC_FLG_IFACE | NETCALC_FLG_NOIFACE)))
-      flags |= ( ((net->net_scope_name)) && ((net->net_scope_name[0])) ) ? NETCALC_FLG_IFACE : NETCALC_FLG_NOIFACE;
    if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
-      flags = (flags & ~NETCALC_FLG_IFACE) | NETCALC_FLG_NOIFACE;
+      flags = flags & ~NETCALC_FLG_IFACE;
 
    // determine if brackets are needed
    if ((flags & NETCALC_FLG_PORT))
       bracketed = 1;
-   if ( ((flags & NETCALC_FLG_CIDR)) && ((flags & NETCALC_FLG_IFACE)) )
+   if ( ((flags & NETCALC_FLG_CIDR_ALWAYS)) && ((flags & NETCALC_FLG_IFACE)) )
       bracketed = 1;
    if ((bracketed))
       dst[off++] = '[';
@@ -859,11 +849,11 @@ netcalc_ntop_inet6(
          dst[off++] = ':';
 
       // save data
-      if ( (((dat8[idx+0] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
+      if ( (((dat8[idx+0] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
-      if ( ((dat8[idx+0])) || ((flags & NETCALC_FLG_NOSUPR)) )
+      if ( ((dat8[idx+0])) || (!(flags & NETCALC_FLG_SUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 0) & 0x0f];
-      if ( ((dat8[idx+0])) || (((dat8[idx+1] >> 4) & 0x0f)) || ((flags & NETCALC_FLG_NOSUPR)) )
+      if ( ((dat8[idx+0])) || (((dat8[idx+1] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
          dst[off++] = map[(dat8[idx+1] >> 4) & 0x0f];
       dst[off++] = map[(dat8[idx+1] >> 0) & 0x0f];
    };
@@ -880,7 +870,7 @@ netcalc_ntop_inet6(
       dst[off++] = ']';
 
    // append CIDR
-   if ((flags & NETCALC_FLG_CIDR))
+   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
    {
       buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
       for(pos = 0; (pos < buff_len); pos++, off++)

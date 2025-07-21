@@ -68,8 +68,8 @@
 #endif
 
 
-#define NETCALC_SET(flgs, flg)      ( (flgs & ~(flg << 8)) | flg )
-#define NETCALC_UNSET(flgs, flg)    ( (flgs & ~flg) | (flg << 8) )
+#define NETCALC_SET(flgs, flg)      ( flgs | flg )
+#define NETCALC_UNSET(flgs, flg)    ( flgs & ~flg )
 
 
 ///////////////////
@@ -110,11 +110,7 @@
 #define NETCALC_FLG_IFACE              0x00000020  // flag: append interface
 //                                     0x00000040  // flag: OPEN
 //                                     0x00000080  // flag: OPEN
-#define NETCALC_FLG_NOCOMPR            0x00000200  // flag: no zero compression
-#define NETCALC_FLG_NOSUPR             0x00000400  // flag: no zero suppression
-#define NETCALC_FLG_NOCIDR             0x00000800  // flag: do not append CIDR
-#define NETCALC_FLG_NOPORT             0x00001000  // flag: do not append port
-#define NETCALC_FLG_NOIFACE            0x00002000  // flag: do not append interface
+#define NETCALC_FLG_CIDR_ALWAYS        0x00000100  // flag: always append CIDR
 //                                     0x00004000  // flag: OPEN
 //                                     0x00008000  // flag: OPEN
 #define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters

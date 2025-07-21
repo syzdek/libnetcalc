@@ -205,6 +205,7 @@ my_test(
 {
    netcalc_net_t *   net;
    int               rc;
+   int               flags;
    int               net_cidr;
    int               net_family;
    int               net_port;
@@ -256,7 +257,8 @@ my_test(
 
    // check address
    if ((dat_addr))
-   {  net_addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, (NETCALC_FLG_NOSUPR | NETCALC_FLG_NOCOMPR) );
+   {  flags = NETCALC_FLG_IFACE | NETCALC_FLG_CIDR | NETCALC_FLG_PORT;
+      net_addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags );
       if ((strcmp(dat_addr, net_addr)))
       {
          printf("   address:       %s\n", net_addr);

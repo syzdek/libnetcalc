@@ -61,7 +61,7 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FORMAT
-#define  NETCALC_SHORT_FORMAT "012346EeMSsZz"
+#define  NETCALC_SHORT_FORMAT "012346EeMSZ"
 
 #undef   NETCALC_LONG_OPT
 #define  NETCALC_LONG_OPT \
@@ -438,13 +438,7 @@ netcalc_arguments(
             break;
 
          case 'S':
-         case 's':
-            if ((cnf->flags & (NETCALC_FLG_SUPR | NETCALC_FLG_NOSUPR)))
-            {  fprintf(stderr, "%s: incompatible options `-S' and `-s'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
-               return(1);
-            }
-            cnf->flags |= (c == 'S') ? NETCALC_FLG_NOSUPR : NETCALC_FLG_SUPR;
+            cnf->flags_negate |= NETCALC_FLG_SUPR;
             break;
 
          case 'V':
@@ -462,13 +456,7 @@ netcalc_arguments(
             break;
 
          case 'Z':
-         case 'z':
-            if ((cnf->flags & (NETCALC_FLG_COMPR | NETCALC_FLG_NOCOMPR)))
-            {  fprintf(stderr, "%s: incompatible options `-Z' and `-z'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
-               return(1);
-            }
-            cnf->flags |= (c == 'Z') ? NETCALC_FLG_NOCOMPR : NETCALC_FLG_COMPR;
+            cnf->flags_negate |= NETCALC_FLG_COMPR;
             break;
 
          case '?':
@@ -579,11 +567,9 @@ netcalc_usage(
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
    if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
    if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
-   if ((strchr(short_opt, 's'))) printf("  -s                        display with zero suppression\n");
    if ((strchr(short_opt, 'V'))) printf("  -V, --version             print version number and exit\n");
    if ((strchr(short_opt, 'v'))) printf("  -v, --verbose             print verbose messages\n");
    if ((strchr(short_opt, 'Z'))) printf("  -Z                        display without zero compression\n");
-   if ((strchr(short_opt, 'z'))) printf("  -z                        display with zero compression\n");
    if ((strchr(short_opt, '0'))) printf("  --colon                   display using colon delimiters\n");
    if ((strchr(short_opt, '1'))) printf("  --dash                    display using dash delimiters\n");
    if ((strchr(short_opt, '2'))) printf("  --dot                     display using dot delimiters\n");
