@@ -770,7 +770,7 @@ netcalc_ntop_inet6(
          int                           flags )
 {
    int         idx;
-   int         off;
+   size_t      off;
    char        buff[8];
    int         buff_len;
    int         pos;
@@ -790,6 +790,9 @@ netcalc_ntop_inet6(
    dat8           = net->net_addr.addr8;
    zero_max_off   = -1;
    zero_max_len   = 0;
+
+   if (size <= 3)
+      return(NULL);
 
    // adjusting flags NETCALC_FLG_CIDR and NETCALC_FLG_CIDR_ALWAYS
    if ((flags & NETCALC_FLG_CIDR))
@@ -847,7 +850,9 @@ netcalc_ntop_inet6(
    {
       // apply zero compression
       if (idx == zero_max_off)
-      {  idx += zero_max_len;
+      {  if (size <= (off+3))
+            return(NULL);
+         idx += zero_max_len;
          dst[off++] = ':';
          if (idx >= 16)
          {  dst[off++] = ':';
@@ -857,9 +862,14 @@ netcalc_ntop_inet6(
 
       // apply delimiter
       if ( (!(idx % 2)) && ((idx)) )
+      {  if (size <= (off+2))
+            return(NULL);
          dst[off++] = ':';
+      };
 
       // save data
+      if (size <= (off+5))
+         return(NULL);
       if ( (((dat8[idx+0] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
          dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
       if ( ((dat8[idx+0])) || (!(flags & NETCALC_FLG_SUPR)) )
@@ -872,11 +882,15 @@ netcalc_ntop_inet6(
    // append scope name
    if ( ((flags & NETCALC_FLG_IFACE)) )
    {
+      if (size <= (off+2+strlen(net->net_scope_name)))
+         return(NULL);
       dst[off++] = '%';
       for(idx = 0; ((net->net_scope_name[idx])); idx++)
          dst[off++] = net->net_scope_name[idx];
    };
 
+   if (size <= (off+2))
+      return(NULL);
    if ((bracketed))
       dst[off++] = ']';
 
@@ -884,6 +898,8 @@ netcalc_ntop_inet6(
    if ((flags & NETCALC_FLG_CIDR_ALWAYS))
    {
       buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
+      if (size <= (off+buff_len+1))
+         return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
          dst[off] = buff[pos];
    };
@@ -892,6 +908,8 @@ netcalc_ntop_inet6(
    if ((flags & NETCALC_FLG_PORT))
    {
       buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+      if (size <= (off+buff_len+1))
+         return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
          dst[off] = buff[pos];
    };
