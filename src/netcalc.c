@@ -213,6 +213,19 @@ static netcalc_widget_t netcalc_widget_map[] =
       .func_usage = &netcalc_widget_null,
    },
 
+   // printf widget
+   {  .name       = "printf",
+      .desc       = "display formatted IP address information",
+      .usage      = "[OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT, ),
+      .arg_min    = 2,
+      .arg_max    = -1,
+      .aliases    = NULL,
+      .func_exec  = &netcalc_widget_printf,
+      .func_usage = &netcalc_widget_printf_usage,
+   },
+
    // version widget
    {  .name       = "version",
       .desc       = "display version",

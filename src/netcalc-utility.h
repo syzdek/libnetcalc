@@ -172,5 +172,15 @@ netcalc_widget_info(
          netcalc_config_t *            cnf );
 
 
+extern int
+netcalc_widget_printf(
+         netcalc_config_t *            cnf );
+
+
+extern int
+netcalc_widget_printf_usage(
+         netcalc_config_t *            cnf );
+
+
 #endif /* end of header */
 

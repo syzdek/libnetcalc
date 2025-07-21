@@ -182,7 +182,8 @@ src_netcalc_LDADD			= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 src_netcalc_SOURCES			= src/netcalc-utility.h \
 					  src/netcalc.c \
 					  src/widget-debug.c \
-					  src/widget-info.c
+					  src/widget-info.c \
+					  src/widget-printf.c
 
 
 # macros for src/netcalc-dmstools
