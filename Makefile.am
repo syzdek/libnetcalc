@@ -96,7 +96,8 @@ EXTRA_PROGRAMS				= src/netcalc \
 					  tests/test-ntop-len \
 					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
-					  tests/test-parse
+					  tests/test-parse \
+					  tests/test-strfnet
 EXTRA					=
 
 
@@ -109,7 +110,8 @@ TESTS					= tests/test-ntop-broadcast \
 					  tests/test-ntop-len \
 					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
-					  tests/test-parse
+					  tests/test-parse \
+					  tests/test-strfnet
 XFAIL_TESTS				=
 EXTRA_MANS				=
 EXTRA_DIST				= $(doc_DATA) \
@@ -251,6 +253,14 @@ tests_test_parse_LDADD			= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_parse_SOURCES		= tests/libnetcalc-tests.h \
 					  tests/test-data.c \
 					  tests/test-parse.c
+
+
+# macros for tests/test-parse
+tests_test_strfnet_DEPENDENCIES		= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_strfnet_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_strfnet_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-strfnet.c
 
 
 # Makefile includes
