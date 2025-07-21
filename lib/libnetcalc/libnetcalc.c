@@ -698,11 +698,11 @@ netcalc_ntop_inet(
          size_t                        size,
          int                           flags )
 {
-   int      idx;
-   int      off;
+   size_t   idx;
+   size_t   off;
+   size_t   buff_len;
+   size_t   pos;
    char     buff[8];
-   int      buff_len;
-   int      pos;
 
    assert(net != NULL);
    assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
@@ -723,6 +723,8 @@ netcalc_ntop_inet(
          buff_len = snprintf(buff, sizeof(buff), "%i", net->net_addr.addr8[idx]);
       else
          buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
+      if (size < (off+buff_len+2))
+         return(NULL);
       if ((off))
          dst[off++] = '.';
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -733,6 +735,8 @@ netcalc_ntop_inet(
    if ((flags & NETCALC_FLG_CIDR_ALWAYS))
    {
       buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
+      if (size < (off+buff_len+1))
+         return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
          dst[off] = buff[pos];
    };
@@ -741,6 +745,8 @@ netcalc_ntop_inet(
    if ((flags & NETCALC_FLG_PORT))
    {
       buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+      if (size < (off+buff_len+1))
+         return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
          dst[off] = buff[pos];
    };
