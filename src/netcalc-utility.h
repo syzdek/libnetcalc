@@ -106,8 +106,8 @@ struct _netcalc_config
    int                        quiet;
    int                        verbose;
    int                        symlinked;
-   int                        ip_expand;
    int                        flags;
+   int                        flags_negate;
    int                        argc;
    char * const *             argv;
    const char *               prog_name;
