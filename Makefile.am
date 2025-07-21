@@ -93,6 +93,7 @@ EXTRA_PROGRAMS				= src/netcalc \
 					  tests/test-ntop-broadcast \
 					  tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
+					  tests/test-ntop-len \
 					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
 					  tests/test-parse
@@ -105,6 +106,7 @@ BUILT_SOURCES				=
 TESTS					= tests/test-ntop-broadcast \
 					  tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
+					  tests/test-ntop-len \
 					  tests/test-ntop-network \
 					  tests/test-ntop-suppress \
 					  tests/test-parse
@@ -213,6 +215,14 @@ tests_test_ntop_dflt_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_ntop_dflt_SOURCES		= tests/libnetcalc-tests.h \
 					  tests/test-data.c \
 					  tests/test-ntop-dflt.c
+
+
+# macros for tests/test-ntop-len
+tests_test_ntop_len_DEPENDENCIES	= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_len_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_len_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-ntop-len.c
 
 
 # macros for tests/test-ntop-network
