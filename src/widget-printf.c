@@ -159,6 +159,7 @@ netcalc_widget_printf_usage(
          netcalc_config_t *            cnf )
 {
    assert(cnf != NULL);
+   printf("\n");
    printf("FORMAT:\n");
    printf("  %%%%    is replaced by '%%'.\n");
    printf("  %%A    is replaced by address using default notation.\n");
@@ -176,7 +177,10 @@ netcalc_widget_printf_usage(
    printf("  %%P    is replaced by port number without delimiter.\n");
    printf("  %%p    is conditionally replaced by port number with delimiter.\n");
    printf("  %%W    is replaced by wildcard.\n");
+   printf("\n");
    printf("FORMAT MODIFIERS:\n");
+   printf("  %%-    left justify padded fields\n");
+   printf("  %%##   pad field to ## number of spaces\n");
    printf("  %%B    do not use delimiters (EUI48 and EUI64)\n");
    printf("  %%H    use dash delimiters (EUI48 and EUI64)\n");
    printf("  %%L    use colon delimiters (EUI48 and EUI64)\n");
@@ -187,6 +191,18 @@ netcalc_widget_printf_usage(
    printf("  %%s    enable zero suppression\n");
    printf("  %%Z    disable zero compression\n");
    printf("  %%z    enable zero compression\n");
+   printf("\n");
+   printf("EXAMPLES:\n");
+   printf("  $ %s \"%%-20zsa %%-4C %%P\" [2001:db8:f:300::54f]/64:443  203.0.113.1:143\n", netcalc_prog_name(cnf));
+   printf("  2001:db8:f:300::54f  64   443\n");
+   printf("  203.0.113.1          128  143\n");
+   printf("\n");
+   printf("  $ %s \"%%n%%c\" [fe80::216:3eff:fe2a:bab8%%eth0]/64\n", netcalc_prog_name(cnf));
+   printf("  fe80::/64\n");
+   printf("\n");
+   printf("  $ %s \"%%b\" fe80::216:3eff:fe2a:bab8/64\n", netcalc_prog_name(cnf));
+   printf("  fe80:0:0:0:ffff:ffff:ffff:ffff\n");
+   printf("\n");
    return(0);
 }
 
