@@ -144,6 +144,8 @@ netcalc_widget_info(
 
    net_family  = 0;
 
+   cnf->flags &= ~cnf->flags_negate;
+
    // allocates memory
    len   = (size_t)cnf->argc + 2;
    size  = sizeof(netcalc_net_t *) * len;
