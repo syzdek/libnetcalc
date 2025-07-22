@@ -561,6 +561,8 @@ netcalc_ntop(
 {
    int                     pos;
    netcalc_net_t           nbuff;
+   const uint8_t *         addr8;
+   char                    tmp[32];
    static char             dst_buffer[NETCALC_ADDRESS_LENGTH];
 
    assert(net != NULL);
@@ -573,12 +575,96 @@ netcalc_ntop(
    nbuff.net_flags      = net->net_flags;
    nbuff.net_port       = net->net_port;
    nbuff.net_scope_name = net->net_scope_name;
+   addr8                = (const uint8_t *)&net->net_addr.addr8;
 
    switch(type)
    {
       case NETCALC_TYPE_ADDRESS:
          memcpy(&nbuff.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
          break;
+
+      case NETCALC_TYPE_ARPA_NET:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+         else
+            return(NULL);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[nbuff.net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_ARPA_HOST:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+            snprintf(dst, size, "%i.%i.%i.%i.in-addr.arpa.", addr8[15], addr8[14], addr8[13], addr8[12]);
+         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+            snprintf(dst, size,
+               "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.ip6.arpa.",
+               (addr8[15] & 0x0f), ((addr8[15] >> 4) & 0x0f), (addr8[14] & 0x0f), ((addr8[14] >> 4) & 0x0f),
+               (addr8[13] & 0x0f), ((addr8[13] >> 4) & 0x0f), (addr8[12] & 0x0f), ((addr8[12] >> 4) & 0x0f),
+               (addr8[11] & 0x0f), ((addr8[11] >> 4) & 0x0f), (addr8[10] & 0x0f), ((addr8[10] >> 4) & 0x0f),
+               (addr8[9]  & 0x0f), ((addr8[9]  >> 4) & 0x0f), (addr8[8]  & 0x0f), ((addr8[8]  >> 4) & 0x0f),
+               (addr8[7]  & 0x0f), ((addr8[7]  >> 4) & 0x0f), (addr8[6]  & 0x0f), ((addr8[6]  >> 4) & 0x0f),
+               (addr8[5]  & 0x0f), ((addr8[5]  >> 4) & 0x0f), (addr8[4]  & 0x0f), ((addr8[4]  >> 4) & 0x0f),
+               (addr8[3]  & 0x0f), ((addr8[3]  >> 4) & 0x0f), (addr8[2]  & 0x0f), ((addr8[2]  >> 4) & 0x0f),
+               (addr8[1]  & 0x0f), ((addr8[1]  >> 4) & 0x0f), (addr8[0]  & 0x0f), ((addr8[0]  >> 4) & 0x0f)
+            );
+         else
+            return(NULL);
+         return(dst);
+
+      case NETCALC_TYPE_ARPA_REC:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+            for(pos = 15; (pos > (nbuff.net_cidr/8)); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%i", addr8[pos]);
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+            for(pos = 31; (pos > (nbuff.net_cidr/4)); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%x", ((addr8[pos/2] >> 4) & 0x0f));
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         return(NULL);
+
+      case NETCALC_TYPE_ARPA_ZONE:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+            for(pos = (nbuff.net_cidr/8)-1; (pos > 12); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%i.in-addr.arpa.", addr8[pos]);
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+            for(pos = ((nbuff.net_cidr/4)-1); (pos > 0); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%x.ip6.arpa.", ((addr8[pos/2] >> 4) & 0x0f));
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         return(NULL);
 
       case NETCALC_TYPE_BROADCAST:
          flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);

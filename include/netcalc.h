@@ -147,6 +147,10 @@
 #define NETCALC_TYPE_WILDCARD          0x04
 #define NETCALC_TYPE_FIRST             0x05
 #define NETCALC_TYPE_LAST              0x06
+#define NETCALC_TYPE_ARPA_NET          0x07
+#define NETCALC_TYPE_ARPA_ZONE         0x08
+#define NETCALC_TYPE_ARPA_REC          0x09
+#define NETCALC_TYPE_ARPA_HOST         0x0a
 
 
 //////////////////

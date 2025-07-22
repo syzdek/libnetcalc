@@ -426,6 +426,16 @@ netcalc_widget_info_ip_verbose(
          netcalc_widget_info_print(NULL, str);
       };
 
+      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ARPA_HOST, 0);
+      netcalc_widget_info_print("DNS ARPA Host", str);
+
+      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ARPA_ZONE, 0);
+      netcalc_widget_info_print("DNS ARPA Zone", str);
+
+      str = netcalc_ntop(nets[idx], buff, sizeof(buff), NETCALC_TYPE_ARPA_REC, 0);
+      netcalc_strlcat(buff, " IN PTR", sizeof(buff));
+      netcalc_widget_info_print("DNS ARPA RR", buff);
+
       printf("\n");
    };
 
