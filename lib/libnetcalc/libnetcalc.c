@@ -1635,6 +1635,16 @@ netcalc_strfnet(
             snprintf(buff, sizeof(buff), "%i", (int)net->net_cidr);
             break;
 
+         // copy DNS arpa zone
+         case 'D':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ARPA_ZONE, mflgs);
+            break;
+
+         // copy DNS arpa host
+         case 'd':
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ARPA_HOST, mflgs);
+            break;
+
          // copy family
          case 'F':
             snprintf(buff, sizeof(buff), "EUI48");

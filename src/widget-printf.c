@@ -167,6 +167,8 @@ netcalc_widget_printf_usage(
    printf("  %%b    is replaced by broadcast.\n");
    printf("  %%C    is replaced by CIDR without delimiter.\n");
    printf("  %%c    is conditionally replaced by CIDR with delimiter.\n");
+   printf("  %%D    is replaced by DNS arpa zone.\n");
+   printf("  %%d    is replaced by DNS arpa host.\n");
    printf("  %%F    is replaced by family.\n");
    printf("  %%f    is replaced by first usable address.\n");
    printf("  %%I    is conditionally replaced by interface without delimiter.\n");
