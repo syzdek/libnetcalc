@@ -396,9 +396,11 @@ netcalc_widget_info_ip_verbose(
 
       if ( ((family == NETCALC_AF_INET6) && (cidr < 128)) || ((family == NETCALC_AF_INET) && (cidr < 32)) )
       {
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_FIRST, cnf->flags);
+         flags |= NETCALC_FLG_SUPR;
+         flags = NETCALC_UNSET(flags, (NETCALC_FLG_COMPR | NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_FIRST, flags);
          netcalc_widget_info_print("Usable Range", str);
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_LAST, cnf->flags);
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_LAST, flags);
          netcalc_widget_info_print(NULL, str);
       };
 
