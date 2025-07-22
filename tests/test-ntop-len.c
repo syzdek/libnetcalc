@@ -113,16 +113,28 @@ main(
    int               opt_index;
    int               errors;
    int               rc;
+   int               idx;
+   int               ival;
    size_t            len;
    const char *      addr;
+   const char *      sval;
    netcalc_net_t *   net;
    char              buff[NETCALC_ADDRESS_LENGTH];
+
+   const char *      test_strs[] =
+   {  "00:11:22:33:44:55",
+      "00:11:22:33:44:55:66:77",
+      "0011.2233.4455",
+      "0011.2233.4455.6677",
+      "255.255.255.255/32",
+      "[3fff:1111:2222:3333:4444:5555:6666:7777%gigabitethernet11]/128:65535",
+      NULL
+   };
 
    // getopt options
    static const char *  short_opt = "hqVv";
    static struct option long_opt[] =
-   {
-      {"help",             no_argument,       NULL, 'h' },
+   {  {"help",             no_argument,       NULL, 'h' },
       {"quiet",            no_argument,       NULL, 'q' },
       {"silent",           no_argument,       NULL, 'q' },
       {"version",          no_argument,       NULL, 'V' },
@@ -136,96 +148,72 @@ main(
       {
          case -1:       /* no more arguments */
          case 0:        /* long options toggles */
-         break;
+            break;
 
          case 'h':
-         printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
-         printf("       %s [OPTIONS] <string> <string> ... <string> \n", PROGRAM_NAME);
-         printf("OPTIONS:\n");
-         printf("  -h, --help                print this help and exit\n");
-         printf("  -q, --quiet, --silent     do not print messages\n");
-         printf("  -V, --version             print version number and exit\n");
-         printf("  -v, --verbose             print verbose messages\n");
-         printf("\n");
-         return(0);
+            printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
+            printf("       %s [OPTIONS] <string> <string> ... <string> \n", PROGRAM_NAME);
+            printf("OPTIONS:\n");
+            printf("  -h, --help                print this help and exit\n");
+            printf("  -q, --quiet, --silent     do not print messages\n");
+            printf("  -V, --version             print version number and exit\n");
+            printf("  -v, --verbose             print verbose messages\n");
+            printf("\n");
+            return(0);
 
          case 'q':
-         quiet++;
-         break;
+            quiet++;
+            break;
 
          case 'V':
-         printf("%s (%s) %s\n", PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION);
-         printf("Written by David M. Syzdek.\n");
-         return(0);
+            printf("%s (%s) %s\n", PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION);
+            printf("Written by David M. Syzdek.\n");
+            return(0);
 
          case 'v':
-         verbose++;
-         break;
+            verbose++;
+            break;
 
          case '?':
-         fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
-         return(1);
+            fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
+            return(1);
 
          default:
-         fprintf(stderr, "%s: unrecognized option `--%c'\n", PROGRAM_NAME, c);
-         fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
-         return(1);
+            fprintf(stderr, "%s: unrecognized option `--%c'\n", PROGRAM_NAME, c);
+            fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
+            return(1);
       };
    };
 
    errors = 0;
 
-   addr = "00:11:22:33:44:55";
-   my_info("parsing  \"%s\" ...\n", addr);
-   rc = netcalc_initialize(&net, addr, 0);
-   my_verbose("   status:        %s\n", netcalc_strerror(rc));
-   my_verbose("   return code:   %i\n", rc);
-   for(len = 1; (len < strlen(addr)); len++)
-   {
-      my_verbose("   checking with buffer length: %zu\n", len);
-      memset(buff, 0, sizeof(buff));
-      if ((netcalc_ntop(net, buff, len, NETCALC_TYPE_ADDRESS, (NETCALC_FLG_IFACE | NETCALC_FLG_CIDR_ALWAYS | NETCALC_FLG_PORT))))
-      {
-         printf("   should fail:   %zu  %s\n", len, buff);
-         errors++;
+   for(idx = 0; ((test_strs[idx])); idx++)
+   {  addr = test_strs[idx];
+      my_info("parsing  \"%s\" ...\n", addr);
+      rc = netcalc_initialize(&net, addr, 0);
+      my_verbose("   status:        %s\n", netcalc_strerror(rc));
+      my_verbose("   return code:   %i\n", rc);
+      netcalc_get_field(net, NETCALC_FLD_FAMILY, &ival);
+      switch(ival)
+      {  case NETCALC_AF_EUI48: sval = "EUI48";   break;
+         case NETCALC_AF_EUI64: sval = "EUI64";   break;
+         case NETCALC_AF_INET:  sval = "IPv4";    break;
+         case NETCALC_AF_INET6: sval = "IPv6";    break;
+         default:               sval = "unknown"; break;
       };
-   };
-   netcalc_free(net);
-
-   addr = "255.255.255.255/32";
-   my_info("parsing  \"%s\" ...\n", addr);
-   rc = netcalc_initialize(&net, addr, 0);
-   my_verbose("   status:        %s\n", netcalc_strerror(rc));
-   my_verbose("   return code:   %i\n", rc);
-   for(len = 1; (len < strlen(addr)); len++)
-   {
-      my_verbose("   checking with buffer length: %zu\n", len);
-      memset(buff, 0, sizeof(buff));
-      if ((netcalc_ntop(net, buff, len, NETCALC_TYPE_ADDRESS, (NETCALC_FLG_IFACE | NETCALC_FLG_CIDR_ALWAYS | NETCALC_FLG_PORT))))
-      {
-         printf("   should fail:   %zu  %s\n", len, buff);
-         errors++;
+      my_verbose("   family:        %s\n", sval);
+      for(len = 1; (len < (strlen(addr)+2)); len++)
+      {  my_verbose("   checking with buffer length: %zu\n", len);
+         memset(buff, 0, sizeof(buff));
+         if ((netcalc_ntop(net, buff, len, NETCALC_TYPE_ADDRESS, (NETCALC_FLG_IFACE | NETCALC_FLG_CIDR_ALWAYS | NETCALC_FLG_PORT))))
+         {  if (strlen(buff) >= len)
+            {  printf("   should fail:   %zu  %s\n", len, buff);
+               errors++;
+            };
+         };
       };
+      netcalc_free(net);
    };
-   netcalc_free(net);
-
-   addr = "[3fff:1111:2222:3333:4444:5555:6666:7777%gigabitethernet11]/128:65535";
-   my_info("parsing  \"%s\" ...\n", addr);
-   rc = netcalc_initialize(&net, addr, 0);
-   my_verbose("   status:        %s\n", netcalc_strerror(rc));
-   my_verbose("   return code:   %i\n", rc);
-   for(len = 1; (len < strlen(addr)); len++)
-   {
-      my_verbose("   checking with buffer length: %zu\n", len);
-      memset(buff, 0, sizeof(buff));
-      if ((netcalc_ntop(net, buff, len, NETCALC_TYPE_ADDRESS, (NETCALC_FLG_IFACE | NETCALC_FLG_CIDR_ALWAYS | NETCALC_FLG_PORT))))
-      {
-         buff[len] = '\0';
-         printf("   should fail:   %zu  %s\n", len, buff);
-         errors++;
-      };
-   };
-   netcalc_free(net);
 
    return( ((errors)) ? 1 : 0 );
 }
