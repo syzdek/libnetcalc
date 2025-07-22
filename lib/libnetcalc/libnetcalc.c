@@ -107,7 +107,8 @@ netcalc_parse_eui(
 static int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        address );
+         char *                        address,
+         int                           ipv6mapped );
 
 
 static int
@@ -505,7 +506,7 @@ netcalc_initialize(
    if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
       nbuff.net_flags &= ~NETCALC_AF_EUI64;
    if ( (addrlen < 7) || (addrlen > 21) )
-      nbuff.net_flags &= ~NETCALC_AF_INET;
+      nbuff.net_flags &= ~(NETCALC_AF_INET | NETCALC_AF_INET6);
    if (addrlen < 2)
       nbuff.net_flags &= ~NETCALC_AF_INET6;
    if (!(nbuff.net_flags & NETCALC_AF))
@@ -526,11 +527,17 @@ netcalc_initialize(
    };
    if ((nbuff.net_flags & NETCALC_AF_INET))
    {
-      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
+      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str, 0)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
                         : (nbuff.net_flags & ~NETCALC_AF_INET);
    };
    if ((nbuff.net_flags & NETCALC_AF_INET6))
+   {
+      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str, 0)) == NETCALC_SUCCESS)
+                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
+                        : (nbuff.net_flags & ~NETCALC_AF_INET6);
+   };
+   if ( ((nbuff.net_flags & NETCALC_AF_INET6)) && ((rc)) )
    {
       nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
@@ -1174,7 +1181,8 @@ netcalc_parse_eui(
 int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        address )
+         char *                        address,
+         int                           ipv6mapped )
 {
    size_t            pos;
    size_t            digit;
@@ -1259,6 +1267,13 @@ netcalc_parse_inet(
    memcpy(&n->net_addr.addr8[12], &net_addr.addr8[12], 4);
    n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
    n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
+
+   if (!(ipv6mapped))
+   {  n->net_addr.addr8[10] = 0xff;
+      n->net_addr.addr8[11] = 0xff;
+   } else
+   {  n->net_flags |= NETCALC_FLG_V4MAPPED;
+   };
 
    return(0);
 }
@@ -1462,7 +1477,7 @@ netcalc_parse_inet6(
       // check for IPv4 mapped address
       if (wyde == 6)
       {
-         if (!(netcalc_parse_inet(n, &str[pos])))
+         if (!(netcalc_parse_inet(n, &str[pos], 1)))
          {
             n->net_flags |= NETCALC_FLG_V4MAPPED;
             return(0);
