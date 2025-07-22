@@ -995,6 +995,8 @@ netcalc_ntop_inet6(
          ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR_ALWAYS);
          if (!(netcalc_ntop_inet(net, ipv4, sizeof(ipv4), ipv4_flags)))
             return(NULL);
+         if (size <= (off+strlen(ipv4)+1))
+            return(NULL);
          dst[off] = '\0';
          off += netcalc_strlcat(dst, ipv4, size);
          continue;
