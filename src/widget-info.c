@@ -237,7 +237,7 @@ netcalc_widget_info_ip(
    assert(cnf  != NULL);
    assert(nets != NULL);
 
-   if ( (cnf->argc > 1) && (!(cnf->verbose)) )
+   if (cnf->argc > 1)
       netcalc_superblock(&nets[cnf->argc], nets, cnf->argc);
 
    if ((cnf->verbose))
@@ -353,8 +353,8 @@ netcalc_widget_info_ip_verbose(
       snprintf(
          buff, sizeof(buff),
          "%s (%s)",
-         cnf->argv[idx],
-         ((family == NETCALC_AF_INET) ? "IPv4 String" : "IPv6 String")
+         ((idx < cnf->argc) ? cnf->argv[idx] : "SUPERBLOCK"),
+         ((family == NETCALC_AF_INET) ? "IPv4" : "IPv6")
       );
       printf("%s\n", buff);
       for(pos = 0; (pos < (int)strlen(buff)); pos++)
