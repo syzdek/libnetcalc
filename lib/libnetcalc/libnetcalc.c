@@ -593,7 +593,6 @@ netcalc_ntop(
       case NETCALC_TYPE_ARPA_NET:
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
          if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
             nbuff.net_cidr = (net->net_cidr / 8) * 8;
          else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
@@ -677,7 +676,6 @@ netcalc_ntop(
          flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
          for(pos = 0; (pos < 16); pos++)
             nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
          break;
@@ -686,7 +684,6 @@ netcalc_ntop(
          flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
          for(pos = 0; (pos < 16); pos++)
             nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
          if (net->net_cidr < 127)
@@ -697,7 +694,6 @@ netcalc_ntop(
          flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
          for(pos = 0; (pos < 16); pos++)
             nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
          if (net->net_cidr < 127)
@@ -715,7 +711,6 @@ netcalc_ntop(
       case NETCALC_TYPE_NETWORK:
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
          for(pos = 0; (pos < 16); pos++)
             nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
          break;
@@ -901,8 +896,10 @@ netcalc_ntop_inet6(
    int         zero_len;
    int         zero_max_off;
    int         zero_max_len;
+   int         ipv4_flags;
    uint8_t *   dat8;
    char        map[] = "0123456789abcdef";
+   char        ipv4[NETCALC_ADDRESS_LENGTH];
 
    assert(net != NULL);
    assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
@@ -990,6 +987,18 @@ netcalc_ntop_inet6(
       };
 
       // save data
+      if ( ((flags & NETCALC_FLG_V4MAPPED)) && (idx == 12) )
+      {
+         ipv4_flags = flags;
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_PORT);
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR);
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR_ALWAYS);
+         if (!(netcalc_ntop_inet(net, ipv4, sizeof(ipv4), ipv4_flags)))
+            return(NULL);
+         dst[off] = '\0';
+         off += netcalc_strlcat(dst, ipv4, size);
+         continue;
+      };
       if (size <= (off+5))
          return(NULL);
       if ( (((dat8[idx+0] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
