@@ -132,7 +132,7 @@ testfmt_t test_fmts[] =
    {  .fmt_input     = "2001:db8::/32",
       .fmt_results   = "==2001:db8::/32       ==",
       .fmts          = (const char * const[])
-                     {  "==%-20zsd==",
+                     {  "==%-20zsA==",
                         "==%zsa%-10c==",
                         "==%zsa/%-9C==",
                         "==%zsa%c       ==",
@@ -143,7 +143,7 @@ testfmt_t test_fmts[] =
    {  .fmt_input     = "2001:db8::/32",
       .fmt_results   = "==       2001:db8::/32==",
       .fmts          = (const char * const[])
-                     {  "==%20zsd==",
+                     {  "==%20zsA==",
                         "==%17zsa%c==",
                         "==%17zsa/%C==",
                         "==       %zsa%c==",
@@ -154,7 +154,7 @@ testfmt_t test_fmts[] =
    {  .fmt_input     = "[fe80::216:3eff:fefe:b381%eth0]/64:80",
       .fmt_results   = "[fe80::216:3eff:fefe:b381%eth0]/64:80",
       .fmts          = (const char * const[])
-                     {  "%szd",
+                     {  "%szA",
                         "[%zsa%i]%c%p",
                         NULL
                      },
@@ -163,7 +163,7 @@ testfmt_t test_fmts[] =
    {  .fmt_input     = "[fe80::216:3eff:fefe:b381%eth0]/64:80",
       .fmt_results   = "[fe80:0000:0000:0000:0216:3eff:fefe:b381%eth0]/64:80",
       .fmts          = (const char * const[])
-                     {  "%d",
+                     {  "%A",
                         "[%a%i]%c%p",
                         "[%ZSa%i]%c%p",
                         "[%a%%%I]%c%p",

@@ -1584,7 +1584,7 @@ netcalc_strfnet(
 
             case 'B': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_NODELIM; break;
             case 'L': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_COLON;   break;
-            case 'A': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH;    break;
+            case 'H': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH;    break;
             case 'O': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DOT;  break;
 
             default: // applies spacing modifer
@@ -1607,6 +1607,12 @@ netcalc_strfnet(
             buff[1] = '\0';
             break;
 
+         // copy address with default options
+         case 'A':
+            mflgs |= NETCALC_FLG_IFACE | NETCALC_FLG_CIDR | NETCALC_FLG_PORT;
+            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ADDRESS, mflgs);
+            break;
+
          // copy address without interface, CIDR, or port
          case 'a':
             netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ADDRESS, mflgs);
@@ -1627,12 +1633,6 @@ netcalc_strfnet(
          // copy CIDR without delimiter
          case 'C':
             snprintf(buff, sizeof(buff), "%i", (int)net->net_cidr);
-            break;
-
-         // copy address with default options
-         case 'd':
-            mflgs |= NETCALC_FLG_IFACE | NETCALC_FLG_CIDR | NETCALC_FLG_PORT;
-            netcalc_ntop(net, buff, sizeof(buff), NETCALC_TYPE_ADDRESS, mflgs);
             break;
 
          // copy family

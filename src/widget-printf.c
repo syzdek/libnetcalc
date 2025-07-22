@@ -161,9 +161,9 @@ netcalc_widget_printf_usage(
    assert(cnf != NULL);
    printf("FORMAT:\n");
    printf("  %%%%    is replaced by '%%'.\n");
+   printf("  %%A    is replaced by address using default notation.\n");
    printf("  %%a    is replaced by address.\n");
    printf("  %%b    is replaced by broadcast.\n");
-   printf("  %%d    is replaced by address using default notation.\n");
    printf("  %%C    is replaced by CIDR without delimiter.\n");
    printf("  %%c    is conditionally replaced by CIDR with delimiter.\n");
    printf("  %%F    is replaced by family.\n");
@@ -177,8 +177,8 @@ netcalc_widget_printf_usage(
    printf("  %%p    is conditionally replaced by port number with delimiter.\n");
    printf("  %%W    is replaced by wildcard.\n");
    printf("FORMAT MODIFIERS:\n");
-   printf("  %%A    use dash delimiters (EUI48 and EUI64)\n");
    printf("  %%B    do not use delimiters (EUI48 and EUI64)\n");
+   printf("  %%H    use dash delimiters (EUI48 and EUI64)\n");
    printf("  %%L    use colon delimiters (EUI48 and EUI64)\n");
    printf("  %%M    disable IPv4-mapped IPv6 address\n");
    printf("  %%m    enable IPv4-mapped IPv6 address\n");
