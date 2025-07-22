@@ -533,12 +533,6 @@ netcalc_initialize(
    };
    if ((nbuff.net_flags & NETCALC_AF_INET6))
    {
-      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str, 0)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
-                        : (nbuff.net_flags & ~NETCALC_AF_INET6);
-   };
-   if ( ((nbuff.net_flags & NETCALC_AF_INET6)) && ((rc)) )
-   {
       nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
                         : (nbuff.net_flags & ~NETCALC_AF_INET6 );
@@ -1319,6 +1313,12 @@ netcalc_parse_inet6(
 
    if (!(n->net_flags & NETCALC_AF_INET6))
       return(NETCALC_EBADADDR);
+
+   // attempt to process as IPv4-mapped IPv6 address
+   if (netcalc_parse_inet(n, address, 1) == NETCALC_SUCCESS)
+   {  n->net_flags |= NETCALC_FLG_V4MAPPED;
+      return(NETCALC_SUCCESS);
+   };
 
    memset(&net_addr, 0, sizeof(netcalc_addr_t));
    memset(scope_name, 0, sizeof(scope_name));
