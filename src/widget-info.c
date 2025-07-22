@@ -282,9 +282,10 @@ netcalc_widget_info_ip(
       len_wildcard   = (int)(((int)strlen(recs[idx].wildcard)  > len_wildcard)   ? strlen(recs[idx].wildcard)  : len_wildcard);
    };
 
+   if (cnf->argc > 1)
+      printf("%-*s  ", len_address,      "Address");
    printf(
-      "%-*s  %-*s  %-*s  %-*s  %-*s  %-4s  %s\n",
-      len_address,      "Address",
+      "%-*s  %-*s  %-*s  %-*s  %-4s  %s\n",
       len_network,      "Network",
       len_broadcast,    "Broadcast",
       len_netmask,      "Netmask",
@@ -308,9 +309,10 @@ netcalc_widget_info_ip(
       else
          snprintf(subnet_count_str, sizeof(subnet_count), "n/a");
 
+      if (cnf->argc > 1)
+         printf("%-*s  ", len_address, recs[idx].address);
       printf(
-         "%-*s  %-*s  %-*s  %-*s  %-*s  %-4i  %s\n",
-         len_address,      recs[idx].address,
+         "%-*s  %-*s  %-*s  %-*s  %-4i  %s\n",
          len_network,      recs[idx].network,
          len_broadcast,    recs[idx].broadcast,
          len_netmask,      recs[idx].netmask,
