@@ -116,7 +116,7 @@ netcalc_parse_inet6(
          char *                        address );
 
 
-static size_t
+extern size_t
 netcalc_strlcat(
          char * restrict               dst,
          const char * restrict         src,

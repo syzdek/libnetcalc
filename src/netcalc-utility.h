@@ -157,6 +157,14 @@ netcalc_prog_name(
          netcalc_config_t *            cnf );
 
 
+// function in is in libnetcalc.a
+extern size_t
+netcalc_strlcat(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize );
+
+
 //--------------------//
 // widgets prototypes //
 //--------------------//
