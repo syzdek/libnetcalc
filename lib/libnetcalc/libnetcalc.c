@@ -1670,6 +1670,8 @@ netcalc_parse_inet6(
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
    {
+      if (cidr != -1)
+         return(NETCALC_EBADADDR);
       if ( (!(bracketed)) && (scope_name[0] != '\0') )
          return(NETCALC_EBADADDR);
       ptr[0] = '\0';
