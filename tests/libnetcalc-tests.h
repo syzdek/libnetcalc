@@ -100,6 +100,7 @@ struct _test_data
    const char *      addr_ip_network;     // network address with CIDR
    const char *      addr_ip_broadcast;   // broadcast address without CIDR
    const char *      addr_ip_iface;       // interface name
+   const char *      addr_ip_4mapped6;    // IPv4-mapped IPv6 address
    uint32_t          addr_flgs;
    uint16_t          addr_port;
    uint8_t           addr_cidr;
