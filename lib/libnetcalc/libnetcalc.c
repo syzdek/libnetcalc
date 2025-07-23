@@ -506,7 +506,7 @@ netcalc_initialize(
    if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
       nbuff.net_flags &= ~NETCALC_AF_EUI64;
    if ( (addrlen < 7) || (addrlen > 21) )
-      nbuff.net_flags &= ~(NETCALC_AF_INET | NETCALC_AF_INET6);
+      nbuff.net_flags &= ~NETCALC_AF_INET;
    if (addrlen < 2)
       nbuff.net_flags &= ~NETCALC_AF_INET6;
    if (!(nbuff.net_flags & NETCALC_AF))
@@ -1317,6 +1317,8 @@ netcalc_parse_inet6(
    // attempt to process as IPv4-mapped IPv6 address
    if (netcalc_parse_inet(n, address, 1) == NETCALC_SUCCESS)
    {  n->net_flags |= NETCALC_FLG_V4MAPPED;
+      n->net_addr.addr8[10] = 0xff;
+      n->net_addr.addr8[11] = 0xff;
       return(NETCALC_SUCCESS);
    };
 
