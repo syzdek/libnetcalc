@@ -899,7 +899,7 @@ netcalc_ntop(
             {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
                netcalc_strlcat(dst, tmp, size);
             };
-            snprintf(tmp, sizeof(tmp), "%x", ((addr8[pos/2] >> 4) & 0x0f));
+            snprintf(tmp, sizeof(tmp), "%x", ((addr8[pos/2] >> 0) & 0x0f));
             netcalc_strlcat(dst, tmp, size);
             return(dst);
          };
