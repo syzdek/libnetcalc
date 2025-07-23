@@ -210,6 +210,13 @@ netcalc_initialize(
          int                           flags );
 
 
+_NETCALC_F int
+netcalc_network_mask(
+         netcalc_net_t *               net,
+         const netcalc_net_t *         prefix,
+         int                           cidr );
+
+
 _NETCALC_F const char *
 netcalc_ntop(
          netcalc_net_t *               net,

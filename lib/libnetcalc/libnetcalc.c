@@ -552,6 +552,56 @@ netcalc_initialize(
 }
 
 
+int
+netcalc_network_mask(
+         netcalc_net_t *               net,
+         const netcalc_net_t *         prefix,
+         int                           cidr )
+{
+   int                        family;
+   netcalc_addr_t *           net_addr;
+   const netcalc_addr_t *     mask_addr;
+   const netcalc_addr_t *     pre_addr;
+
+   assert(net != NULL);
+
+   // verifies prefix and net are of the same address family
+   family = net->net_flags & NETCALC_AF;
+   if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+      return(NETCALC_ENOTSUP);
+
+   // normalizes CIDR
+   if ( ((cidr)) && (family == NETCALC_AF_INET) )
+      cidr += 96;
+   if (cidr > 128)
+      return(NETCALC_EINVAL);
+
+   // updates CIDR and exits if prefix is not specified
+   if (!(prefix))
+   {  if ((cidr))
+         net->net_cidr = cidr;
+      return(0);
+   };
+   net->net_cidr = ((cidr)) ? cidr : prefix->net_cidr;
+
+   net_addr    = &net->net_addr;
+   pre_addr    = &prefix->net_addr;
+   mask_addr   = &_netcalc_netmasks[net->net_cidr];
+
+   // copy network prefix to network
+   net_addr->addr32[0]  = (  mask_addr->addr32[0] & pre_addr->addr32[0] )
+                        | ( ~mask_addr->addr32[0] & net_addr->addr32[0] );
+   net_addr->addr32[1]  = (  mask_addr->addr32[1] & pre_addr->addr32[1] )
+                        | ( ~mask_addr->addr32[1] & net_addr->addr32[1] );
+   net_addr->addr32[2]  = (  mask_addr->addr32[2] & pre_addr->addr32[2] )
+                        | ( ~mask_addr->addr32[2] & net_addr->addr32[2] );
+   net_addr->addr32[3]  = (  mask_addr->addr32[3] & pre_addr->addr32[3] )
+                        | ( ~mask_addr->addr32[3] & net_addr->addr32[3] );
+
+   return(0);
+}
+
+
 const char *
 netcalc_ntop(
          netcalc_net_t *               net,
