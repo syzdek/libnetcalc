@@ -90,6 +90,7 @@
 #define NETCALC_EBADADDR               -4
 #define NETCALC_EINVAL                 -5
 #define NETCALC_EFIELD                 -6
+#define NETCALC_ENOTSUP                -7
 
 
 #define NETCALC_FLD_FAMILY             0
