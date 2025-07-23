@@ -94,7 +94,8 @@ netcalc_widget_info_eui(
 static int
 netcalc_widget_info_ip(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets );
+         netcalc_net_t **              nets,
+         int                           family_any );
 
 
 static int
@@ -132,11 +133,13 @@ netcalc_widget_info(
    int                  rc;
    int                  net_family;
    int                  ival;
+   int                  family_any;
    size_t               len;
    size_t               size;
    netcalc_net_t **     nets;
 
    net_family  = 0;
+   family_any  = 0;
 
    cnf->flags &= ~cnf->flags_negate;
 
@@ -167,17 +170,19 @@ netcalc_widget_info(
             net_family = ival;
       };
       if (!(net_family & ival))
-      {  fprintf(stderr, "%s: incompatible address families provided\n", netcalc_prog_name(cnf));
-         netcalc_nets_free(nets);
-         return(1);
-      };
+         family_any = 1;
    };
 
    // print address family information
-   if ((net_family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
+   if ((family_any))
+   {  rc  = 0;
+      rc += netcalc_widget_info_eui( cnf, nets);
+      rc += netcalc_widget_info_ip(  cnf, nets, family_any);
+   }
+   else if ((net_family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
       rc = netcalc_widget_info_eui( cnf, nets);
    else if ((net_family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
-      rc = netcalc_widget_info_ip(    cnf, nets);
+      rc = netcalc_widget_info_ip( cnf, nets, family_any);
    else
    {  fprintf(stderr, "%s: unknown or unsupported address family\n", netcalc_prog_name(cnf));
       rc = 1;
@@ -185,14 +190,14 @@ netcalc_widget_info(
 
    netcalc_nets_free(nets);
 
-   return(rc);
+   return(((rc)) ? 1 : 0);
 }
 
 
 int
 netcalc_widget_info_eui(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets )
+         netcalc_net_t **              nets)
 {
    int                  idx;
    int                  family;
@@ -208,6 +213,8 @@ netcalc_widget_info_eui(
    for(idx = 0; ((nets[idx])); idx++)
    {
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
+      if ( (family != NETCALC_AF_EUI48) && (family != NETCALC_AF_EUI64) )
+         continue;
 
       if ((rc = netcalc_dup(&dup, nets[idx])) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
@@ -260,7 +267,8 @@ netcalc_widget_info_eui(
 int
 netcalc_widget_info_ip(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets )
+         netcalc_net_t **              nets,
+         int                           family_any )
 {
    int                  family;
    int                  idx;
@@ -278,10 +286,10 @@ netcalc_widget_info_ip(
    assert(cnf  != NULL);
    assert(nets != NULL);
 
-   if (cnf->argc > 1)
+   if ( (cnf->argc > 1) && (!(family_any)) )
       netcalc_superblock(&nets[cnf->argc], nets, cnf->argc);
 
-   if ((cnf->verbose))
+   if ( ((cnf->verbose)) || ((family_any)) )
       return(netcalc_widget_info_ip_verbose(cnf, nets));
 
    len_address    = (int)strlen("Address");;
@@ -392,6 +400,9 @@ netcalc_widget_info_ip_verbose(
    {
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
       netcalc_get_field(nets[idx], NETCALC_FLD_CIDR,     &cidr);
+
+      if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+         continue;
 
       if ((rc = netcalc_dup(&eui, nets[idx])) != 0)
       {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
