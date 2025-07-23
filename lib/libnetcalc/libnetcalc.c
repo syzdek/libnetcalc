@@ -73,6 +73,27 @@
 //////////////////
 // MARK: - Prototypes
 
+static int
+netcalc_convert_eui48(
+         netcalc_net_t *               net );
+
+
+static int
+netcalc_convert_eui64(
+         netcalc_net_t *               net );
+
+
+static int
+netcalc_convert_inet(
+         netcalc_net_t *               net );
+
+
+static int
+netcalc_convert_inet6(
+         netcalc_net_t *               net,
+         const netcalc_net_t *         prefix );
+
+
 static const char *
 netcalc_ntop_eui(
          netcalc_net_t *               net,
@@ -280,6 +301,33 @@ const netcalc_addr_t _netcalc_netmasks[] =
 };
 
 
+// IPv6 Prefix for IPv4 addresses: ::ffff:0000:0000/96
+const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
+{
+   .net_flags        = NETCALC_AF_INET6,
+   .net_cidr         = 96,
+   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 } },
+};
+
+
+// IPv4 Link-local addresses: 169.254.0.0/16
+const netcalc_net_t _netcalc_link_local_in =
+{
+   .net_flags        = NETCALC_AF_INET,
+   .net_cidr         = 112,
+   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0xfe, 0x00, 0x00 } },
+};
+
+
+// IPv6 Link-local addresses: fe80::/10
+const netcalc_net_t _netcalc_link_local_in6 =
+{
+   .net_flags        = NETCALC_AF_INET6,
+   .net_cidr         = 10,
+   .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
+};
+
+
 // IPv4 localhost: 127.0.0.0/8
 const netcalc_net_t _netcalc_lo_in =
 {
@@ -302,12 +350,178 @@ const netcalc_net_t _netcalc_lo_in6 =
 };
 
 
+// IPv6 SLAAC addresses: fe80::/64
+const netcalc_net_t _netcalc_slaac_in6 =
+{
+   .net_flags        = NETCALC_AF_INET6,
+   .net_cidr         = 64,
+   .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
+};
+
+
+
 /////////////////
 //             //
 //  Functions  //
 //             //
 /////////////////
 // MARK: - Functions
+
+int
+netcalc_convert(
+         netcalc_net_t *               net,
+         int                           family,
+         const netcalc_net_t *         prefix )
+{
+   assert(net != NULL);
+   switch(family)
+   {  case NETCALC_AF_EUI48:  return(netcalc_convert_eui48(net));
+      case NETCALC_AF_EUI64:  return(netcalc_convert_eui64(net));
+      case NETCALC_AF_INET:   return(netcalc_convert_inet(net));
+      case NETCALC_AF_INET6:  return(netcalc_convert_inet6(net, prefix));
+      default:                break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
+int
+netcalc_convert_eui48(
+         netcalc_net_t *               net  )
+{
+   uint8_t *      addr8;
+
+   assert(net != NULL);
+
+   addr8 = (uint8_t *)&net->net_addr.addr8;
+
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:
+         return(0);
+
+      case NETCALC_AF_INET6:
+      case NETCALC_AF_EUI64:
+         if ( (addr8[11] != 0xff) || (addr8[12] != 0xfe) )
+            return(NETCALC_ENOTSUP);
+         net->net_addr.addr8[12] = net->net_addr.addr8[10];
+         net->net_addr.addr8[11] = net->net_addr.addr8[9];
+         net->net_addr.addr8[10] = (net->net_addr.addr8[8] ^ 0x02);
+         net->net_addr.addr8[9]  = 0;
+         net->net_addr.addr8[8]  = 0;
+         net->net_addr.addr32[0] = 0;
+         net->net_addr.addr32[1] = 0;
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48;
+         return(0);
+
+      case NETCALC_AF_INET:
+         return(NETCALC_ENOTSUP);
+
+      default:
+         break;
+   };
+
+   return(NETCALC_ENOTSUP);
+}
+
+
+int
+netcalc_convert_eui64(
+         netcalc_net_t *               net )
+{
+   assert(net != NULL);
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:
+         net->net_addr.addr32[0] = 0;
+         net->net_addr.addr32[1] = 0;
+         net->net_addr.addr8[8]  = (net->net_addr.addr8[10] ^ 0x02);
+         net->net_addr.addr8[9]  = net->net_addr.addr8[11];
+         net->net_addr.addr8[10] = net->net_addr.addr8[12];
+         net->net_addr.addr8[11] = 0xff;
+         net->net_addr.addr8[12] = 0xfe;
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64;
+         return(0);
+
+      case NETCALC_AF_EUI64:
+         return(0);
+
+      case NETCALC_AF_INET:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_INET6:
+         net->net_addr.addr32[0] = 0;
+         net->net_addr.addr32[1] = 0;
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64;
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
+int
+netcalc_convert_inet(
+         netcalc_net_t *               net )
+{
+   assert(net != NULL);
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_EUI64:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_INET:
+         return(0);
+
+      case NETCALC_AF_INET6:
+         net->net_addr.addr32[0] = 0;
+         net->net_addr.addr32[1] = 0;
+         net->net_addr.addr32[2] = 0;
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET;
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
+int
+netcalc_convert_inet6(
+         netcalc_net_t *               net,
+         const netcalc_net_t *         prefix )
+{
+   int      rc;
+
+   assert(net != NULL);
+
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:
+         if ((rc = netcalc_convert_eui64(net)) != NETCALC_SUCCESS)
+            return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_EUI64:
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
+         prefix         = ((prefix)) ? prefix : &_netcalc_slaac_in6;
+         return(netcalc_network_mask(net, prefix, net->net_cidr));
+
+      case NETCALC_AF_INET:
+         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
+         prefix         = ((prefix)) ? prefix : &_netcalc_ipv4_mapped_ipv6;
+         return(netcalc_network_mask(net, prefix, net->net_cidr));
+
+      case NETCALC_AF_INET6:
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
 
 int
 netcalc_dflt_flags(

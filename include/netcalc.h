@@ -181,6 +181,13 @@ typedef struct _libnetcalc_network     netcalc_net_t;
 // MARK: - Prototypes
 
 _NETCALC_F int
+netcalc_convert(
+         netcalc_net_t *               net,
+         int                           family,
+         const netcalc_net_t *         prefix );
+
+
+_NETCALC_F int
 netcalc_dflt_flags(
          int                           family );
 
