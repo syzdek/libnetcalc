@@ -1155,6 +1155,7 @@ netcalc_ntop_inet6(
    int         zero_max_off;
    int         zero_max_len;
    int         ipv4_flags;
+   int         max_len;
    uint8_t *   dat8;
    char        map[] = "0123456789abcdef";
    char        ipv4[NETCALC_ADDRESS_LENGTH];
@@ -1196,7 +1197,8 @@ netcalc_ntop_inet6(
    {
       zero_off = -1;
       zero_len = 0;
-      for(idx = 0; (idx < 16); idx += 2)
+      max_len  = (flags & NETCALC_FLG_V4MAPPED) ? 12 : 16;
+      for(idx = 0; (idx < max_len); idx += 2)
       {
          if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
          {
