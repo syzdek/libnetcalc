@@ -1756,9 +1756,10 @@ netcalc_parse_inet6(
       // check for IPv4 mapped address
       if (wyde == 6)
       {
-         if (!(netcalc_parse_inet(n, &str[pos], 1)))
-         {
-            n->net_flags |= NETCALC_FLG_V4MAPPED;
+         if (!(netcalc_parse_inet(n, &str[pos], 0)))
+         {  n->net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : n->net_cidr);
+            n->net_port    =  (uint16_t)((port != -1) ? port : n->net_port);
+            n->net_flags   |= NETCALC_FLG_V4MAPPED;
             return(0);
          };
       };
