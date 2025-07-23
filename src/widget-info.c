@@ -196,7 +196,11 @@ netcalc_widget_info_eui(
 {
    int                  idx;
    int                  family;
-   const char *         net_addr_str;
+   int                  rc;
+   int                  pos;
+   char                 buff[512];
+   const char *         str;
+   netcalc_net_t *      dup;
 
    assert(cnf  != NULL);
    assert(nets != NULL);
@@ -204,12 +208,49 @@ netcalc_widget_info_eui(
    for(idx = 0; ((nets[idx])); idx++)
    {
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
-      netcalc_widget_info_print("Family",  (family == NETCALC_AF_EUI48) ? "EUI48" : "EUI64");
 
-      net_addr_str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-      netcalc_widget_info_print("Address",  net_addr_str);
+      if ((rc = netcalc_dup(&dup, nets[idx])) != NETCALC_SUCCESS)
+      {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+         return(rc);
+      };
 
+      snprintf(
+         buff, sizeof(buff),
+         "%s (%s)",
+         cnf->argv[idx] ,
+         ((family == NETCALC_AF_EUI48) ? "EUI48" : "EUI64")
+      );
+      printf("%s\n", buff);
+      for(pos = 0; (pos < (int)strlen(buff)); pos++)
+         printf("-");
       printf("\n");
+
+      if (family == NETCALC_AF_EUI48)
+      {
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         netcalc_widget_info_print("EUI48",  str);
+         if ((rc = netcalc_convert(dup, NETCALC_AF_EUI64, NULL)) == 0)
+         {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+            netcalc_widget_info_print("Modified EUI64",  str);
+         };
+      } else if ((rc = netcalc_convert(dup, NETCALC_AF_EUI48, NULL)) == 0)
+      {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         netcalc_widget_info_print("EUI48",  str);
+         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         netcalc_widget_info_print("Modified EUI64",  str);
+      } else
+      {  str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         netcalc_widget_info_print("EUI64",  str);
+      };
+
+      if ((rc = netcalc_convert(dup, NETCALC_AF_INET6, NULL)) == 0)
+      {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         netcalc_widget_info_print("IPv6 SLAAC Address",  str);
+      };
+
+      netcalc_free(dup);
+
+      printf("\n\n");
    };
 
    return(0);
@@ -333,6 +374,7 @@ netcalc_widget_info_ip_verbose(
          netcalc_config_t *            cnf,
          netcalc_net_t **              nets )
 {
+   int                  rc;
    int                  idx;
    int                  ival;
    int                  family;
@@ -341,6 +383,7 @@ netcalc_widget_info_ip_verbose(
    int                  pos;
    const char *         str;
    char                 buff[512];
+   netcalc_net_t *      eui;
 
    assert(cnf  != NULL);
    assert(nets != NULL);
@@ -349,6 +392,11 @@ netcalc_widget_info_ip_verbose(
    {
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
       netcalc_get_field(nets[idx], NETCALC_FLD_CIDR,     &cidr);
+
+      if ((rc = netcalc_dup(&eui, nets[idx])) != 0)
+      {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+         return(rc);
+      };
 
       snprintf(
          buff, sizeof(buff),
@@ -404,6 +452,15 @@ netcalc_widget_info_ip_verbose(
          netcalc_widget_info_print(NULL, str);
       };
 
+      if ((rc = netcalc_convert(eui, NETCALC_AF_EUI48, NULL)) == 0)
+      {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
+         netcalc_widget_info_print("MAC Address", str);
+         if ((rc = netcalc_convert(eui, NETCALC_AF_EUI64, NULL)) == 0)
+         {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
+            netcalc_widget_info_print("Modified EUI64", str);
+         };
+      };
+
       str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ARPA_HOST, 0);
       netcalc_widget_info_print("DNS ARPA Host", str);
 
@@ -413,6 +470,8 @@ netcalc_widget_info_ip_verbose(
       str = netcalc_ntop(nets[idx], buff, sizeof(buff), NETCALC_TYPE_ARPA_REC, 0);
       netcalc_strlcat(buff, " IN PTR", sizeof(buff));
       netcalc_widget_info_print("DNS ARPA RR", buff);
+
+      netcalc_free(eui);
 
       printf("\n\n");
    };
