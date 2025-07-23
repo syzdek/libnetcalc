@@ -90,6 +90,7 @@ sbin_PROGRAMS				=
 mod_LTLIBRARIES				=
 EXTRA_PROGRAMS				= src/netcalc \
 					  src/netcalc-dmstools \
+					  tests/test-ntop-4mapped6 \
 					  tests/test-ntop-broadcast \
 					  tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
@@ -104,7 +105,8 @@ EXTRA					=
 # lists
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT	=
 BUILT_SOURCES				=
-TESTS					= tests/test-ntop-broadcast \
+TESTS					= tests/test-ntop-4mapped6 \
+					  tests/test-ntop-broadcast \
 					  tests/test-ntop-compress \
 					  tests/test-ntop-dflt \
 					  tests/test-ntop-len \
@@ -191,6 +193,15 @@ src_netcalc_SOURCES			= src/netcalc-utility.h \
 # macros for src/netcalc-dmstools
 src_netcalc_dmstools_DEPENDENCIES	= Makefile config.h
 src_netcalc_dmstools_SOURCES		= src/netcalc-dmstools.c
+
+
+# macros for tests/test-ntop-4mapped6
+tests_test_ntop_4mapped6_DEPENDENCIES	= Makefile config.h \
+					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_4mapped6_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
+tests_test_ntop_4mapped6_SOURCES	= tests/libnetcalc-tests.h \
+					  tests/test-data.c \
+					  tests/test-ntop-4mapped6.c
 
 
 # macros for tests/test-ntop-broadcast
