@@ -718,6 +718,196 @@ netcalc_widget_lookup(
 
 
 //-------------------//
+// record functions //
+//-------------------//
+#pragma mark record functions
+
+extern void
+netcalc_rec_length(
+         my_rec_t *                    rec,
+         my_len_t *                    l )
+{
+   assert(rec  != NULL);
+   assert(l    != NULL);
+   l->address        = (int)(((int)strlen(rec->address)        > l->address)        ? strlen(rec->address)       : l->address);
+   l->ip_broadcast   = (int)(((int)strlen(rec->ip_broadcast)   > l->ip_broadcast)   ? strlen(rec->ip_broadcast)  : l->ip_broadcast);
+   l->ip_netmask     = (int)(((int)strlen(rec->ip_netmask)     > l->ip_netmask)     ? strlen(rec->ip_netmask)    : l->ip_netmask);
+   l->ip_network     = (int)(((int)strlen(rec->ip_network)     > l->ip_network)     ? strlen(rec->ip_network)    : l->ip_network);
+   l->ip_wildcard    = (int)(((int)strlen(rec->ip_wildcard)    > l->ip_wildcard)    ? strlen(rec->ip_wildcard)   : l->ip_wildcard);
+   return;
+}
+
+
+void
+netcalc_rec_summary_ip(
+         my_rec_t *                    r,
+         my_len_t *                    l,
+         int                           flags )
+{
+   int               family;
+   const char *      subnets;
+
+   assert(l != NULL);
+
+   family   = ((r))
+            ? r->family
+            : (flags & NETCALC_AF);
+   subnets  = ((r))
+            ? r->ip_subnets
+            : ( (family == NETCALC_AF_INET) ? "/32s" : "/64s" );
+
+   if ((flags & MY_FLG_SHOW_ADDR))
+      printf("%-*s  ", l->address, (((r)) ? r->address : "Address"));
+   printf(
+      "%-*s  %-*s  %-*s  %-*s  %-4s  %s\n",
+      l->ip_network,    (((r)) ? r->ip_network     : "Network"),
+      l->ip_broadcast,  (((r)) ? r->ip_broadcast   : "Broadcast"),
+      l->ip_netmask,    (((r)) ? r->ip_netmask     : "Netmask"),
+      l->ip_wildcard,   (((r)) ? r->ip_wildcard    : "Wildcard"),
+                        (((r)) ? r->ip_cidr        : "CIDR"),
+                        subnets
+   );
+
+   return;
+}
+
+
+void
+netcalc_rec_process(
+         netcalc_config_t *            cnf,
+         my_rec_t *                    rec )
+{
+   int                  ip_superblock;
+   int                  ival;
+   long long unsigned   lluval;
+   netcalc_net_t *      n;
+
+   assert(cnf != NULL);
+   assert(rec != NULL);
+
+   if (!(rec->net))
+      return;
+   n              = rec->net;
+   ip_superblock  = rec->ip_superblock;
+
+   memset(rec, 0, sizeof(my_rec_t));
+   rec->net             = n;
+   rec->ip_superblock   = ip_superblock;
+
+   netcalc_get_field(n, NETCALC_FLD_FAMILY, &rec->family);
+   if (!(rec->ip_superblock))
+      netcalc_ntop(n, rec->address, sizeof(((my_rec_t *)0)->address), NETCALC_TYPE_ADDRESS, cnf->flags);
+   else
+      strncpy(rec->address, "SUPERBLOCK", sizeof(((my_rec_t *)0)->address));
+
+   if ( (rec->family == NETCALC_AF_INET) || (rec->family == NETCALC_AF_INET6) )
+   {  netcalc_ntop(n, rec->ip_network,    sizeof(((my_rec_t *)0)->ip_network),    NETCALC_TYPE_NETWORK,   NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
+      netcalc_ntop(n, rec->ip_broadcast,  sizeof(((my_rec_t *)0)->ip_broadcast),  NETCALC_TYPE_BROADCAST, NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
+      netcalc_ntop(n, rec->ip_netmask,    sizeof(((my_rec_t *)0)->ip_netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
+      netcalc_ntop(n, rec->ip_wildcard,   sizeof(((my_rec_t *)0)->ip_wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
+      netcalc_get_field(n, NETCALC_FLD_CIDR, &ival);
+      snprintf(rec->ip_cidr, sizeof(((my_rec_t *)0)->ip_cidr), "%i", ival);
+
+      // calculate subnets
+      netcalc_get_field(n, NETCALC_FLD_CIDR, &ival);
+      if (rec->family == NETCALC_AF_INET6)
+      {  if ( ((ival)) && (ival <= 64) )
+         {  lluval =  0x8000000000000000LLU >> (ival -1);
+            snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "%llu", lluval);
+         } else
+         {  snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "n/a");
+         };
+      } else if (rec->family == NETCALC_AF_INET)
+      {  lluval =  0x100000000LLU >> ival;
+         snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "%llu", lluval);
+      };
+   };
+
+   return;
+}
+
+
+my_rec_t **
+netcalc_recs_alloc(
+         netcalc_config_t *            cnf,
+         size_t                        len )
+{
+   size_t            idx;
+   size_t            size;
+   my_rec_t *        rec;
+   my_rec_t **       recs;
+
+   assert(cnf != NULL);
+
+   size = (len + 2) * sizeof(my_rec_t *);
+   if ((recs = malloc(size)) == NULL)
+   {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+      return(NULL);
+   };
+   memset(recs, 0, size);
+
+   for(idx = 0; (idx < len); idx++)
+   {  if ((rec = malloc(sizeof(my_rec_t))) == NULL)
+      {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+         netcalc_recs_free(recs);
+         return(NULL);
+      };
+      memset(rec, 0, sizeof(my_rec_t));
+      recs[idx] = rec;
+   };
+
+   return(recs);
+}
+
+
+void
+netcalc_recs_free(
+         my_rec_t **                   recs )
+{
+   size_t               idx;
+   assert(recs != NULL);
+   for(idx = 0; ((recs[idx])); idx++)
+   {  if ((recs[idx]->net))
+         netcalc_free(recs[idx]->net);
+      free(recs[idx]);
+   };
+   free(recs);
+   return;
+}
+
+
+void
+netcalc_recs_lengths(
+         my_rec_t **                   recs,
+         my_len_t *                    l )
+{
+   size_t            idx;
+   my_rec_t *        rec;
+
+   assert(l != NULL);
+
+   memset(l, 0, sizeof(my_len_t));
+   l->address        = (int)strlen("Address");;
+   l->ip_broadcast   = (int)strlen("Broadcast");;
+   l->ip_netmask     = (int)strlen("Netmask");;
+   l->ip_network     = (int)strlen("Network");;
+   l->ip_wildcard    = (int)strlen("Wildcard");
+
+   if (!(recs))
+      return;
+
+   for(idx = 0; ((recs[idx])); idx++)
+   {  rec = recs[idx];
+      if (!(rec->net))
+         continue;
+      netcalc_rec_length(rec, l);
+   };
+
+   return;
+}
+
+
+//-------------------//
 // widgets functions //
 //-------------------//
 #pragma mark widgets functions

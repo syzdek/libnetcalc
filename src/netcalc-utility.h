@@ -90,6 +90,10 @@
 #endif
 
 
+#undef  MY_FLG_SHOW_ADDR
+#define MY_FLG_SHOW_ADDR      NETCALC_FLG_USR1
+
+
 //////////////////
 //              //
 //  Data Types  //
@@ -98,6 +102,8 @@
 // MARK: - Data Types
 
 typedef struct _netcalc_config netcalc_config_t;
+typedef struct _my_length     my_len_t;
+typedef struct _my_record     my_rec_t;
 typedef struct _netcalc_widget netcalc_widget_t;
 
 
@@ -112,6 +118,29 @@ struct _netcalc_config
    char * const *             argv;
    const char *               prog_name;
    const netcalc_widget_t *   widget;
+};
+
+
+struct _my_length
+{  int                  address;
+   int                  ip_broadcast;
+   int                  ip_netmask;
+   int                  ip_network;
+   int                  ip_wildcard;
+};
+
+
+struct _my_record
+{  netcalc_net_t *      net;
+   int                  family;
+   int                  ip_superblock;
+   char                 address[NETCALC_ADDRESS_LENGTH];
+   char                 ip_broadcast[NETCALC_ADDRESS_LENGTH];
+   char                 ip_cidr[NETCALC_ADDRESS_LENGTH];
+   char                 ip_netmask[NETCALC_ADDRESS_LENGTH];
+   char                 ip_network[NETCALC_ADDRESS_LENGTH];
+   char                 ip_subnets[NETCALC_ADDRESS_LENGTH];
+   char                 ip_wildcard[NETCALC_ADDRESS_LENGTH];
 };
 
 
@@ -163,6 +192,47 @@ netcalc_strlcat(
          char * restrict               dst,
          const char * restrict         src,
          size_t                        dstsize );
+
+
+//-------------------//
+// record prototypes //
+//-------------------//
+#pragma mark record prototypes
+
+extern void
+netcalc_rec_length(
+         my_rec_t *                   rec,
+         my_len_t *                    l );
+
+
+extern void
+netcalc_rec_summary_ip(
+         my_rec_t *                    r,
+         my_len_t *                    l,
+         int                           flags );
+
+
+extern void
+netcalc_rec_process(
+         netcalc_config_t *            cnf,
+         my_rec_t *                    rec );
+
+
+extern my_rec_t **
+netcalc_recs_alloc(
+         netcalc_config_t *            cnf,
+         size_t                        len );
+
+
+extern void
+netcalc_recs_free(
+         my_rec_t **                   recs );
+
+
+extern void
+netcalc_recs_lengths(
+         my_rec_t **                   recs,
+         my_len_t *                    l );
 
 
 //--------------------//
