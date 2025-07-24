@@ -810,7 +810,9 @@ netcalc_rec_process(
 
       // calculate subnets
       if (rec->family == NETCALC_AF_INET6)
-      {  if ( ((rec->ip_cidr)) && (rec->ip_cidr <= 64) )
+      {  if (!(rec->ip_cidr))
+         {  netcalc_strlcat(rec->ip_subnets, "18446744073709551616", sizeof(((my_rec_t *)0)->ip_subnets));
+         } else if (rec->ip_cidr <= 64)
          {  lluval =  0x8000000000000000LLU >> (rec->ip_cidr - 1);
             snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "%llu", lluval);
          } else
