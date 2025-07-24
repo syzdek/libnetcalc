@@ -60,8 +60,11 @@
 #undef   NETCALC_SHORT_OPT
 #define  NETCALC_SHORT_OPT "hqVv"
 
+#undef   NETCALC_SHORT_FAMILY
+#define  NETCALC_SHORT_FAMILY "46Ee"
+
 #undef   NETCALC_SHORT_FORMAT
-#define  NETCALC_SHORT_FORMAT "012346EeMSZ"
+#define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
 
 #undef   NETCALC_LONG_OPT
 #define  NETCALC_LONG_OPT \
@@ -72,16 +75,21 @@
    { "verbose",         no_argument,         NULL, 'v' }, \
    { NULL, 0, NULL, 0 }
 
-#undef   NETCALC_LONG_FORMAT
-#define  NETCALC_LONG_FORMAT \
+#undef   NETCALC_LONG_FAMILY
+#define  NETCALC_LONG_FAMILY \
    { "ipv4",            no_argument,         NULL, '4' }, \
    { "ipv6",            no_argument,         NULL, '6' }, \
    { "eui48",           no_argument,         NULL, 'e' }, \
-   { "mac",             no_argument,         NULL, 'e' }, \
+   { "eui64",           no_argument,         NULL, 'E' }, \
+   { "mac",             no_argument,         NULL, 'e' },
+
+#undef   NETCALC_LONG_FORMAT
+#define  NETCALC_LONG_FORMAT \
+   NETCALC_LONG_FAMILY \
    { "colon",           no_argument,         NULL, '0' }, \
    { "dash",            no_argument,         NULL, '1' }, \
    { "dot",             no_argument,         NULL, '2' }, \
-   { "no-delimiter",    no_argument,         NULL, '3' }
+   { "no-delimiter",    no_argument,         NULL, '3' },
 
 
 //////////////
@@ -142,6 +150,11 @@ netcalc_widget_null(
 
 
 static int
+netcalc_widget_syntaxes(
+         netcalc_config_t *            cnf );
+
+
+static int
 netcalc_widget_usage(
          netcalc_config_t *            cnf );
 
@@ -179,7 +192,7 @@ static netcalc_widget_t netcalc_widget_map[] =
       .desc       = NULL, // displays debugging information
       .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
       .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
-      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT, ),
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 1,
       .arg_max    = -1,
       .aliases    = NULL,
@@ -205,7 +218,7 @@ static netcalc_widget_t netcalc_widget_map[] =
       .desc       = "display IP address information",
       .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
       .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
-      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT, ),
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 1,
       .arg_max    = -1,
       .aliases    = NULL,
@@ -218,12 +231,25 @@ static netcalc_widget_t netcalc_widget_map[] =
       .desc       = "display formatted IP address information",
       .usage      = "[OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]",
       .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
-      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT, ),
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 2,
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &netcalc_widget_printf,
       .func_usage = &netcalc_widget_printf_usage,
+   },
+
+   // syntaxes widget
+   {  .name       = "syntaxes",
+      .desc       = "display supported address syntaxes",
+      .usage      = "[OPTIONS]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FAMILY,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FAMILY ),
+      .arg_min    = 0,
+      .arg_max    = 0,
+      .aliases    = NULL,
+      .func_exec  = &netcalc_widget_syntaxes,
+      .func_usage = &netcalc_widget_null,
    },
 
    // version widget
@@ -743,6 +769,90 @@ netcalc_widget_null(
    printf("\n");
    if ((cnf))
       return(0);
+   return(0);
+}
+
+
+int
+netcalc_widget_syntaxes(
+         netcalc_config_t *            cnf )
+{
+   int   family;
+
+   assert(cnf != NULL);
+
+   family = ((cnf->flags & NETCALC_AF))
+          ? ((cnf->flags & NETCALC_AF))
+          : NETCALC_AF;
+
+   printf("\n");
+   printf("Address Syntaxes\n");
+   printf("----------------\n");
+   printf("  AF     Syntax                         Example\n");
+   printf("  ------ ------------------------------ --------------------------------------\n");
+   if (family & NETCALC_AF_EUI48)
+      printf("  EUI-48 <addr>                         01:23:45:67:89:ab\n");
+   if (family & NETCALC_AF_EUI64)
+      printf("  EUI-64 <addr>                         0123.4567.89ab.cdef\n");
+   if (family & NETCALC_AF_INET)
+   {  printf("  IPv4   <addr>                         203.0.113.42\n");
+      printf("  IPv4   <addr>/<cidr>                  203.0.113.42/29\n");
+      printf("  IPv4   <addr>:<port>                  203.0.113.42:8080\n");
+      printf("  IPv4   <addr>/<cidr>:<port>           203.0.113.42/29:8080\n");
+   };
+   if (family & NETCALC_AF_INET6)
+   {  printf("  IPv6   <addr>                         fe80::216:3eff:fefe:b381\n");
+      printf("  IPv6   <addr>/<cidr>                  fe80::216:3eff:fefe:b381/64\n");
+      printf("  IPv6   <addr>%%<iface>                 fe80::216:3eff:fefe:b381%%eth0\n");
+      printf("  IPv6   [<addr>]                       [fe80::216:3eff:fefe:b381]\n");
+      printf("  IPv6   [<addr>]/<cidr>                [fe80::216:3eff:fefe:b381]/64\n");
+      printf("  IPv6   [<addr>]:<port>                [fe80::216:3eff:fefe:b381]:8080\n");
+      printf("  IPv6   [<addr>]/<cidr>:<port>         [fe80::216:3eff:fefe:b381]/64:8080\n");
+      printf("  IPv6   [<addr>%%<iface>]               [fe80::216:3eff:fefe:b381%%eth0]\n");
+      printf("  IPv6   [<addr>%%<iface>]/<cidr>        [fe80::216:3eff:fefe:b381%%eth0]/64\n");
+      printf("  IPv6   [<addr>%%<iface>]:<port>        [fe80::216:3eff:fefe:b381%%eth0]:8080\n");
+      printf("  IPv6   [<addr>%%<iface>]/<cidr>:<port> [fe80::216:3eff:fefe:b381%%eth0]/64:8080\n");
+   };
+   printf("\n");
+   if (family & NETCALC_AF_EUI48)
+   {  printf("EUI-48 Formats\n");
+      printf("--------------\n");
+      printf("   Using colon delimiter:             01:23:45:67:89:ab\n");
+      printf("   Using dash delimiter:              01-23-45-67-89-ab\n");
+      printf("   Using dot delimiter:               0123.4567.89ab\n");
+      printf("   Without delimiter:                 0123456789ab\n");
+      printf("\n");
+   };
+   if (family & NETCALC_AF_EUI64)
+   {  printf("EUI-64 Formats\n");
+      printf("--------------\n");
+      printf("   Using colon delimiter:             01:23:45:67:89:ab:cd:ef\n");
+      printf("   Using dash delimiter:              01-23-45-67-89-ab-cd-ef\n");
+      printf("   Using dot delimiter:               0123.4567.89ab.cdef\n");
+      printf("   Without delimiter:                 0123456789abcdef\n");
+      printf("\n");
+   };
+   if (family & NETCALC_AF_INET)
+   {  printf("IPv4 Formats\n");
+      printf("-------------\n");
+      printf("   Full Address:                      203.000.113.042\n");
+      printf("   With Zero Suppression:             203.0.113.42\n");
+      printf("\n");
+   };
+   if (family & NETCALC_AF_INET6)
+   {  printf("IPv6 Formats\n");
+      printf("-------------\n");
+      printf("   Full Address:                       2001:0db8:000f:0300:0000:0000:cb00:712a\n");
+      printf("   With Zero Compression:              2001:0db8:000f:0300::cb00:712a\n");
+      printf("   With Zero Suppression:              2001:db8:f:300:0:0:cb00:712a\n");
+      printf("   With Compression and Suppression:   2001:db8:f:300::cb00:712a\n");
+      printf("   IPv4-mapped Addresses:\n");
+      printf("     With Zero Compression:            2001:0db8:000f:0300::203.000.113.042\n");
+      printf("     With Zero Suppression:            2001:db8:f:300:0:0:203.0.113.42\n");
+      printf("     With Compression and Suppression: 2001:db8:f:300::203.0.113.42\n");
+      printf("\n");
+   };
+
    return(0);
 }
 
