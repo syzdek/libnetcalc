@@ -100,6 +100,16 @@
 #define NETCALC_FLD_SCOPE_NAME         4
 #define NETCALC_FLD_ADDR               5
 #define NETCALC_FLD_ADDRLEN            6
+#define NETCALC_FLD_UL                 7  // Universal vs. local (interprets U/L bit)
+#define NETCALC_FLD_UL_BIT             8  // Universal vs. local (returns U/L bit)
+#define NETCALC_FLD_IG                 9  // Unicast vs. multicast (interprets  I/G bit)
+#define NETCALC_FLD_IG_BIT             10 // Unicast vs. multicast (returns  I/G bit)
+
+#define NETCALC_IG_UNICAST             0  // is locally administered
+#define NETCALC_IG_MULTICAST           1  // is universally administered
+
+#define NETCALC_UL_LOCAL               1  // is locally administered
+#define NETCALC_UL_UNIVERSAL           0  // is universally administered
 
 
 #define NETCALC_FLG                    0x000fffff  // flag: mask for flags

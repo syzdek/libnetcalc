@@ -631,6 +631,17 @@ netcalc_get_field(
          *((int *)outvalue) = (int)net->net_flags;
          return(NETCALC_SUCCESS);
 
+      case NETCALC_FLD_IG:
+      case NETCALC_FLD_IG_BIT:
+         switch(net->net_flags & NETCALC_AF)
+         {  case NETCALC_AF_EUI48: val_i = net->net_addr.addr8[10] & 0x01; break;
+            case NETCALC_AF_EUI64: val_i = net->net_addr.addr8[8]  & 0x01; break;
+            case NETCALC_AF_INET6: val_i = net->net_addr.addr8[8]  & 0x01; break;
+            default: return(NETCALC_ENOTSUP);
+         };
+         *((int *)outvalue) = val_i;
+         return(NETCALC_SUCCESS);
+
       case NETCALC_FLD_PORT:
          *((int *)outvalue) = (int)net->net_port;
          return(NETCALC_SUCCESS);
@@ -644,6 +655,26 @@ netcalc_get_field(
          if ((str = strdup(net->net_scope_name)) == NULL)
             return(NETCALC_ENOMEM);
          *((char **)outvalue) = str;
+         return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_UL:
+         switch(net->net_flags & NETCALC_AF)
+         {  case NETCALC_AF_EUI48: val_i = (net->net_addr.addr8[10] & 0x02) >> 1;         break;
+            case NETCALC_AF_EUI64: val_i = ((net->net_addr.addr8[8] & 0x02) >> 1) ^ 0x01; break;
+            case NETCALC_AF_INET6: val_i = ((net->net_addr.addr8[8] & 0x02) >> 1) ^ 0x01; break;
+            default: return(NETCALC_ENOTSUP);
+         };
+         *((int *)outvalue) = val_i;
+         return(NETCALC_SUCCESS);
+
+      case NETCALC_FLD_UL_BIT:
+         switch(net->net_flags & NETCALC_AF)
+         {  case NETCALC_AF_EUI48: val_i = (net->net_addr.addr8[10] & 0x02) >> 1; break;
+            case NETCALC_AF_EUI64: val_i = (net->net_addr.addr8[8] & 0x02)  >> 1; break;
+            case NETCALC_AF_INET6: val_i = (net->net_addr.addr8[8] & 0x02)  >> 1; break;
+            default: return(NETCALC_ENOTSUP);
+         };
+         *((int *)outvalue) = val_i;
          return(NETCALC_SUCCESS);
 
       default:

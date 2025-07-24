@@ -202,6 +202,8 @@ netcalc_widget_info_eui(
    int                  idx;
    int                  family;
    int                  rc;
+   int                  ival;
+   int                  bit;
    int                  pos;
    char                 buff[512];
    const char *         str;
@@ -249,6 +251,22 @@ netcalc_widget_info_eui(
       {  str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          netcalc_widget_info_print("EUI64",  str);
       };
+
+      netcalc_get_field(nets[idx], NETCALC_FLD_UL,       &ival);
+      netcalc_get_field(nets[idx], NETCALC_FLD_UL_BIT,   &bit);
+      str   = (ival == NETCALC_UL_LOCAL)
+            ? "(locally administered)"
+            : "(universally administered)";
+      snprintf(buff, sizeof(buff), "%i %s", bit, str);
+      netcalc_widget_info_print("U/L Bit", buff);
+
+      netcalc_get_field(nets[idx], NETCALC_FLD_IG,       &ival);
+      netcalc_get_field(nets[idx], NETCALC_FLD_IG_BIT,   &bit);
+      str   = (ival == NETCALC_IG_UNICAST)
+            ? "(unicast)"
+            : "(multicast)";
+      snprintf(buff, sizeof(buff), "%i %s", bit, str);
+      netcalc_widget_info_print("I/G Bit", buff);
 
       if ((rc = netcalc_convert(dup, NETCALC_AF_INET6, NULL)) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
