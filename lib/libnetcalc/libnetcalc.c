@@ -1570,12 +1570,15 @@ netcalc_parse_inet(
    n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
    n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
+if (!(ipv6mapped)) return(0);
+/*
    if (!(ipv6mapped))
    {  n->net_addr.addr8[10] = 0xff;
       n->net_addr.addr8[11] = 0xff;
    } else
    {  n->net_flags |= NETCALC_FLG_V4MAPPED;
    };
+*/
 
    return(0);
 }
@@ -1793,6 +1796,7 @@ netcalc_parse_inet6(
          {  n->net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : n->net_cidr);
             n->net_port    =  (uint16_t)((port != -1) ? port : n->net_port);
             n->net_flags   |= NETCALC_FLG_V4MAPPED;
+            memcpy(&n->net_addr.addr8, &net_addr.addr8, 12);
             return(0);
          };
       };
