@@ -120,12 +120,15 @@
 #define NETCALC_FLG_CIDR               0x00000010  // flag: append CIDR
 #define NETCALC_FLG_CIDR_ALWAYS        0x00000020  // flag: always append CIDR
 #define NETCALC_FLG_PORT               0x00000040  // flag: append port
+//                                     0x00000010  // flag: OPEN
+//                                     0x00000020  // flag: OPEN
+//                                     0x00000040  // flag: OPEN
 //                                     0x00000080  // flag: OPEN
-//                                     0x00000080  // flag: OPEN
-//                                     0x00001000  // flag: OPEN
-//                                     0x00002000  // flag: OPEN
-//                                     0x00004000  // flag: OPEN
-//                                     0x00008000  // flag: OPEN
+#define NETCALC_USR                    0x0000f000
+#define NETCALC_FLG_USR1               0x00001000
+#define NETCALC_FLG_USR2               0x00002000
+#define NETCALC_FLG_USR3               0x00004000
+#define NETCALC_FLG_USR4               0x00008000
 #define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters
 #define NETCALC_FLG_COLON              0x00010000  // delimiter: use colon delimiters with 1 byte chunks
 #define NETCALC_FLG_DASH               0x00020000  // delimiter: use dash delimiters with 1 byte chunks
