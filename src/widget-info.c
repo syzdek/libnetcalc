@@ -88,20 +88,20 @@ typedef struct _my_info_t
 static int
 netcalc_widget_info_eui(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets );
+         my_rec_t **                   recs );
 
 
 static int
 netcalc_widget_info_ip(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets,
+         my_rec_t **                   recs,
          int                           family_any );
 
 
 static int
 netcalc_widget_info_ip_verbose(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets );
+         my_rec_t **                   recs );
 
 
 static void
@@ -134,9 +134,7 @@ netcalc_widget_info(
    int                  net_family;
    int                  ival;
    int                  family_any;
-   size_t               len;
-   size_t               size;
-   netcalc_net_t **     nets;
+   my_rec_t **          recs;
 
    net_family  = 0;
    family_any  = 0;
@@ -144,23 +142,21 @@ netcalc_widget_info(
    cnf->flags &= ~cnf->flags_negate;
 
    // allocates memory
-   len   = (size_t)cnf->argc + 2;
-   size  = sizeof(netcalc_net_t *) * len;
-   if ((nets = malloc(size)) == NULL)
+   if ((recs = netcalc_recs_alloc(cnf, (size_t)cnf->argc + 2)) == NULL)
    {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
       return(1);
    };
-   memset(nets, 0, size);
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
    {
-      if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+      if ((rc = netcalc_initialize(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_nets_free(nets);
+         netcalc_recs_free(recs);
          return(1);
       };
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &ival);
+      netcalc_rec_process(cnf, recs[idx]);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY, &ival);
       if (!(net_family))
       {  if ((ival & (NETCALC_AF_INET | NETCALC_AF_INET6)))
             net_family = NETCALC_AF_INET | NETCALC_AF_INET6;
@@ -176,19 +172,19 @@ netcalc_widget_info(
    // print address family information
    if ((family_any))
    {  rc  = 0;
-      rc += netcalc_widget_info_eui( cnf, nets);
-      rc += netcalc_widget_info_ip(  cnf, nets, family_any);
+      rc += netcalc_widget_info_eui( cnf, recs);
+      rc += netcalc_widget_info_ip(  cnf, recs, family_any);
    }
    else if ((net_family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
-      rc = netcalc_widget_info_eui( cnf, nets);
+      rc = netcalc_widget_info_eui( cnf, recs);
    else if ((net_family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
-      rc = netcalc_widget_info_ip( cnf, nets, family_any);
+      rc = netcalc_widget_info_ip( cnf, recs, family_any);
    else
    {  fprintf(stderr, "%s: unknown or unsupported address family\n", netcalc_prog_name(cnf));
       rc = 1;
    };
 
-   netcalc_nets_free(nets);
+   netcalc_recs_free(recs);
 
    return(((rc)) ? 1 : 0);
 }
@@ -197,7 +193,7 @@ netcalc_widget_info(
 int
 netcalc_widget_info_eui(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets)
+         my_rec_t **                   recs)
 {
    int                  idx;
    int                  family;
@@ -210,15 +206,15 @@ netcalc_widget_info_eui(
    netcalc_net_t *      dup;
 
    assert(cnf  != NULL);
-   assert(nets != NULL);
+   assert(recs != NULL);
 
-   for(idx = 0; ((nets[idx])); idx++)
+   for(idx = 0; ((recs[idx]->net)); idx++)
    {
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
       if ( (family != NETCALC_AF_EUI48) && (family != NETCALC_AF_EUI64) )
          continue;
 
-      if ((rc = netcalc_dup(&dup, nets[idx])) != NETCALC_SUCCESS)
+      if ((rc = netcalc_dup(&dup, recs[idx]->net)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
          return(rc);
       };
@@ -236,7 +232,7 @@ netcalc_widget_info_eui(
 
       if (family == NETCALC_AF_EUI48)
       {
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          netcalc_widget_info_print("EUI48",  str);
          if ((rc = netcalc_convert(dup, NETCALC_AF_EUI64, NULL)) == 0)
          {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
@@ -245,23 +241,23 @@ netcalc_widget_info_eui(
       } else if ((rc = netcalc_convert(dup, NETCALC_AF_EUI48, NULL)) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          netcalc_widget_info_print("EUI48",  str);
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          netcalc_widget_info_print("Modified EUI64",  str);
       } else
-      {  str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+      {  str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          netcalc_widget_info_print("EUI64",  str);
       };
 
-      netcalc_get_field(nets[idx], NETCALC_FLD_UL,       &ival);
-      netcalc_get_field(nets[idx], NETCALC_FLD_UL_BIT,   &bit);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_UL,       &ival);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_UL_BIT,   &bit);
       str   = (ival == NETCALC_UL_LOCAL)
             ? "(locally administered)"
             : "(universally administered)";
       snprintf(buff, sizeof(buff), "%i %s", bit, str);
       netcalc_widget_info_print("U/L Bit", buff);
 
-      netcalc_get_field(nets[idx], NETCALC_FLD_IG,       &ival);
-      netcalc_get_field(nets[idx], NETCALC_FLD_IG_BIT,   &bit);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG,       &ival);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG_BIT,   &bit);
       str   = (ival == NETCALC_IG_UNICAST)
             ? "(unicast)"
             : "(multicast)";
@@ -285,111 +281,46 @@ netcalc_widget_info_eui(
 int
 netcalc_widget_info_ip(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets,
+         my_rec_t **                   recs,
          int                           family_any )
 {
-   int                  family;
+   int                  flags;
    int                  idx;
-   int                  len_address;
-   int                  len_broadcast;
-   int                  len_netmask;
-   int                  len_network;
-   int                  len_wildcard;
-   long long unsigned   subnet_count;
-   size_t               nets_len;
    size_t               size;
-   my_info_t *          recs;
-   char                 subnet_count_str[32];
+   netcalc_net_t **     mets;
+   my_len_t             lens;
 
    assert(cnf  != NULL);
-   assert(nets != NULL);
+   assert(recs != NULL);
 
+   // calculate superblock
    if ( (cnf->argc > 1) && (!(family_any)) )
-      netcalc_superblock(&nets[cnf->argc], nets, cnf->argc);
+   {
+      size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
+      if ((mets = malloc(size)) == NULL)
+      {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+         return(1);
+      };
+      memset(mets, 0, size);
+      for(idx = 0; (idx < cnf->argc); idx++)
+         mets[idx] = recs[idx]->net;
+      netcalc_superblock(&recs[cnf->argc]->net, mets, cnf->argc);
+      recs[cnf->argc]->ip_superblock = 1;
+      netcalc_rec_process(cnf, recs[cnf->argc]);
+      free(mets);
+   };
 
    if ( ((cnf->verbose)) || ((family_any)) )
-      return(netcalc_widget_info_ip_verbose(cnf, nets));
+      return(netcalc_widget_info_ip_verbose(cnf, recs));
 
-   len_address    = (int)strlen("Address");;
-   len_broadcast  = (int)strlen("Broadcast");;
-   len_netmask    = (int)strlen("Netmask");;
-   len_network    = (int)strlen("Network");;
-   len_wildcard   = (int)strlen("Wildcard");
+   netcalc_recs_lengths(recs, &lens);
 
-   netcalc_get_field(nets[0], NETCALC_FLD_FAMILY, &family);
+   flags  = (cnf->argc > 1) ? MY_FLG_SHOW_ADDR : 0;
+   flags |= recs[0]->family;
+   netcalc_rec_summary_ip(NULL, &lens, flags);
 
-   for(nets_len = 0; ((nets[nets_len])); nets_len++);
-
-   if (nets_len > 1)
-      nets_len++;
-   size = sizeof(my_info_t) * nets_len;
-   if ((recs = malloc(size)) == NULL)
-   {
-      fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
-      return(1);
-   };
-   memset(recs, 0, size);
-
-   for(idx = 0; ((nets[idx])); idx++)
-   {
-      netcalc_ntop(nets[idx], recs[idx].address,   sizeof(((my_info_t *)0)->address),    NETCALC_TYPE_ADDRESS,   cnf->flags);
-      netcalc_ntop(nets[idx], recs[idx].network,   sizeof(((my_info_t *)0)->network),    NETCALC_TYPE_NETWORK,   NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
-      netcalc_ntop(nets[idx], recs[idx].broadcast, sizeof(((my_info_t *)0)->broadcast),  NETCALC_TYPE_BROADCAST, NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
-      netcalc_ntop(nets[idx], recs[idx].netmask,   sizeof(((my_info_t *)0)->netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
-      netcalc_ntop(nets[idx], recs[idx].wildcard,  sizeof(((my_info_t *)0)->wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
-      netcalc_get_field(nets[idx], NETCALC_FLD_CIDR, &recs[idx].cidr);
-
-      if (idx == cnf->argc)
-         strncpy(recs[idx].address, "SUPERBLOCK", sizeof(((my_info_t *)0)->address));
-
-      len_address    = (int)(((int)strlen(recs[idx].address)   > len_address)    ? strlen(recs[idx].address)   : len_address);
-      len_broadcast  = (int)(((int)strlen(recs[idx].broadcast) > len_broadcast)  ? strlen(recs[idx].broadcast) : len_broadcast);
-      len_netmask    = (int)(((int)strlen(recs[idx].netmask)   > len_netmask)    ? strlen(recs[idx].netmask)   : len_netmask);
-      len_network    = (int)(((int)strlen(recs[idx].network)   > len_network)    ? strlen(recs[idx].network)   : len_network);
-      len_wildcard   = (int)(((int)strlen(recs[idx].wildcard)  > len_wildcard)   ? strlen(recs[idx].wildcard)  : len_wildcard);
-   };
-
-   if (cnf->argc > 1)
-      printf("%-*s  ", len_address,      "Address");
-   printf(
-      "%-*s  %-*s  %-*s  %-*s  %-4s  %s\n",
-      len_network,      "Network",
-      len_broadcast,    "Broadcast",
-      len_netmask,      "Netmask",
-      len_wildcard,     "Wildcard",
-      "CIDR",
-      ( (family == NETCALC_AF_INET) ? "/32s" : "/64s" )
-   );
-
-   for(idx = 0; ((nets[idx])); idx++)
-   {
-      switch(family)
-      {
-         case NETCALC_AF_INET:  subnet_count =        0x100000000LLU >> recs[idx].cidr; break;
-         case NETCALC_AF_INET6: subnet_count = 0x8000000000000000LLU >> (recs[idx].cidr -1); break;
-         default:               subnet_count = 0LLU; break;
-      };
-      if ( (family == NETCALC_AF_INET6) && (recs[idx].cidr == 0) )
-         subnet_count = 0;
-      if ( ((subnet_count)) && (recs[idx].cidr <= 64) )
-         snprintf(subnet_count_str, sizeof(subnet_count), "%llu", subnet_count);
-      else
-         snprintf(subnet_count_str, sizeof(subnet_count), "n/a");
-
-      if (cnf->argc > 1)
-         printf("%-*s  ", len_address, recs[idx].address);
-      printf(
-         "%-*s  %-*s  %-*s  %-*s  %-4i  %s\n",
-         len_network,      recs[idx].network,
-         len_broadcast,    recs[idx].broadcast,
-         len_netmask,      recs[idx].netmask,
-         len_wildcard,     recs[idx].wildcard,
-         recs[idx].cidr,
-         subnet_count_str
-      );
-   };
-
-   free(recs);
+   for(idx = 0; ((recs[idx]->net)); idx++)
+      netcalc_rec_summary_ip(recs[idx], &lens, flags);
 
    return(0);
 }
@@ -398,7 +329,7 @@ netcalc_widget_info_ip(
 int
 netcalc_widget_info_ip_verbose(
          netcalc_config_t *            cnf,
-         netcalc_net_t **              nets )
+         my_rec_t **                   recs )
 {
    int                  rc;
    int                  idx;
@@ -412,17 +343,17 @@ netcalc_widget_info_ip_verbose(
    netcalc_net_t *      eui;
 
    assert(cnf  != NULL);
-   assert(nets != NULL);
+   assert(recs != NULL);
 
-   for(idx = 0; ((nets[idx])); idx++)
+   for(idx = 0; ((recs[idx]->net)); idx++)
    {
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY,   &family);
-      netcalc_get_field(nets[idx], NETCALC_FLD_CIDR,     &cidr);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_CIDR,     &cidr);
 
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
          continue;
 
-      if ((rc = netcalc_dup(&eui, nets[idx])) != 0)
+      if ((rc = netcalc_dup(&eui, recs[idx]->net)) != 0)
       {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
          return(rc);
       };
@@ -439,32 +370,32 @@ netcalc_widget_info_ip_verbose(
       printf("\n");
 
       flags = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ADDRESS, flags);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
       netcalc_widget_info_print("Host Address", str);
 
       str = NULL;
-      netcalc_get_field(nets[idx], NETCALC_FLD_SCOPE_NAME, &str);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_SCOPE_NAME, &str);
       if ((str))
          netcalc_widget_info_print("Scope Name", str);
 
       flags = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR));
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_NETWORK, flags);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_NETWORK, flags);
       netcalc_widget_info_print("Network Address", str);
 
       flags = NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR);
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_BROADCAST, flags);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_BROADCAST, flags);
       netcalc_widget_info_print("Broadcast Address", str);
 
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_NETMASK, cnf->flags);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_NETMASK, cnf->flags);
       netcalc_widget_info_print("Netmask", str);
 
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
       netcalc_widget_info_print("Wildcard", str);
 
       snprintf(buff, sizeof(buff), "%i", cidr);
       netcalc_widget_info_print("CIDR", buff);
 
-      netcalc_get_field(nets[idx], NETCALC_FLD_PORT, &ival);
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_PORT, &ival);
       if ((ival))
       {
          snprintf(buff, sizeof(buff), "%i", ival);
@@ -475,9 +406,9 @@ netcalc_widget_info_ip_verbose(
       {
          flags |= NETCALC_FLG_SUPR;
          flags = NETCALC_UNSET(flags, (NETCALC_FLG_COMPR | NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_FIRST, flags);
+         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_FIRST, flags);
          netcalc_widget_info_print("Usable Range", str);
-         str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_LAST, flags);
+         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_LAST, flags);
          netcalc_widget_info_print(NULL, str);
       };
 
@@ -490,13 +421,13 @@ netcalc_widget_info_ip_verbose(
          };
       };
 
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ARPA_HOST, 0);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ARPA_HOST, 0);
       netcalc_widget_info_print("DNS ARPA Host", str);
 
-      str = netcalc_ntop(nets[idx], NULL, 0, NETCALC_TYPE_ARPA_ZONE, 0);
+      str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ARPA_ZONE, 0);
       netcalc_widget_info_print("DNS ARPA Zone", str);
 
-      str = netcalc_ntop(nets[idx], buff, sizeof(buff), NETCALC_TYPE_ARPA_REC, 0);
+      str = netcalc_ntop(recs[idx]->net, buff, sizeof(buff), NETCALC_TYPE_ARPA_REC, 0);
       netcalc_strlcat(buff, " IN PTR", sizeof(buff));
       netcalc_widget_info_print("DNS ARPA RR", buff);
 
