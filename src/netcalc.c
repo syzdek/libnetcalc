@@ -764,7 +764,7 @@ netcalc_rec_summary_ip(
       l->ip_broadcast,  (((r)) ? r->ip_broadcast   : "Broadcast"),
       l->ip_netmask,    (((r)) ? r->ip_netmask     : "Netmask"),
       l->ip_wildcard,   (((r)) ? r->ip_wildcard    : "Wildcard"),
-                        (((r)) ? r->ip_cidr        : "CIDR"),
+                        (((r)) ? r->ip_cidr_str    : "CIDR"),
                         subnets
    );
 
@@ -778,7 +778,6 @@ netcalc_rec_process(
          my_rec_t *                    rec )
 {
    int                  ip_superblock;
-   int                  ival;
    long long unsigned   lluval;
    netcalc_net_t *      n;
 
@@ -805,20 +804,20 @@ netcalc_rec_process(
       netcalc_ntop(n, rec->ip_broadcast,  sizeof(((my_rec_t *)0)->ip_broadcast),  NETCALC_TYPE_BROADCAST, NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
       netcalc_ntop(n, rec->ip_netmask,    sizeof(((my_rec_t *)0)->ip_netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
       netcalc_ntop(n, rec->ip_wildcard,   sizeof(((my_rec_t *)0)->ip_wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
-      netcalc_get_field(n, NETCALC_FLD_CIDR, &ival);
-      snprintf(rec->ip_cidr, sizeof(((my_rec_t *)0)->ip_cidr), "%i", ival);
+
+      netcalc_get_field(n, NETCALC_FLD_CIDR, &rec->ip_cidr);
+      snprintf(rec->ip_cidr_str, sizeof(((my_rec_t *)0)->ip_cidr_str), "%i", rec->ip_cidr);
 
       // calculate subnets
-      netcalc_get_field(n, NETCALC_FLD_CIDR, &ival);
       if (rec->family == NETCALC_AF_INET6)
-      {  if ( ((ival)) && (ival <= 64) )
-         {  lluval =  0x8000000000000000LLU >> (ival -1);
+      {  if ( ((rec->ip_cidr)) && (rec->ip_cidr <= 64) )
+         {  lluval =  0x8000000000000000LLU >> (rec->ip_cidr - 1);
             snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "%llu", lluval);
          } else
          {  snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "n/a");
          };
       } else if (rec->family == NETCALC_AF_INET)
-      {  lluval =  0x100000000LLU >> ival;
+      {  lluval =  0x100000000LLU >> rec->ip_cidr;
          snprintf(rec->ip_subnets, sizeof(((my_rec_t *)0)->ip_subnets), "%llu", lluval);
       };
    };

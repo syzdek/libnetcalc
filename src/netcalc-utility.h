@@ -134,9 +134,11 @@ struct _my_record
 {  netcalc_net_t *      net;
    int                  family;
    int                  ip_superblock;
+   int                  ip_cidr;
+   int                  __int_pad;
    char                 address[NETCALC_ADDRESS_LENGTH];
    char                 ip_broadcast[NETCALC_ADDRESS_LENGTH];
-   char                 ip_cidr[NETCALC_ADDRESS_LENGTH];
+   char                 ip_cidr_str[NETCALC_ADDRESS_LENGTH];
    char                 ip_netmask[NETCALC_ADDRESS_LENGTH];
    char                 ip_network[NETCALC_ADDRESS_LENGTH];
    char                 ip_subnets[NETCALC_ADDRESS_LENGTH];
