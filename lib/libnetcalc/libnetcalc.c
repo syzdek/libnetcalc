@@ -128,8 +128,7 @@ netcalc_parse_eui(
 static int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        address,
-         int                           ipv6mapped );
+         char *                        address );
 
 
 static int
@@ -772,7 +771,7 @@ netcalc_initialize(
    };
    if ((nbuff.net_flags & NETCALC_AF_INET))
    {
-      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str, 0)) == NETCALC_SUCCESS)
+      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
                         : (nbuff.net_flags & ~NETCALC_AF_INET);
    };
@@ -1483,8 +1482,7 @@ netcalc_parse_eui(
 int
 netcalc_parse_inet(
          netcalc_net_t *               n,
-         char *                        address,
-         int                           ipv6mapped )
+         char *                        address )
 {
    size_t            pos;
    size_t            digit;
@@ -1570,16 +1568,6 @@ netcalc_parse_inet(
    n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
    n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
 
-if (!(ipv6mapped)) return(0);
-/*
-   if (!(ipv6mapped))
-   {  n->net_addr.addr8[10] = 0xff;
-      n->net_addr.addr8[11] = 0xff;
-   } else
-   {  n->net_flags |= NETCALC_FLG_V4MAPPED;
-   };
-*/
-
    return(0);
 }
 
@@ -1615,7 +1603,7 @@ netcalc_parse_inet6(
       return(NETCALC_EBADADDR);
 
    // attempt to process as IPv4-mapped IPv6 address
-   if (netcalc_parse_inet(n, address, 1) == NETCALC_SUCCESS)
+   if (netcalc_parse_inet(n, address) == NETCALC_SUCCESS)
    {  n->net_flags |= NETCALC_FLG_V4MAPPED;
       n->net_addr.addr8[10] = 0xff;
       n->net_addr.addr8[11] = 0xff;
@@ -1792,7 +1780,7 @@ netcalc_parse_inet6(
       // check for IPv4 mapped address
       if (wyde == 6)
       {
-         if (!(netcalc_parse_inet(n, &str[pos], 0)))
+         if (!(netcalc_parse_inet(n, &str[pos])))
          {  n->net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : n->net_cidr);
             n->net_port    =  (uint16_t)((port != -1) ? port : n->net_port);
             n->net_flags   |= NETCALC_FLG_V4MAPPED;
