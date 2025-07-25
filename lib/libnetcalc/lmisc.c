@@ -30,11 +30,9 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- *  lib/libnetcalc/libnetcalc.h - common includes and prototypes
- */
-#ifndef __LIB_LIBNETCALC_H
-#define __LIB_LIBNETCALC_H 1
+#define __LIB_LIBNETCALC_LSETS_C 1
+#include "libnetcalc.h"
+
 
 ///////////////
 //           //
@@ -43,16 +41,10 @@
 ///////////////
 // MARK: - Headers
 
-// defined in the Single UNIX Specification
-#ifndef _XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
-#include <netcalc.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 
 
 //////////////
@@ -73,56 +65,45 @@
 
 //////////////////
 //              //
-//  Data Types  //
-//              //
-//////////////////
-// MARK: - Data Types
-
-union _libnetcalc_address
-{
-   uint8_t                    addr8[16];
-   uint16_t                   addr16[8];
-   uint32_t                   addr32[4];
-   uint64_t                   addr64[2];
-};
-
-
-struct _libnetcalc_network
-{
-   uint32_t                   net_flags;
-   uint16_t                   net_port;
-   uint8_t                    net_cidr;
-   uint8_t                    __pad;
-   netcalc_addr_t             net_addr;
-   char *                     net_scope_name;
-};
-
-
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
-// MARK: - Variables
-
-extern const netcalc_addr_t _netcalc_netmasks[];
-extern const netcalc_net_t _netcalc_lo_in;
-extern const netcalc_net_t _netcalc_lo_in6;
-
-
-//////////////////
-//              //
 //  Prototypes  //
 //              //
 //////////////////
 // MARK: - Prototypes
 
-extern size_t
+
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
+// MARK: - Functions
+
+size_t
 netcalc_strlcat(
          char * restrict               dst,
          const char * restrict         src,
-         size_t                        dstsize );
+         size_t                        dstsize )
+{
+   size_t      pos;
+   size_t      offset;
+   size_t      len;
+
+   assert(src     != NULL);
+
+   if (!(dst))
+      return(strlen(src));
+   pos = strlen(dst);
+
+   for(offset = 0; ((src[offset])); offset++)
+      if ((pos+offset) < dstsize)
+         dst[pos+offset] = src[offset];
+   len = offset + pos;
+
+   dst[((len < dstsize) ? len : (dstsize-1))] = '\0';
+
+   return(len);
+}
 
 
-#endif /* end of header */
 
+/* end of source */

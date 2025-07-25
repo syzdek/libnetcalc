@@ -135,13 +135,6 @@ netcalc_parse_inet6(
          char *                        address );
 
 
-extern size_t
-netcalc_strlcat(
-         char * restrict               dst,
-         const char * restrict         src,
-         size_t                        dstsize );
-
-
 /////////////////
 //             //
 //  Variables  //
@@ -2068,33 +2061,6 @@ netcalc_strfnet(
       s[ (off < maxsize) ? off : (maxsize - 1) ] = '\0';
 
    return(off);
-}
-
-
-size_t
-netcalc_strlcat(
-         char * restrict               dst,
-         const char * restrict         src,
-         size_t                        dstsize )
-{
-   size_t      pos;
-   size_t      offset;
-   size_t      len;
-
-   assert(src     != NULL);
-
-   if (!(dst))
-      return(strlen(src));
-   pos = strlen(dst);
-
-   for(offset = 0; ((src[offset])); offset++)
-      if ((pos+offset) < dstsize)
-         dst[pos+offset] = src[offset];
-   len = offset + pos;
-
-   dst[((len < dstsize) ? len : (dstsize-1))] = '\0';
-
-   return(len);
 }
 
 
