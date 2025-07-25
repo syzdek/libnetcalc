@@ -257,7 +257,7 @@ my_widget_info(
 
 
 extern int
-netcalc_widget_printf(
+my_widget_printf(
          my_config_t *                 cnf );
 
 

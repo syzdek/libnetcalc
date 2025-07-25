@@ -102,7 +102,7 @@ typedef struct _my_info_t
 // MARK: - Functions
 
 int
-netcalc_widget_printf(
+my_widget_printf(
          my_config_t *                 cnf )
 {
    int                  idx;
