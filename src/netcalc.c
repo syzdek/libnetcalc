@@ -902,7 +902,7 @@ my_recs_free(
 
 
 void
-netcalc_recs_lengths(
+my_recs_lengths(
          my_rec_t **                   recs,
          my_len_t *                    l )
 {

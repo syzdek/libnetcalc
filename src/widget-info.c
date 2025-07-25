@@ -311,7 +311,7 @@ netcalc_widget_info_ip(
    if ( ((cnf->verbose)) || ((family_any)) )
       return(netcalc_widget_info_ip_verbose(cnf, recs));
 
-   netcalc_recs_lengths(recs, &lens);
+   my_recs_lengths(recs, &lens);
 
    flags  = (cnf->argc > 1) ? MY_FLG_SHOW_ADDR : 0;
    flags |= recs[0]->family;

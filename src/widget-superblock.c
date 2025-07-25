@@ -199,7 +199,7 @@ netcalc_widget_superblock(
    };
 
 
-   netcalc_recs_lengths(recs, &lens);
+   my_recs_lengths(recs, &lens);
 
    flags = recs[0]->family;
    if (!(cnf->quiet))
