@@ -72,7 +72,7 @@ my_widget_debug_print(
 
 
 static void
-netcalc_widget_debug_print_bytes(
+my_widget_debug_print_bytes(
          const char *                  fld,
          uint8_t *                     val,
          size_t                        len );
@@ -173,7 +173,7 @@ my_widget_debug(
 
       netcalc_get_field(net, NETCALC_FLD_ADDRLEN,  &ival);
       netcalc_get_field(net, NETCALC_FLD_ADDR,     &ptr);
-      netcalc_widget_debug_print_bytes("Binary Address", ptr, ival);
+      my_widget_debug_print_bytes("Binary Address", ptr, ival);
       free(ptr);
 
       if (family == NETCALC_AF_INET6)
@@ -207,7 +207,7 @@ my_widget_debug_print(
 
 
 void
-netcalc_widget_debug_print_bytes(
+my_widget_debug_print_bytes(
          const char *                  fld,
          uint8_t *                     val,
          size_t                        len )
