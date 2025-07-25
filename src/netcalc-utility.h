@@ -247,7 +247,7 @@ my_recs_lengths(
 #pragma mark widgets prototypes
 
 extern int
-netcalc_widget_debug(
+my_widget_debug(
          my_config_t *                 cnf );
 
 

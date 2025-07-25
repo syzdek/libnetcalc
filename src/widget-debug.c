@@ -106,7 +106,7 @@ netcalc_widget_debug_print_int(
 // MARK: - Functions
 
 int
-netcalc_widget_debug(
+my_widget_debug(
          my_config_t *                 cnf )
 {
    int                  idx;
