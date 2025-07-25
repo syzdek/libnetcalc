@@ -292,7 +292,7 @@ netcalc_widget_info_ip(
    assert(recs != NULL);
 
    // calculate superblock
-   if ( (cnf->argc > 1) && (!(family_any)) && (!(cnf->quiet)) )
+   if ( (cnf->argc > 1) && (!(family_any)) )
    {
       size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
       if ((mets = malloc(size)) == NULL)
@@ -315,7 +315,8 @@ netcalc_widget_info_ip(
 
    flags  = (cnf->argc > 1) ? MY_FLG_SHOW_ADDR : 0;
    flags |= recs[0]->family;
-   netcalc_rec_summary_ip(NULL, &lens, flags);
+   if (!(cnf->quiet))
+      netcalc_rec_summary_ip(NULL, &lens, flags);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
       netcalc_rec_summary_ip(recs[idx], &lens, flags);
