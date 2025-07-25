@@ -65,18 +65,6 @@
 //////////////////
 // MARK: - Data Types
 
-typedef struct _my_info_t
-{
-   int                  cidr;
-   int                  __pad;
-   netcalc_net_t *      net;
-   char                 address[NETCALC_ADDRESS_LENGTH];
-   char                 network[NETCALC_ADDRESS_LENGTH];
-   char                 broadcast[NETCALC_ADDRESS_LENGTH];
-   char                 netmask[NETCALC_ADDRESS_LENGTH];
-   char                 wildcard[NETCALC_ADDRESS_LENGTH];
-} my_info_t;
-
 
 //////////////////
 //              //
