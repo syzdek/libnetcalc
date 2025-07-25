@@ -326,14 +326,9 @@ main(
    cnf->prog_name    = prog_name;
    cnf->flags        = NETCALC_DFLTS;
 
-   // skip argument processing if called via alias
+   // check for symlink alias
    if ((cnf->widget = netcalc_widget_lookup(cnf->prog_name, 1)) != NULL)
-   {
-      cnf->argc      = argc;
-      cnf->argv      = argv;
       cnf->symlinked = 1;
-      return(cnf->widget->func_exec(cnf));
-   };
 
    // initial processing of common cli arguments
    if (!(cnf->widget))
