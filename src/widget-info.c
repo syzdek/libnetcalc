@@ -93,7 +93,7 @@ my_widget_info_ip_verbose(
 
 
 static void
-netcalc_widget_info_print(
+my_widget_info_print(
          const char *                  fld,
          const char *                  val );
 
@@ -231,19 +231,19 @@ my_widget_info_eui(
       if (family == NETCALC_AF_EUI48)
       {
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-         netcalc_widget_info_print("EUI48",  str);
+         my_widget_info_print("EUI48",  str);
          if ((rc = netcalc_convert(dup, NETCALC_AF_EUI64, NULL)) == 0)
          {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-            netcalc_widget_info_print("Modified EUI64",  str);
+            my_widget_info_print("Modified EUI64",  str);
          };
       } else if ((rc = netcalc_convert(dup, NETCALC_AF_EUI48, NULL)) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-         netcalc_widget_info_print("EUI48",  str);
+         my_widget_info_print("EUI48",  str);
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-         netcalc_widget_info_print("Modified EUI64",  str);
+         my_widget_info_print("Modified EUI64",  str);
       } else
       {  str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-         netcalc_widget_info_print("EUI64",  str);
+         my_widget_info_print("EUI64",  str);
       };
 
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_UL,       &ival);
@@ -252,7 +252,7 @@ my_widget_info_eui(
             ? "(locally administered)"
             : "(universally administered)";
       snprintf(buff, sizeof(buff), "%i %s", bit, str);
-      netcalc_widget_info_print("U/L Bit", buff);
+      my_widget_info_print("U/L Bit", buff);
 
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG,       &ival);
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG_BIT,   &bit);
@@ -260,11 +260,11 @@ my_widget_info_eui(
             ? "(unicast)"
             : "(multicast)";
       snprintf(buff, sizeof(buff), "%i %s", bit, str);
-      netcalc_widget_info_print("I/G Bit", buff);
+      my_widget_info_print("I/G Bit", buff);
 
       if ((rc = netcalc_convert(dup, NETCALC_AF_INET6, NULL)) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-         netcalc_widget_info_print("IPv6 SLAAC Address",  str);
+         my_widget_info_print("IPv6 SLAAC Address",  str);
       };
 
       netcalc_free(dup);
@@ -370,43 +370,43 @@ my_widget_info_ip_verbose(
 
       flags = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
-      netcalc_widget_info_print("Host Address", str);
+      my_widget_info_print("Host Address", str);
 
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_IPV4_MAPPED, &ival);
       if ( ((ival)) && (!(cnf->flags & NETCALC_FLG_V4MAPPED)) )
       {  flags  = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
          flags |= NETCALC_FLG_V4MAPPED;
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
-         netcalc_widget_info_print("IPv4-mapped Address", str);
+         my_widget_info_print("IPv4-mapped Address", str);
       };
 
       str = NULL;
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_SCOPE_NAME, &str);
       if ((str))
-         netcalc_widget_info_print("Scope Name", str);
+         my_widget_info_print("Scope Name", str);
 
       flags = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR));
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_NETWORK, flags);
-      netcalc_widget_info_print("Network Address", str);
+      my_widget_info_print("Network Address", str);
 
       flags = NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR);
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_BROADCAST, flags);
-      netcalc_widget_info_print("Broadcast Address", str);
+      my_widget_info_print("Broadcast Address", str);
 
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_NETMASK, cnf->flags);
-      netcalc_widget_info_print("Netmask", str);
+      my_widget_info_print("Netmask", str);
 
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
-      netcalc_widget_info_print("Wildcard", str);
+      my_widget_info_print("Wildcard", str);
 
       snprintf(buff, sizeof(buff), "%i", cidr);
-      netcalc_widget_info_print("CIDR", buff);
+      my_widget_info_print("CIDR", buff);
 
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_PORT, &ival);
       if ((ival))
       {
          snprintf(buff, sizeof(buff), "%i", ival);
-         netcalc_widget_info_print("Port", buff);
+         my_widget_info_print("Port", buff);
       };
 
       if ( ((family == NETCALC_AF_INET6) && (cidr < 128)) || ((family == NETCALC_AF_INET) && (cidr < 32)) )
@@ -414,29 +414,29 @@ my_widget_info_ip_verbose(
          flags |= NETCALC_FLG_SUPR;
          flags = NETCALC_UNSET(flags, (NETCALC_FLG_COMPR | NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_FIRST, flags);
-         netcalc_widget_info_print("Usable Range", str);
+         my_widget_info_print("Usable Range", str);
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_LAST, flags);
-         netcalc_widget_info_print(NULL, str);
+         my_widget_info_print(NULL, str);
       };
 
       if ((rc = netcalc_convert(eui, NETCALC_AF_EUI48, NULL)) == 0)
       {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
-         netcalc_widget_info_print("MAC Address", str);
+         my_widget_info_print("MAC Address", str);
          if ((rc = netcalc_convert(eui, NETCALC_AF_EUI64, NULL)) == 0)
          {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
-            netcalc_widget_info_print("Modified EUI64", str);
+            my_widget_info_print("Modified EUI64", str);
          };
       };
 
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ARPA_HOST, 0);
-      netcalc_widget_info_print("DNS ARPA Host", str);
+      my_widget_info_print("DNS ARPA Host", str);
 
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ARPA_ZONE, 0);
-      netcalc_widget_info_print("DNS ARPA Zone", str);
+      my_widget_info_print("DNS ARPA Zone", str);
 
       str = netcalc_ntop(recs[idx]->net, buff, sizeof(buff), NETCALC_TYPE_ARPA_REC, 0);
       netcalc_strlcat(buff, " IN PTR", sizeof(buff));
-      netcalc_widget_info_print("DNS ARPA RR", buff);
+      my_widget_info_print("DNS ARPA RR", buff);
 
       netcalc_free(eui);
 
@@ -449,7 +449,7 @@ my_widget_info_ip_verbose(
 
 
 void
-netcalc_widget_info_print(
+my_widget_info_print(
          const char *                  fld,
          const char *                  val )
 {
