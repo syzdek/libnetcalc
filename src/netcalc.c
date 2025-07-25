@@ -239,6 +239,19 @@ static netcalc_widget_t netcalc_widget_map[] =
       .func_usage = &netcalc_widget_printf_usage,
    },
 
+   // superblock widget
+   {  .name       = "superblock",
+      .desc       = "display superblocks containing IP addresses",
+      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
+      .arg_min    = 1,
+      .arg_max    = -1,
+      .aliases    = NULL,
+      .func_exec  = &netcalc_widget_superblock,
+      .func_usage = &netcalc_widget_null,
+   },
+
    // syntaxes widget
    {  .name       = "syntaxes",
       .desc       = "display supported address syntaxes",
