@@ -143,17 +143,27 @@ netcalc_widget_info(
          netcalc_recs_free(recs);
          return(1);
       };
-      netcalc_rec_process(cnf, recs[idx]);
+
+      // convert address to prefix address family
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY, &ival);
+      if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != ival) )
+      {  if ((rc = netcalc_convert(recs[idx]->net, cnf->net_prefix_family, cnf->net_prefix)) != 0)
+         {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+            netcalc_recs_free(recs);
+            return(1);
+         };
+      };
+      netcalc_rec_process(cnf, recs[idx]);
+
       if (!(net_family))
-      {  if ((ival & (NETCALC_AF_INET | NETCALC_AF_INET6)))
+      {  if ((recs[idx]->family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
             net_family = NETCALC_AF_INET | NETCALC_AF_INET6;
-         else if ((ival & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
+         else if ((recs[idx]->family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
             net_family = NETCALC_AF_EUI48 | NETCALC_AF_EUI64;
          else
-            net_family = ival;
+            net_family = recs[idx]->family;
       };
-      if (!(net_family & ival))
+      if (!(net_family & recs[idx]->family))
          family_any = 1;
    };
 
@@ -282,7 +292,7 @@ netcalc_widget_info_ip(
    assert(recs != NULL);
 
    // calculate superblock
-   if ( (cnf->argc > 1) && (!(family_any)) )
+   if ( (cnf->argc > 1) && (!(family_any)) && (!(cnf->quiet)) )
    {
       size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
       if ((mets = malloc(size)) == NULL)

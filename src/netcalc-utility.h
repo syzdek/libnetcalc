@@ -114,9 +114,13 @@ struct _netcalc_config
    int                        symlinked;
    int                        flags;
    int                        flags_negate;
+   int                        net_prefix_family;
+   int                        __pad_int;
    int                        argc;
    char * const *             argv;
    const char *               prog_name;
+   netcalc_net_t *            net_prefix;
+   const char *               net_prefix_str;
    const netcalc_widget_t *   widget;
 };
 

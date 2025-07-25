@@ -61,7 +61,7 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FAMILY
-#define  NETCALC_SHORT_FAMILY "46Ee"
+#define  NETCALC_SHORT_FAMILY "46Eep:"
 
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
@@ -347,7 +347,18 @@ main(
    if ((rc = netcalc_arguments(cnf, cnf->argc, cnf->argv)) != 0)
       return((rc == -1) ? 0 : 1);
 
+   // adjust flags
    cnf->flags &= ~cnf->flags_negate;
+
+   // process network prefix
+   if ((cnf->net_prefix_str))
+   {  if ((rc = netcalc_initialize(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
+      {  fprintf(stderr, "%s: network prefix: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+         fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+         return(1);
+      };
+      netcalc_get_field(cnf->net_prefix, NETCALC_FLD_FAMILY, &cnf->net_prefix_family);
+   };
 
    return(cnf->widget->func_exec(cnf));
 }
@@ -470,6 +481,10 @@ netcalc_arguments(
          case 'h':
             netcalc_usage(cnf);
             return(-1);
+
+         case 'p':
+            cnf->net_prefix_str = optarg;
+            break;
 
          case 'q':
             cnf->quiet = 1;
@@ -625,6 +640,7 @@ netcalc_usage(
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
+   if ((strchr(short_opt, 'p'))) printf("  -p net, --prefix=net      use prefix when converting families\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
    if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
    if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
