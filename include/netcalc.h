@@ -104,6 +104,7 @@
 #define NETCALC_FLD_UL_BIT             8  // Universal vs. local (returns U/L bit)
 #define NETCALC_FLD_IG                 9  // Unicast vs. multicast (interprets  I/G bit)
 #define NETCALC_FLD_IG_BIT             10 // Unicast vs. multicast (returns  I/G bit)
+#define NETCALC_FLD_IPV4_MAPPED        11
 
 #define NETCALC_IG_UNICAST             0  // is locally administered
 #define NETCALC_IG_MULTICAST           1  // is universally administered

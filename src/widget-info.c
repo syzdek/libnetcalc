@@ -372,6 +372,14 @@ netcalc_widget_info_ip_verbose(
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
       netcalc_widget_info_print("Host Address", str);
 
+      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IPV4_MAPPED, &ival);
+      if ( ((ival)) && (!(cnf->flags & NETCALC_FLG_V4MAPPED)) )
+      {  flags  = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
+         flags |= NETCALC_FLG_V4MAPPED;
+         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
+         netcalc_widget_info_print("IPv4-mapped Address", str);
+      };
+
       str = NULL;
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_SCOPE_NAME, &str);
       if ((str))

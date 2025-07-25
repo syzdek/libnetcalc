@@ -641,6 +641,18 @@ netcalc_get_field(
          *((int *)outvalue) = val_i;
          return(NETCALC_SUCCESS);
 
+      case NETCALC_FLD_IPV4_MAPPED:
+         *((int *)outvalue) = 0;
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+         {  if (net->net_addr.addr32[2] == 0)
+               *((int *)outvalue) = 1;
+            if (net->net_addr.addr32[2] == 0xffffffff)
+               *((int *)outvalue) = 1;
+            if ((net->net_flags & NETCALC_FLG_V4MAPPED))
+               *((int *)outvalue) = 1;
+         };
+         return(NETCALC_SUCCESS);
+
       case NETCALC_FLD_PORT:
          *((int *)outvalue) = (int)net->net_port;
          return(NETCALC_SUCCESS);
