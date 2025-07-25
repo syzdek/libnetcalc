@@ -55,8 +55,6 @@
 //////////////
 // MARK: - Macros
 
-#define NETCALC_DFLT_FLAG(net, dflts, flgs) (((net&flgs)) ? (net&flgs) : (dflts&flgs))
-
 
 ///////////////////
 //               //
