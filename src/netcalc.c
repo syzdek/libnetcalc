@@ -155,7 +155,7 @@ my_widget_syntaxes(
 
 
 static int
-netcalc_widget_usage(
+my_widget_usage(
          my_config_t *                 cnf );
 
 
@@ -209,7 +209,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_min    = 0,
       .arg_max    = 0,
       .aliases    = (const char *[]){ "usage", NULL },
-      .func_exec  = &netcalc_widget_usage,
+      .func_exec  = &my_widget_usage,
       .func_usage = &my_widget_null,
    },
 
@@ -1073,7 +1073,7 @@ my_widget_syntaxes(
 
 
 int
-netcalc_widget_usage(
+my_widget_usage(
          my_config_t *                 cnf )
 {
    cnf->widget = NULL;
