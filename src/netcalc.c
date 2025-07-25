@@ -236,7 +236,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_printf,
-      .func_usage = &netcalc_widget_printf_usage,
+      .func_usage = &my_widget_printf_usage,
    },
 
    // superblock widget

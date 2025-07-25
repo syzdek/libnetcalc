@@ -166,7 +166,7 @@ my_widget_printf(
 
 
 int
-netcalc_widget_printf_usage(
+my_widget_printf_usage(
          my_config_t *                 cnf )
 {
    assert(cnf != NULL);
