@@ -140,7 +140,7 @@ my_widget_lookup(
 #pragma mark widgets prototypes
 
 static int
-netcalc_widget_copyright(
+my_widget_copyright(
          my_config_t *                 cnf );
 
 
@@ -183,7 +183,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_min    = 0,
       .arg_max    = 0,
       .aliases    = NULL,
-      .func_exec  = &netcalc_widget_copyright,
+      .func_exec  = &my_widget_copyright,
       .func_usage = NULL,
    },
 
@@ -938,7 +938,7 @@ my_recs_lengths(
 #pragma mark widgets functions
 
 int
-netcalc_widget_copyright(
+my_widget_copyright(
          my_config_t *                 cnf )
 {
    const char * pkg_name;
