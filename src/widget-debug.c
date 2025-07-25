@@ -66,7 +66,7 @@
 // MARK: - Prototypes
 
 static void
-netcalc_widget_debug_print(
+my_widget_debug_print(
          const char *                  fld,
          const char *                  val );
 
@@ -126,7 +126,7 @@ my_widget_debug(
    {
       printf("processing \"%s\" ...\n", cnf->argv[idx]);
       rc = netcalc_initialize(&net, cnf->argv[idx], cnf->flags);
-      netcalc_widget_debug_print( "status", netcalc_strerror(rc) );
+      my_widget_debug_print( "status", netcalc_strerror(rc) );
       netcalc_widget_debug_print_int( "return code", rc );
       if ((rc))
       {
@@ -145,25 +145,25 @@ my_widget_debug(
          default:                str = "unknown";  break;
       };
       snprintf(buff, sizeof(buff), "%s (%04x)", str, (unsigned)family );
-      netcalc_widget_debug_print( "Family", buff );
+      my_widget_debug_print( "Family", buff );
 
       netcalc_get_field(net, NETCALC_FLD_FLAGS,  &ival);
       netcalc_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-      netcalc_widget_debug_print("Address",  str);
+      my_widget_debug_print("Address",  str);
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_NETMASK, cnf->flags);
-      netcalc_widget_debug_print("Netmask",  str);
+      my_widget_debug_print("Netmask",  str);
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_WILDCARD, cnf->flags);
-      netcalc_widget_debug_print("Wildcard",  str);
+      my_widget_debug_print("Wildcard",  str);
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_NETWORK, cnf->flags);
-      netcalc_widget_debug_print("Network",  str);
+      my_widget_debug_print("Network",  str);
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_BROADCAST, cnf->flags);
-      netcalc_widget_debug_print("Broadcast",  str);
+      my_widget_debug_print("Broadcast",  str);
 
       netcalc_get_field(net, NETCALC_FLD_CIDR,        &ival);
       netcalc_widget_debug_print_int("Prefix length", ival);
@@ -179,7 +179,7 @@ my_widget_debug(
       if (family == NETCALC_AF_INET6)
       {
          netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME,  &ptr);
-         netcalc_widget_debug_print("Scope Name", (((ptr)) ? (char *)ptr : ""));
+         my_widget_debug_print("Scope Name", (((ptr)) ? (char *)ptr : ""));
          free(ptr);
       };
 
@@ -195,7 +195,7 @@ my_widget_debug(
 
 
 void
-netcalc_widget_debug_print(
+my_widget_debug_print(
          const char *                  fld,
          const char *                  val )
 {
@@ -228,7 +228,7 @@ netcalc_widget_debug_print_bytes(
    };
    buff[pos] = '\0';
 
-   netcalc_widget_debug_print(fld, buff);
+   my_widget_debug_print(fld, buff);
 
    return;
 }
@@ -241,7 +241,7 @@ netcalc_widget_debug_print_hex(
 {
    char buff[32];
    snprintf(buff, sizeof(buff), "%08x", (unsigned)val);
-   netcalc_widget_debug_print(fld, buff);
+   my_widget_debug_print(fld, buff);
    return;
 }
 
@@ -253,7 +253,7 @@ netcalc_widget_debug_print_int(
 {
    char buff[16];
    snprintf(buff, sizeof(buff), "%i", val);
-   netcalc_widget_debug_print(fld, buff);
+   my_widget_debug_print(fld, buff);
    return;
 }
 
