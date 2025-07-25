@@ -114,7 +114,7 @@ netcalc_widget_info_print(
 // MARK: - Functions
 
 int
-netcalc_widget_info(
+my_widget_info(
          my_config_t *                 cnf )
 {
    int                  idx;

@@ -252,7 +252,7 @@ my_widget_debug(
 
 
 extern int
-netcalc_widget_info(
+my_widget_info(
          my_config_t *                 cnf );
 
 
