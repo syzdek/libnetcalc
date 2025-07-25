@@ -160,7 +160,7 @@ my_widget_usage(
 
 
 static int
-netcalc_widget_version(
+my_widget_version(
          my_config_t *                 cnf );
 
 
@@ -274,7 +274,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_min    = 0,
       .arg_max    = 0,
       .aliases    = NULL,
-      .func_exec  = &netcalc_widget_version,
+      .func_exec  = &my_widget_version,
       .func_usage = NULL,
    },
 
@@ -504,7 +504,7 @@ my_arguments(
             break;
 
          case 'V':
-            netcalc_widget_version(cnf);
+            my_widget_version(cnf);
             return(-1);
 
          case 'v':
@@ -1083,7 +1083,7 @@ my_widget_usage(
 
 
 int
-netcalc_widget_version(
+my_widget_version(
          my_config_t *                 cnf )
 {
    const char * prog_name;
