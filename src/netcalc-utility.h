@@ -225,7 +225,7 @@ my_rec_process(
 
 
 extern my_rec_t **
-netcalc_recs_alloc(
+my_recs_alloc(
          my_config_t *                 cnf,
          size_t                        len );
 

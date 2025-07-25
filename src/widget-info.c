@@ -130,7 +130,7 @@ netcalc_widget_info(
    cnf->flags &= ~cnf->flags_negate;
 
    // allocates memory
-   if ((recs = netcalc_recs_alloc(cnf, (size_t)cnf->argc + 2)) == NULL)
+   if ((recs = my_recs_alloc(cnf, (size_t)cnf->argc + 2)) == NULL)
    {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
       return(1);
    };

@@ -179,7 +179,7 @@ netcalc_widget_superblock(
    };
    netcalc_get_field(superblock, NETCALC_FLD_CIDR, &cidr);
 
-   if ((recs = netcalc_recs_alloc(cnf, (size_t)(cidr+4))) == NULL)
+   if ((recs = my_recs_alloc(cnf, (size_t)(cidr+4))) == NULL)
    { netcalc_free(superblock);
       return(1);
    };
