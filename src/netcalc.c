@@ -172,7 +172,7 @@ my_widget_version(
 // MARK: - Variables
 
 #pragma mark netcalc_widget_map[]
-static my_widget_t netcalc_widget_map[] =
+static my_widget_t my_widget_map[] =
 {
    // copyright widget
    {  .name       = "copyright",
@@ -653,9 +653,9 @@ my_usage(
    if (!(cnf->widget))
    {
       printf("WIDGETS:\n");
-      for(pos = 0; netcalc_widget_map[pos].name != NULL; pos++)
+      for(pos = 0; my_widget_map[pos].name != NULL; pos++)
       {
-         widget = &netcalc_widget_map[pos];
+         widget = &my_widget_map[pos];
          if ((widget->desc))
             printf("  %-25s %s\n", widget->name, widget->desc);
       };
@@ -697,10 +697,10 @@ my_widget_lookup(
    wname_len   = strlen(wname);
 
    // loop through widgets looking for match
-   for(x = 0; ((netcalc_widget_map[x].name)); x++)
+   for(x = 0; ((my_widget_map[x].name)); x++)
    {
       // check widget
-      widget = &netcalc_widget_map[x];
+      widget = &my_widget_map[x];
       if (widget->func_exec == NULL)
          continue;
       widget->alias_idx = -1;
