@@ -108,6 +108,10 @@ struct _libnetcalc_network
 extern const netcalc_addr_t _netcalc_netmasks[];
 extern const netcalc_net_t _netcalc_lo_in;
 extern const netcalc_net_t _netcalc_lo_in6;
+extern const netcalc_net_t _netcalc_ipv4_mapped_ipv6;
+extern const netcalc_net_t _netcalc_link_local_in;
+extern const netcalc_net_t _netcalc_link_local_in6;
+extern const netcalc_net_t _netcalc_slaac_in6;
 
 
 //////////////////
