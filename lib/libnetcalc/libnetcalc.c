@@ -822,7 +822,7 @@ netcalc_network_mask(
 
    // updates CIDR and exits if prefix is not specified
    if (!(prefix))
-   {  if ((cidr))
+   {  if (cidr >= 0)
          net->net_cidr = cidr;
       return(0);
    };
