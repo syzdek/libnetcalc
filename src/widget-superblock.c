@@ -117,7 +117,7 @@ netcalc_widget_superblock(
    // allocates memory
    size = sizeof(netcalc_net_t *) * ((size_t)cnf->argc + 2);
    if ((nets = malloc(size)) == NULL)
-   {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+   {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
       return(1);
    };
    memset(nets, 0, size);
@@ -125,7 +125,7 @@ netcalc_widget_superblock(
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
    {  if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
-      {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_nets_free(nets);
          return(1);
       };
@@ -135,7 +135,7 @@ netcalc_widget_superblock(
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
       if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
       {  if ((rc = netcalc_convert(nets[idx], cnf->net_prefix_family, cnf->net_prefix)) != 0)
-         {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
             my_nets_free(nets);
             return(1);
          };
@@ -159,7 +159,7 @@ netcalc_widget_superblock(
    };
    if ((af_other))
    {  my_nets_free(nets);
-      fprintf(stderr, "%s: %s: unsupported address families\n", netcalc_prog_name(cnf), cnf->argv[idx]);
+      fprintf(stderr, "%s: %s: unsupported address families\n", my_prog_name(cnf), cnf->argv[idx]);
       return(1);
    };
    if ((af_ipv4))
@@ -174,7 +174,7 @@ netcalc_widget_superblock(
    free(nets);
    nets = NULL;
    if (rc != NETCALC_SUCCESS)
-   {  fprintf(stderr, "%s: netcalc_superblock(): %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+   {  fprintf(stderr, "%s: netcalc_superblock(): %s\n", my_prog_name(cnf), netcalc_strerror(rc));
       return(1);
    };
    netcalc_get_field(superblock, NETCALC_FLD_CIDR, &cidr);
@@ -190,7 +190,7 @@ netcalc_widget_superblock(
    {  for(idx = 1; (cidr > 0); idx++)
       {  cidr--;
          if ((rc = netcalc_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
-         {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+         {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
             netcalc_recs_free(recs);
          };
          netcalc_network_mask(recs[idx]->net, NULL, cidr);

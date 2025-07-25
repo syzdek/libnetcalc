@@ -353,7 +353,7 @@ main(
    // process network prefix
    if ((cnf->net_prefix_str))
    {  if ((rc = netcalc_initialize(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
-      {  fprintf(stderr, "%s: network prefix: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+      {  fprintf(stderr, "%s: network prefix: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
          return(1);
       };
@@ -400,8 +400,8 @@ netcalc_arguments(
          case '2':
          case '3':
             if ((cnf->flags & (NETCALC_FLG_COLON | NETCALC_FLG_DASH | NETCALC_FLG_DOT | NETCALC_FLG_NODELIM)))
-            {  fprintf(stderr, "%s: incompatible options `--colon', `--dash', `--dot' and `--no-delimiter'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `--colon', `--dash', `--dot' and `--no-delimiter'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             }
             if (c == '0') cnf->flags |= NETCALC_FLG_COLON;
@@ -420,8 +420,8 @@ netcalc_arguments(
                default:                str = "--"; break;
             };
             if ((str))
-            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", netcalc_prog_name(cnf), str, c);
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", my_prog_name(cnf), str, c);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             };
             cnf->flags |= NETCALC_AF_INET;
@@ -437,8 +437,8 @@ netcalc_arguments(
                default:                str = "--"; break;
             };
             if ((str))
-            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", netcalc_prog_name(cnf), str, c);
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", my_prog_name(cnf), str, c);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             };
             cnf->flags |= NETCALC_AF_INET6;
@@ -454,8 +454,8 @@ netcalc_arguments(
                default:                str = "--"; break;
             };
             if ((str))
-            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", netcalc_prog_name(cnf), str, c);
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", my_prog_name(cnf), str, c);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             };
             cnf->flags |= NETCALC_AF_EUI64;
@@ -471,8 +471,8 @@ netcalc_arguments(
                default:                str = "--"; break;
             };
             if ((str))
-            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", netcalc_prog_name(cnf), str, c);
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `%s' and `-%c'\n", my_prog_name(cnf), str, c);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             };
             cnf->flags |= NETCALC_AF_EUI48;
@@ -489,8 +489,8 @@ netcalc_arguments(
          case 'q':
             cnf->quiet = 1;
             if ((cnf->verbose))
-            {  fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n",  netcalc_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             };
             break;
@@ -511,8 +511,8 @@ netcalc_arguments(
             cnf->verbose++;
             if ((cnf->quiet))
             {
-               fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", netcalc_prog_name(cnf));
-               fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+               fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
                return(1);
             };
             break;
@@ -522,12 +522,12 @@ netcalc_arguments(
             break;
 
          case '?':
-            fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+            fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
             return(1);
 
          default:
-            fprintf(stderr, "%s: unrecognized option `--%c'\n", netcalc_prog_name(cnf), c);
-            fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+            fprintf(stderr, "%s: unrecognized option `--%c'\n", my_prog_name(cnf), c);
+            fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
             return(1);
       };
    };
@@ -539,8 +539,8 @@ netcalc_arguments(
    {
       if (cnf->argc < 1)
       {
-         fprintf(stderr, "%s: missing required argument\n", netcalc_prog_name(cnf));
-         fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+         fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+         fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
          return(1);
       };
       return(0);
@@ -548,14 +548,14 @@ netcalc_arguments(
 
    if (cnf->argc < widget->arg_min)
    {
-      fprintf(stderr, "%s: missing required argument\n", netcalc_prog_name(cnf));
-      fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+      fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+      fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
       return(1);
    };
    if ( (cnf->argc > widget->arg_max) && (widget->arg_max >= widget->arg_min) )
    {
-      fprintf(stderr, "%s: unknown argument -- `%s'\n", netcalc_prog_name(cnf), cnf->argv[widget->arg_max]);
-      fprintf(stderr, "Try `%s --help' for more information.\n", netcalc_prog_name(cnf));
+      fprintf(stderr, "%s: unknown argument -- `%s'\n", my_prog_name(cnf), cnf->argv[widget->arg_max]);
+      fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
       return(1);
    };
 
@@ -578,7 +578,7 @@ my_nets_free(
 
 
 char *
-netcalc_prog_name(
+my_prog_name(
          my_config_t *                 cnf )
 {
    static char    buff[512];
@@ -866,14 +866,14 @@ netcalc_recs_alloc(
 
    size = (len + 2) * sizeof(my_rec_t *);
    if ((recs = malloc(size)) == NULL)
-   {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+   {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
       return(NULL);
    };
    memset(recs, 0, size);
 
    for(idx = 0; (idx < len); idx++)
    {  if ((rec = malloc(sizeof(my_rec_t))) == NULL)
-      {  fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+      {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
          netcalc_recs_free(recs);
          return(NULL);
       };

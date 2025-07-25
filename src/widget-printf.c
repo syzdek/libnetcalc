@@ -122,7 +122,7 @@ netcalc_widget_printf(
    size  = sizeof(netcalc_net_t *) * len;
    if ((nets = malloc(size)) == NULL)
    {
-      fprintf(stderr, "%s: out of virtual memory\n", netcalc_prog_name(cnf));
+      fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
       return(1);
    };
    memset(nets, 0, size);
@@ -132,7 +132,7 @@ netcalc_widget_printf(
    {
       if ((rc = netcalc_initialize(&nets[idx-1], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {
-         fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+         fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_nets_free(nets);
          return(1);
       };
@@ -141,7 +141,7 @@ netcalc_widget_printf(
       netcalc_get_field(nets[idx-1], NETCALC_FLD_FAMILY, &family);
       if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
       {  if ((rc = netcalc_convert(nets[idx-1], cnf->net_prefix_family, cnf->net_prefix)) != 0)
-         {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
             my_nets_free(nets);
             return(1);
          };
@@ -153,7 +153,7 @@ netcalc_widget_printf(
    {
       if (!(netcalc_strfnet(nets[idx], buff, sizeof(buff), cnf->argv[0], flags)))
       {
-         fprintf(stderr, "%s: invalid format syntax or format character\n", netcalc_prog_name(cnf));
+         fprintf(stderr, "%s: invalid format syntax or format character\n", my_prog_name(cnf));
          return(1);
       };
       printf("%s\n", buff);
@@ -206,14 +206,14 @@ netcalc_widget_printf_usage(
    printf("  %%z    enable zero compression\n");
    printf("\n");
    printf("EXAMPLES:\n");
-   printf("  $ %s \"%%-20zsa %%-4C %%P\" [2001:db8:f:300::54f]/64:443  203.0.113.1:143\n", netcalc_prog_name(cnf));
+   printf("  $ %s \"%%-20zsa %%-4C %%P\" [2001:db8:f:300::54f]/64:443  203.0.113.1:143\n", my_prog_name(cnf));
    printf("  2001:db8:f:300::54f  64   443\n");
    printf("  203.0.113.1          128  143\n");
    printf("\n");
-   printf("  $ %s \"%%n%%c\" [fe80::216:3eff:fe2a:bab8%%eth0]/64\n", netcalc_prog_name(cnf));
+   printf("  $ %s \"%%n%%c\" [fe80::216:3eff:fe2a:bab8%%eth0]/64\n", my_prog_name(cnf));
    printf("  fe80::/64\n");
    printf("\n");
-   printf("  $ %s \"%%b\" fe80::216:3eff:fe2a:bab8/64\n", netcalc_prog_name(cnf));
+   printf("  $ %s \"%%b\" fe80::216:3eff:fe2a:bab8/64\n", my_prog_name(cnf));
    printf("  fe80:0:0:0:ffff:ffff:ffff:ffff\n");
    printf("\n");
    return(0);

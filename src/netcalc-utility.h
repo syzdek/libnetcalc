@@ -188,7 +188,7 @@ my_nets_free(
 
 
 extern char *
-netcalc_prog_name(
+my_prog_name(
          my_config_t *                 cnf );
 
 
