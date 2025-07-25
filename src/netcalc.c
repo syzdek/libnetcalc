@@ -564,7 +564,7 @@ netcalc_arguments(
 
 
 void
-netcalc_nets_free(
+my_nets_free(
          netcalc_net_t **              nets )
 {
    int      pos;

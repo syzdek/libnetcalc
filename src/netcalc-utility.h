@@ -183,7 +183,7 @@ struct _my_widget
 // MARK: - Prototypes
 
 extern void
-netcalc_nets_free(
+my_nets_free(
          netcalc_net_t **              nets );
 
 

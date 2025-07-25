@@ -133,7 +133,7 @@ netcalc_widget_printf(
       if ((rc = netcalc_initialize(&nets[idx-1], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {
          fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_nets_free(nets);
+         my_nets_free(nets);
          return(1);
       };
 
@@ -142,7 +142,7 @@ netcalc_widget_printf(
       if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
       {  if ((rc = netcalc_convert(nets[idx-1], cnf->net_prefix_family, cnf->net_prefix)) != 0)
          {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-            netcalc_nets_free(nets);
+            my_nets_free(nets);
             return(1);
          };
       };
@@ -159,7 +159,7 @@ netcalc_widget_printf(
       printf("%s\n", buff);
    };
 
-   netcalc_nets_free(nets);
+   my_nets_free(nets);
 
    return(0);
 }

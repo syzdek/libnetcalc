@@ -126,7 +126,7 @@ netcalc_widget_superblock(
    for(idx = 0; (idx < cnf->argc); idx++)
    {  if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_nets_free(nets);
+         my_nets_free(nets);
          return(1);
       };
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
@@ -136,7 +136,7 @@ netcalc_widget_superblock(
       if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
       {  if ((rc = netcalc_convert(nets[idx], cnf->net_prefix_family, cnf->net_prefix)) != 0)
          {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-            netcalc_nets_free(nets);
+            my_nets_free(nets);
             return(1);
          };
          family = cnf->net_prefix_family;
@@ -158,7 +158,7 @@ netcalc_widget_superblock(
          netcalc_convert(nets[idx], NETCALC_AF_INET6, NULL);
    };
    if ((af_other))
-   {  netcalc_nets_free(nets);
+   {  my_nets_free(nets);
       fprintf(stderr, "%s: %s: unsupported address families\n", netcalc_prog_name(cnf), cnf->argv[idx]);
       return(1);
    };
