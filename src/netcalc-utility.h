@@ -231,7 +231,7 @@ my_recs_alloc(
 
 
 extern void
-netcalc_recs_free(
+my_recs_free(
          my_rec_t **                   recs );
 
 

@@ -140,7 +140,7 @@ netcalc_widget_info(
    {
       if ((rc = netcalc_initialize(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_recs_free(recs);
+         my_recs_free(recs);
          return(1);
       };
 
@@ -149,7 +149,7 @@ netcalc_widget_info(
       if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != ival) )
       {  if ((rc = netcalc_convert(recs[idx]->net, cnf->net_prefix_family, cnf->net_prefix)) != 0)
          {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-            netcalc_recs_free(recs);
+            my_recs_free(recs);
             return(1);
          };
       };
@@ -182,7 +182,7 @@ netcalc_widget_info(
       rc = 1;
    };
 
-   netcalc_recs_free(recs);
+   my_recs_free(recs);
 
    return(((rc)) ? 1 : 0);
 }

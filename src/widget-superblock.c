@@ -191,7 +191,7 @@ netcalc_widget_superblock(
       {  cidr--;
          if ((rc = netcalc_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
          {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
-            netcalc_recs_free(recs);
+            my_recs_free(recs);
          };
          netcalc_network_mask(recs[idx]->net, NULL, cidr);
          my_rec_process(cnf, recs[idx]);
@@ -207,7 +207,7 @@ netcalc_widget_superblock(
    for(idx = 0; ((recs[idx]->net)); idx++)
       my_rec_summary_ip(recs[idx], &lens, flags);
 
-   netcalc_recs_free(recs);
+   my_recs_free(recs);
 
    return(0);
 }

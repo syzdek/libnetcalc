@@ -874,7 +874,7 @@ my_recs_alloc(
    for(idx = 0; (idx < len); idx++)
    {  if ((rec = malloc(sizeof(my_rec_t))) == NULL)
       {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
-         netcalc_recs_free(recs);
+         my_recs_free(recs);
          return(NULL);
       };
       memset(rec, 0, sizeof(my_rec_t));
@@ -886,7 +886,7 @@ my_recs_alloc(
 
 
 void
-netcalc_recs_free(
+my_recs_free(
          my_rec_t **                   recs )
 {
    size_t               idx;
