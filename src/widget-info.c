@@ -80,7 +80,7 @@ my_widget_info_eui(
 
 
 static int
-netcalc_widget_info_ip(
+my_widget_info_ip(
          my_config_t *                 cnf,
          my_rec_t **                   recs,
          int                           family_any );
@@ -171,12 +171,12 @@ my_widget_info(
    if ((family_any))
    {  rc  = 0;
       rc += my_widget_info_eui( cnf, recs);
-      rc += netcalc_widget_info_ip(  cnf, recs, family_any);
+      rc += my_widget_info_ip(  cnf, recs, family_any);
    }
    else if ((net_family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
       rc = my_widget_info_eui( cnf, recs);
    else if ((net_family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
-      rc = netcalc_widget_info_ip( cnf, recs, family_any);
+      rc = my_widget_info_ip( cnf, recs, family_any);
    else
    {  fprintf(stderr, "%s: unknown or unsupported address family\n", my_prog_name(cnf));
       rc = 1;
@@ -277,7 +277,7 @@ my_widget_info_eui(
 
 
 int
-netcalc_widget_info_ip(
+my_widget_info_ip(
          my_config_t *                 cnf,
          my_rec_t **                   recs,
          int                           family_any )
