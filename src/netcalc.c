@@ -150,7 +150,7 @@ my_widget_null(
 
 
 static int
-netcalc_widget_syntaxes(
+my_widget_syntaxes(
          my_config_t *                 cnf );
 
 
@@ -261,7 +261,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_min    = 0,
       .arg_max    = 0,
       .aliases    = NULL,
-      .func_exec  = &netcalc_widget_syntaxes,
+      .func_exec  = &my_widget_syntaxes,
       .func_usage = &my_widget_null,
    },
 
@@ -989,7 +989,7 @@ my_widget_null(
 
 
 int
-netcalc_widget_syntaxes(
+my_widget_syntaxes(
          my_config_t *                 cnf )
 {
    int   family;
