@@ -248,7 +248,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_min    = 1,
       .arg_max    = -1,
       .aliases    = NULL,
-      .func_exec  = &netcalc_widget_superblock,
+      .func_exec  = &my_widget_superblock,
       .func_usage = &netcalc_widget_null,
    },
 

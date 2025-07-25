@@ -91,7 +91,7 @@
 // MARK: - Functions
 
 int
-netcalc_widget_superblock(
+my_widget_superblock(
          my_config_t *                 cnf )
 {
    int                  idx;
