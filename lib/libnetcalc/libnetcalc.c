@@ -1918,7 +1918,7 @@ netcalc_strfnet(
             pos++;
       };
 
-      mflgs &= NETCALC_FLG_COMPR | NETCALC_FLG_SUPR | NETCALC_DELIM;
+      mflgs &= NETCALC_FLG_COMPR | NETCALC_FLG_SUPR | NETCALC_FLG_V4MAPPED | NETCALC_DELIM;
 
       // process key words
       switch(fmt[pos])
