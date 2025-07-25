@@ -747,7 +747,7 @@ netcalc_widget_lookup(
 #pragma mark record functions
 
 extern void
-netcalc_rec_length(
+my_rec_length(
          my_rec_t *                    rec,
          my_len_t *                    l )
 {
@@ -925,7 +925,7 @@ netcalc_recs_lengths(
    {  rec = recs[idx];
       if (!(rec->net))
          continue;
-      netcalc_rec_length(rec, l);
+      my_rec_length(rec, l);
    };
 
    return;

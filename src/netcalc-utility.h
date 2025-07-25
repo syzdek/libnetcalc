@@ -206,7 +206,7 @@ netcalc_strlcat(
 #pragma mark record prototypes
 
 extern void
-netcalc_rec_length(
+my_rec_length(
          my_rec_t *                   rec,
          my_len_t *                    l );
 
