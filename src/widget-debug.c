@@ -79,7 +79,7 @@ my_widget_debug_print_bytes(
 
 
 static void
-netcalc_widget_debug_print_hex(
+my_widget_debug_print_hex(
          const char *                  fld,
          int                           val );
 
@@ -148,7 +148,7 @@ my_widget_debug(
       my_widget_debug_print( "Family", buff );
 
       netcalc_get_field(net, NETCALC_FLD_FLAGS,  &ival);
-      netcalc_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
+      my_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       my_widget_debug_print("Address",  str);
@@ -235,7 +235,7 @@ my_widget_debug_print_bytes(
 
 
 void
-netcalc_widget_debug_print_hex(
+my_widget_debug_print_hex(
          const char *                  fld,
          int                           val )
 {
