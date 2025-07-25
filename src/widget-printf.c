@@ -108,6 +108,7 @@ netcalc_widget_printf(
    int                  idx;
    int                  rc;
    int                  flags;
+   int                  family;
    size_t               len;
    size_t               size;
    netcalc_net_t **     nets;
@@ -134,6 +135,16 @@ netcalc_widget_printf(
          fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          netcalc_nets_free(nets);
          return(1);
+      };
+
+      // convert address to prefix address family
+      netcalc_get_field(nets[idx-1], NETCALC_FLD_FAMILY, &family);
+      if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
+      {  if ((rc = netcalc_convert(nets[idx-1], cnf->net_prefix_family, cnf->net_prefix)) != 0)
+         {  fprintf(stderr, "%s: %s: %s\n", netcalc_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+            netcalc_nets_free(nets);
+            return(1);
+         };
       };
    };
 
