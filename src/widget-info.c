@@ -74,7 +74,7 @@
 // MARK: - Prototypes
 
 static int
-netcalc_widget_info_eui(
+my_widget_info_eui(
          my_config_t *                 cnf,
          my_rec_t **                   recs );
 
@@ -170,11 +170,11 @@ my_widget_info(
    // print address family information
    if ((family_any))
    {  rc  = 0;
-      rc += netcalc_widget_info_eui( cnf, recs);
+      rc += my_widget_info_eui( cnf, recs);
       rc += netcalc_widget_info_ip(  cnf, recs, family_any);
    }
    else if ((net_family & (NETCALC_AF_EUI48 | NETCALC_AF_EUI64)))
-      rc = netcalc_widget_info_eui( cnf, recs);
+      rc = my_widget_info_eui( cnf, recs);
    else if ((net_family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
       rc = netcalc_widget_info_ip( cnf, recs, family_any);
    else
@@ -189,7 +189,7 @@ my_widget_info(
 
 
 int
-netcalc_widget_info_eui(
+my_widget_info_eui(
          my_config_t *                 cnf,
          my_rec_t **                   recs)
 {
