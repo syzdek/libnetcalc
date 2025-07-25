@@ -186,21 +186,24 @@ netcalc_widget_superblock(
    recs[0]->net = superblock;
    netcalc_rec_process(cnf, recs[0]);
 
-   for(idx = 1; (cidr > 0); idx++)
-   {  cidr--;
-      if ((rc = netcalc_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
-      {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
-         netcalc_recs_free(recs);
+   if ((cnf->verbose))
+   {  for(idx = 1; (cidr > 0); idx++)
+      {  cidr--;
+         if ((rc = netcalc_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
+         {  fprintf(stderr, "%s: %s\n", netcalc_prog_name(cnf), netcalc_strerror(rc));
+            netcalc_recs_free(recs);
+         };
+         netcalc_network_mask(recs[idx]->net, NULL, cidr);
+         netcalc_rec_process(cnf, recs[idx]);
       };
-      netcalc_network_mask(recs[idx]->net, NULL, cidr);
-      netcalc_rec_process(cnf, recs[idx]);
    };
+
 
    netcalc_recs_lengths(recs, &lens);
 
    flags = recs[0]->family;
-   netcalc_rec_summary_ip(NULL, &lens, flags);
-   netcalc_rec_summary_ip(recs[0], &lens, flags);
+   if (!(cnf->quiet))
+      netcalc_rec_summary_ip(NULL, &lens, flags);
    for(idx = 0; ((recs[idx]->net)); idx++)
       netcalc_rec_summary_ip(recs[idx], &lens, flags);
 
