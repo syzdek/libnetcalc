@@ -330,7 +330,7 @@ main(
    if ((cnf->widget = netcalc_widget_lookup(cnf->prog_name, 1)) != NULL)
       cnf->symlinked = 1;
 
-   // initial processing of common cli arguments
+   // processing common cli arguments
    if (!(cnf->widget))
    {
       if ((rc = netcalc_arguments(cnf, argc, argv)) != 0)
@@ -343,7 +343,7 @@ main(
       };
    };
 
-   // initial processing of widget cli arguments
+   // processing widget cli arguments
    if ((rc = netcalc_arguments(cnf, cnf->argc, cnf->argv)) != 0)
       return((rc == -1) ? 0 : 1);
 
