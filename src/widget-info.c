@@ -87,7 +87,7 @@ my_widget_info_ip(
 
 
 static int
-netcalc_widget_info_ip_verbose(
+my_widget_info_ip_verbose(
          my_config_t *                 cnf,
          my_rec_t **                   recs );
 
@@ -309,7 +309,7 @@ my_widget_info_ip(
    };
 
    if ( ((cnf->verbose)) || ((family_any)) )
-      return(netcalc_widget_info_ip_verbose(cnf, recs));
+      return(my_widget_info_ip_verbose(cnf, recs));
 
    my_recs_lengths(recs, &lens);
 
@@ -326,7 +326,7 @@ my_widget_info_ip(
 
 
 int
-netcalc_widget_info_ip_verbose(
+my_widget_info_ip_verbose(
          my_config_t *                 cnf,
          my_rec_t **                   recs )
 {
