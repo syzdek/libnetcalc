@@ -85,7 +85,7 @@ my_widget_debug_print_hex(
 
 
 static void
-netcalc_widget_debug_print_int(
+my_widget_debug_print_int(
          const char *                  fld,
          int                           val );
 
@@ -127,7 +127,7 @@ my_widget_debug(
       printf("processing \"%s\" ...\n", cnf->argv[idx]);
       rc = netcalc_initialize(&net, cnf->argv[idx], cnf->flags);
       my_widget_debug_print( "status", netcalc_strerror(rc) );
-      netcalc_widget_debug_print_int( "return code", rc );
+      my_widget_debug_print_int( "return code", rc );
       if ((rc))
       {
          errs++;
@@ -166,10 +166,10 @@ my_widget_debug(
       my_widget_debug_print("Broadcast",  str);
 
       netcalc_get_field(net, NETCALC_FLD_CIDR,        &ival);
-      netcalc_widget_debug_print_int("Prefix length", ival);
+      my_widget_debug_print_int("Prefix length", ival);
 
       netcalc_get_field(net, NETCALC_FLD_PORT,  &ival);
-      netcalc_widget_debug_print_int("Port",    ival);
+      my_widget_debug_print_int("Port",    ival);
 
       netcalc_get_field(net, NETCALC_FLD_ADDRLEN,  &ival);
       netcalc_get_field(net, NETCALC_FLD_ADDR,     &ptr);
@@ -247,7 +247,7 @@ my_widget_debug_print_hex(
 
 
 void
-netcalc_widget_debug_print_int(
+my_widget_debug_print_int(
          const char *                  fld,
          int                           val )
 {
