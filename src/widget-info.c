@@ -153,7 +153,7 @@ netcalc_widget_info(
             return(1);
          };
       };
-      netcalc_rec_process(cnf, recs[idx]);
+      my_rec_process(cnf, recs[idx]);
 
       if (!(net_family))
       {  if ((recs[idx]->family & (NETCALC_AF_INET | NETCALC_AF_INET6)))
@@ -304,7 +304,7 @@ netcalc_widget_info_ip(
          mets[idx] = recs[idx]->net;
       netcalc_superblock(&recs[cnf->argc]->net, mets, cnf->argc);
       recs[cnf->argc]->ip_superblock = 1;
-      netcalc_rec_process(cnf, recs[cnf->argc]);
+      my_rec_process(cnf, recs[cnf->argc]);
       free(mets);
    };
 

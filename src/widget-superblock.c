@@ -184,7 +184,7 @@ netcalc_widget_superblock(
       return(1);
    };
    recs[0]->net = superblock;
-   netcalc_rec_process(cnf, recs[0]);
+   my_rec_process(cnf, recs[0]);
 
    if ((cnf->verbose))
    {  for(idx = 1; (cidr > 0); idx++)
@@ -194,7 +194,7 @@ netcalc_widget_superblock(
             netcalc_recs_free(recs);
          };
          netcalc_network_mask(recs[idx]->net, NULL, cidr);
-         netcalc_rec_process(cnf, recs[idx]);
+         my_rec_process(cnf, recs[idx]);
       };
    };
 

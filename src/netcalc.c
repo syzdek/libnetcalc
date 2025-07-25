@@ -797,7 +797,7 @@ my_rec_summary_ip(
 
 
 void
-netcalc_rec_process(
+my_rec_process(
          my_config_t *                 cnf,
          my_rec_t *                    rec )
 {
