@@ -2112,6 +2112,9 @@ netcalc_superblock(
    matches  = 1;
    ref      = &nets[0]->net_addr;
 
+   if (nel == 1)
+      return(netcalc_dup(netp, nets[0]));
+
    memset(&nbuff, 0, sizeof(netcalc_net_t));
    nbuff.net_flags = nets[0]->net_flags & NETCALC_AF;
 
