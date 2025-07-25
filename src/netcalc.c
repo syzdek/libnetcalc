@@ -117,7 +117,7 @@ main(
 
 
 static int
-netcalc_arguments(
+my_arguments(
          my_config_t *                 cnf,
          int                           argc,
          char * const *                argv );
@@ -333,7 +333,7 @@ main(
    // processing common cli arguments
    if (!(cnf->widget))
    {
-      if ((rc = netcalc_arguments(cnf, argc, argv)) != 0)
+      if ((rc = my_arguments(cnf, argc, argv)) != 0)
          return((rc == -1) ? 0 : 1);
       if ((cnf->widget = netcalc_widget_lookup(cnf->argv[0], 0)) == NULL)
       {
@@ -344,7 +344,7 @@ main(
    };
 
    // processing widget cli arguments
-   if ((rc = netcalc_arguments(cnf, cnf->argc, cnf->argv)) != 0)
+   if ((rc = my_arguments(cnf, cnf->argc, cnf->argv)) != 0)
       return((rc == -1) ? 0 : 1);
 
    // adjust flags
@@ -365,7 +365,7 @@ main(
 
 
 int
-netcalc_arguments(
+my_arguments(
          my_config_t *                 cnf,
          int                           argc,
          char * const *                argv )
