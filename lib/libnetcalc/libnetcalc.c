@@ -826,11 +826,11 @@ netcalc_network_mask(
          net->net_cidr = cidr;
       return(0);
    };
-   net->net_cidr = ((cidr)) ? cidr : prefix->net_cidr;
+   net->net_cidr = ((cidr > 0) && (cidr < 129)) ? cidr : prefix->net_cidr;
 
    net_addr    = &net->net_addr;
    pre_addr    = &prefix->net_addr;
-   mask_addr   = &_netcalc_netmasks[net->net_cidr];
+   mask_addr   = &_netcalc_netmasks[prefix->net_cidr];
 
    // copy network prefix to network
    net_addr->addr32[0]  = (  mask_addr->addr32[0] & pre_addr->addr32[0] )
