@@ -1811,28 +1811,6 @@ netcalc_parse_inet6(
 }
 
 
-const char *
-netcalc_strerror(
-         int                           errnum )
-{
-   switch(errnum)
-   {
-      case NETCALC_SUCCESS:      return("success");
-
-      case NETCALC_EBADADDR:     return("bad address string");
-      case NETCALC_EBUFFLEN:     return("buffer length exceeeded");
-      case NETCALC_EFIELD:       return("unknown or unsupported field");
-      case NETCALC_EINVAL:       return("invalid argument");
-      case NETCALC_ENOMEM:       return("out of virtual memory");
-      case NETCALC_ENOTSUP:      return("operation not supported");
-
-      case NETCALC_EUNKNOWN:     break;
-      default:                   break;
-   };
-   return("unknown error");
-}
-
-
 size_t
 netcalc_strfnet(
          netcalc_net_t *               net,
