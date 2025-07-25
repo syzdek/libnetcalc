@@ -129,7 +129,7 @@ my_usage(
 
 
 static my_widget_t *
-netcalc_widget_lookup(
+my_widget_lookup(
          const char *                  wname,
          int                           exact );
 
@@ -327,7 +327,7 @@ main(
    cnf->flags        = NETCALC_DFLTS;
 
    // check for symlink alias
-   if ((cnf->widget = netcalc_widget_lookup(cnf->prog_name, 1)) != NULL)
+   if ((cnf->widget = my_widget_lookup(cnf->prog_name, 1)) != NULL)
       cnf->symlinked = 1;
 
    // processing common cli arguments
@@ -335,7 +335,7 @@ main(
    {
       if ((rc = my_arguments(cnf, argc, argv)) != 0)
          return((rc == -1) ? 0 : 1);
-      if ((cnf->widget = netcalc_widget_lookup(cnf->argv[0], 0)) == NULL)
+      if ((cnf->widget = my_widget_lookup(cnf->argv[0], 0)) == NULL)
       {
          fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
@@ -672,7 +672,7 @@ my_usage(
 
 
 my_widget_t *
-netcalc_widget_lookup(
+my_widget_lookup(
          const char *                  wname,
          int                           exact )
 {
