@@ -101,13 +101,13 @@
 //////////////////
 // MARK: - Data Types
 
-typedef struct _netcalc_config netcalc_config_t;
+typedef struct _my_config     my_config_t;
 typedef struct _my_length     my_len_t;
 typedef struct _my_record     my_rec_t;
 typedef struct _netcalc_widget netcalc_widget_t;
 
 
-struct _netcalc_config
+struct _my_config
 {
    int                        quiet;
    int                        verbose;
@@ -162,8 +162,8 @@ struct _netcalc_widget
    int                        arg_max;
    int                        alias_idx;
    int                        padint;
-   int  (*func_exec)(netcalc_config_t * cnf);
-   int  (*func_usage)(netcalc_config_t * cnf);
+   int  (*func_exec)(my_config_t * cnf);
+   int  (*func_usage)(my_config_t * cnf);
 };
 
 
@@ -189,7 +189,7 @@ netcalc_nets_free(
 
 extern char *
 netcalc_prog_name(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 // function in is in libnetcalc.a
@@ -220,13 +220,13 @@ netcalc_rec_summary_ip(
 
 extern void
 netcalc_rec_process(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t *                    rec );
 
 
 extern my_rec_t **
 netcalc_recs_alloc(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          size_t                        len );
 
 
@@ -248,27 +248,27 @@ netcalc_recs_lengths(
 
 extern int
 netcalc_widget_debug(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 extern int
 netcalc_widget_info(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 extern int
 netcalc_widget_printf(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 extern int
 netcalc_widget_printf_usage(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 extern int
 netcalc_widget_superblock(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 #endif /* end of header */

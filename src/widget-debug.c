@@ -107,7 +107,7 @@ netcalc_widget_debug_print_int(
 
 int
 netcalc_widget_debug(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    int                  idx;
    int                  rc;

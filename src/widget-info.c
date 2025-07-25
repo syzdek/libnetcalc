@@ -75,20 +75,20 @@
 
 static int
 netcalc_widget_info_eui(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs );
 
 
 static int
 netcalc_widget_info_ip(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs,
          int                           family_any );
 
 
 static int
 netcalc_widget_info_ip_verbose(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs );
 
 
@@ -115,7 +115,7 @@ netcalc_widget_info_print(
 
 int
 netcalc_widget_info(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    int                  idx;
    int                  rc;
@@ -190,7 +190,7 @@ netcalc_widget_info(
 
 int
 netcalc_widget_info_eui(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs)
 {
    int                  idx;
@@ -278,7 +278,7 @@ netcalc_widget_info_eui(
 
 int
 netcalc_widget_info_ip(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs,
          int                           family_any )
 {
@@ -327,7 +327,7 @@ netcalc_widget_info_ip(
 
 int
 netcalc_widget_info_ip_verbose(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t **                   recs )
 {
    int                  rc;

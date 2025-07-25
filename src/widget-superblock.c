@@ -92,7 +92,7 @@
 
 int
 netcalc_widget_superblock(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    int                  idx;
    int                  rc;

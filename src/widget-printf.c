@@ -103,7 +103,7 @@ typedef struct _my_info_t
 
 int
 netcalc_widget_printf(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    int                  idx;
    int                  rc;
@@ -167,7 +167,7 @@ netcalc_widget_printf(
 
 int
 netcalc_widget_printf_usage(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    assert(cnf != NULL);
    printf("\n");

@@ -118,14 +118,14 @@ main(
 
 static int
 netcalc_arguments(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          int                           argc,
          char * const *                argv );
 
 
 static int
 netcalc_usage(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 static netcalc_widget_t *
@@ -141,27 +141,27 @@ netcalc_widget_lookup(
 
 static int
 netcalc_widget_copyright(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 static int
 netcalc_widget_null(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 static int
 netcalc_widget_syntaxes(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 static int
 netcalc_widget_usage(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 static int
 netcalc_widget_version(
-         netcalc_config_t *            cnf );
+         my_config_t *                 cnf );
 
 
 /////////////////
@@ -306,7 +306,7 @@ main(
 {
    int                  rc;
    const char *         prog_name;
-   netcalc_config_t *   cnf;
+   my_config_t *        cnf;
 
    // determine program name
    if ((prog_name = strrchr(argv[0], '/')) != NULL)
@@ -315,12 +315,12 @@ main(
       prog_name = argv[0];
 
    // allocate and initialize config memory
-   if ((cnf = malloc(sizeof(netcalc_config_t))) == NULL)
+   if ((cnf = malloc(sizeof(my_config_t))) == NULL)
    {
       fprintf(stderr, "%s; out of virtual memory\n", prog_name);
       return(1);
    };
-   memset(cnf, 0, sizeof(netcalc_config_t));
+   memset(cnf, 0, sizeof(my_config_t));
    cnf->argc         = argc;
    cnf->argv         = argv;
    cnf->prog_name    = prog_name;
@@ -366,7 +366,7 @@ main(
 
 int
 netcalc_arguments(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          int                           argc,
          char * const *                argv )
 {
@@ -579,7 +579,7 @@ netcalc_nets_free(
 
 char *
 netcalc_prog_name(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    static char    buff[512];
 
@@ -603,7 +603,7 @@ netcalc_prog_name(
 
 int
 netcalc_usage(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    size_t                     pos;
    const char *               widget_name;
@@ -798,7 +798,7 @@ netcalc_rec_summary_ip(
 
 void
 netcalc_rec_process(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          my_rec_t *                    rec )
 {
    int                  ip_superblock;
@@ -854,7 +854,7 @@ netcalc_rec_process(
 
 my_rec_t **
 netcalc_recs_alloc(
-         netcalc_config_t *            cnf,
+         my_config_t *                 cnf,
          size_t                        len )
 {
    size_t            idx;
@@ -939,7 +939,7 @@ netcalc_recs_lengths(
 
 int
 netcalc_widget_copyright(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    const char * pkg_name;
    pkg_name = ((cnf)) ? PACKAGE_NAME : PACKAGE_NAME;
@@ -979,7 +979,7 @@ netcalc_widget_copyright(
 
 static int
 netcalc_widget_null(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    printf("\n");
    if ((cnf))
@@ -990,7 +990,7 @@ netcalc_widget_null(
 
 int
 netcalc_widget_syntaxes(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    int   family;
 
@@ -1074,7 +1074,7 @@ netcalc_widget_syntaxes(
 
 int
 netcalc_widget_usage(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    cnf->widget = NULL;
    netcalc_usage(cnf);
@@ -1084,7 +1084,7 @@ netcalc_widget_usage(
 
 int
 netcalc_widget_version(
-         netcalc_config_t *            cnf )
+         my_config_t *                 cnf )
 {
    const char * prog_name;
    prog_name = ((cnf)) ? cnf->prog_name : PROGRAM_NAME;
