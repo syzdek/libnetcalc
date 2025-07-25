@@ -124,7 +124,7 @@ my_arguments(
 
 
 static int
-netcalc_usage(
+my_usage(
          my_config_t *                 cnf );
 
 
@@ -479,7 +479,7 @@ my_arguments(
             break;
 
          case 'h':
-            netcalc_usage(cnf);
+            my_usage(cnf);
             return(-1);
 
          case 'p':
@@ -602,7 +602,7 @@ my_prog_name(
 
 
 int
-netcalc_usage(
+my_usage(
          my_config_t *                 cnf )
 {
    size_t                     pos;
@@ -1077,7 +1077,7 @@ netcalc_widget_usage(
          my_config_t *                 cnf )
 {
    cnf->widget = NULL;
-   netcalc_usage(cnf);
+   my_usage(cnf);
    return(0);
 }
 
