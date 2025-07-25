@@ -343,11 +343,11 @@ main(
       };
    };
 
-   cnf->flags &= ~cnf->flags_negate;
-
    // initial processing of widget cli arguments
    if ((rc = netcalc_arguments(cnf, cnf->argc, cnf->argv)) != 0)
       return((rc == -1) ? 0 : 1);
+
+   cnf->flags &= ~cnf->flags_negate;
 
    return(cnf->widget->func_exec(cnf));
 }
