@@ -145,7 +145,7 @@ my_widget_copyright(
 
 
 static int
-netcalc_widget_null(
+my_widget_null(
          my_config_t *                 cnf );
 
 
@@ -197,7 +197,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_debug,
-      .func_usage = &netcalc_widget_null,
+      .func_usage = &my_widget_null,
    },
 
    // help widget
@@ -210,7 +210,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = 0,
       .aliases    = (const char *[]){ "usage", NULL },
       .func_exec  = &netcalc_widget_usage,
-      .func_usage = &netcalc_widget_null,
+      .func_usage = &my_widget_null,
    },
 
    // info widget
@@ -223,7 +223,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_info,
-      .func_usage = &netcalc_widget_null,
+      .func_usage = &my_widget_null,
    },
 
    // printf widget
@@ -249,7 +249,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_superblock,
-      .func_usage = &netcalc_widget_null,
+      .func_usage = &my_widget_null,
    },
 
    // syntaxes widget
@@ -262,7 +262,7 @@ static my_widget_t netcalc_widget_map[] =
       .arg_max    = 0,
       .aliases    = NULL,
       .func_exec  = &netcalc_widget_syntaxes,
-      .func_usage = &netcalc_widget_null,
+      .func_usage = &my_widget_null,
    },
 
    // version widget
@@ -978,7 +978,7 @@ my_widget_copyright(
 
 
 static int
-netcalc_widget_null(
+my_widget_null(
          my_config_t *                 cnf )
 {
    printf("\n");
