@@ -203,9 +203,9 @@ netcalc_widget_superblock(
 
    flags = recs[0]->family;
    if (!(cnf->quiet))
-      netcalc_rec_summary_ip(NULL, &lens, flags);
+      my_rec_summary_ip(NULL, &lens, flags);
    for(idx = 0; ((recs[idx]->net)); idx++)
-      netcalc_rec_summary_ip(recs[idx], &lens, flags);
+      my_rec_summary_ip(recs[idx], &lens, flags);
 
    netcalc_recs_free(recs);
 

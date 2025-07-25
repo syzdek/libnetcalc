@@ -763,7 +763,7 @@ my_rec_length(
 
 
 void
-netcalc_rec_summary_ip(
+my_rec_summary_ip(
          my_rec_t *                    r,
          my_len_t *                    l,
          int                           flags )

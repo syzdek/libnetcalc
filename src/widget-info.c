@@ -316,10 +316,10 @@ netcalc_widget_info_ip(
    flags  = (cnf->argc > 1) ? MY_FLG_SHOW_ADDR : 0;
    flags |= recs[0]->family;
    if (!(cnf->quiet))
-      netcalc_rec_summary_ip(NULL, &lens, flags);
+      my_rec_summary_ip(NULL, &lens, flags);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
-      netcalc_rec_summary_ip(recs[idx], &lens, flags);
+      my_rec_summary_ip(recs[idx], &lens, flags);
 
    return(0);
 }
