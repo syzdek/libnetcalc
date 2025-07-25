@@ -128,7 +128,7 @@ netcalc_usage(
          my_config_t *                 cnf );
 
 
-static netcalc_widget_t *
+static my_widget_t *
 netcalc_widget_lookup(
          const char *                  wname,
          int                           exact );
@@ -172,7 +172,7 @@ netcalc_widget_version(
 // MARK: - Variables
 
 #pragma mark netcalc_widget_map[]
-static netcalc_widget_t netcalc_widget_map[] =
+static my_widget_t netcalc_widget_map[] =
 {
    // copyright widget
    {  .name       = "copyright",
@@ -375,7 +375,7 @@ netcalc_arguments(
    const struct option *      long_opt;
    const char *               short_opt;
    const char *               str;
-   const netcalc_widget_t *   widget;
+   const my_widget_t *        widget;
 
    widget         = cnf->widget;
    optind         = 1;
@@ -609,7 +609,7 @@ netcalc_usage(
    const char *               widget_name;
    const char *               widget_help;
    const char *               short_opt;
-   const netcalc_widget_t *   widget;
+   const my_widget_t *        widget;
 
    assert(cnf != NULL);
 
@@ -671,7 +671,7 @@ netcalc_usage(
 }
 
 
-netcalc_widget_t *
+my_widget_t *
 netcalc_widget_lookup(
          const char *                  wname,
          int                           exact )
@@ -681,8 +681,8 @@ netcalc_widget_lookup(
    size_t                     len;
    size_t                     wname_len;
    const char *               alias;
-   netcalc_widget_t *         match;
-   netcalc_widget_t *         widget;
+   my_widget_t *              match;
+   my_widget_t *              widget;
 
    // strip program prefix from widget name
    len = strlen(PROGRAM_NAME);

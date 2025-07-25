@@ -104,7 +104,7 @@
 typedef struct _my_config     my_config_t;
 typedef struct _my_length     my_len_t;
 typedef struct _my_record     my_rec_t;
-typedef struct _netcalc_widget netcalc_widget_t;
+typedef struct _my_widget     my_widget_t;
 
 
 struct _my_config
@@ -121,7 +121,7 @@ struct _my_config
    const char *               prog_name;
    netcalc_net_t *            net_prefix;
    const char *               net_prefix_str;
-   const netcalc_widget_t *   widget;
+   const my_widget_t *        widget;
 };
 
 
@@ -150,7 +150,7 @@ struct _my_record
 };
 
 
-struct _netcalc_widget
+struct _my_widget
 {
    const char *               name;
    const char *               desc;
