@@ -143,6 +143,13 @@ netcalc_copy(
          const netcalc_net_t *         src );
 
 
+extern int
+netcalc_parse(
+         netcalc_net_t **              netp,
+         const char *                  address,
+         int                           flags );
+
+
 extern size_t
 netcalc_strlcat(
          char * restrict               dst,

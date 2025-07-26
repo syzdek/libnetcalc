@@ -720,104 +720,16 @@ netcalc_initialize(
          const char *                  address,
          int                           flags )
 {
-   size_t               addrlen;
-   char *               str;
    int                  rc;
-   char                 sbuff[NETCALC_ADDRESS_LENGTH];
-   char                 scope_name[NETCALC_SCOPE_NAME_LENGTH];
-   netcalc_net_t        nbuff;
-
+   netcalc_net_t *      ptr;
    assert(address != NULL);
-
-   // check flags
-   flags |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
-
-   // prepare netcalc_net_t buffer
-   memset(&nbuff,       0, sizeof(netcalc_net_t));
-   memset(&scope_name,  0, sizeof(scope_name));
-   nbuff.net_scope_name = scope_name;
-   nbuff.net_flags      = ((flags & NETCALC_AF)) ? flags : (flags | NETCALC_AF);
-   nbuff.net_cidr       = 128;
-
-   // prepare string buffer
-   addrlen = strlen(address);
-   if (NETCALC_ADDRESS_LENGTH <= (addrlen+1))
-      return(NETCALC_EBUFFLEN);
-   memcpy(sbuff, address, addrlen);
-   sbuff[addrlen] = '\0';
-   str            = sbuff;
-
-   // initial address checks
-   //    EUI48:   xx-xx-xx-xx-xx-xx
-   //             xx:xx:xx:xx:xx:xx
-   //             xxxx.xxxx.xxxx
-   //             xxxxxxxxxxxx
-   //    EUI48:   xx-xx-xx-xx-xx-xx-xx-xx
-   //             xx:xx:xx:xx:xx:xx:xx:xx
-   //             xxxx.xxxx.xxxx.xxxx
-   //             xxxxxxxxxxxxxxxx
-   //    INET:    ddd.ddd.ddd.ddd
-   //             ddd.ddd.ddd.ddd/cc
-   //             ddd.ddd.ddd.ddd:ppppp
-   //    INET6:   ::
-   //             ::1
-   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx%iface]:ppppp
-   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx]:ppppp
-   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd]:ppppp
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx%iface
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/ccc%iface
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd/ccc%iface
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/ccc
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd/ccc
-   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd
-   // where
-   //    * 'ddd' can be a decimal value betweem 0 and 255.
-   //    * 'ppppp' can be a decimal value between 0 and 65535
-   //    * IPv6 zero compression is supported, but not displayed.
-   //
-   if ( (addrlen != 12) && (addrlen != 14) && (addrlen != 17) )
-      nbuff.net_flags &= ~NETCALC_AF_EUI48;
-   if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
-      nbuff.net_flags &= ~NETCALC_AF_EUI64;
-   if ( (addrlen < 7) || (addrlen > 21) )
-      nbuff.net_flags &= ~NETCALC_AF_INET;
-   if (addrlen < 2)
-      nbuff.net_flags &= ~NETCALC_AF_INET6;
-   if (!(nbuff.net_flags & NETCALC_AF))
-      return(NETCALC_EBADADDR);
-
-   rc = NETCALC_SUCCESS;
-   if ((nbuff.net_flags & NETCALC_AF_EUI48))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
-                        : (nbuff.net_flags & ~NETCALC_AF_EUI48);
-   };
-   if ((nbuff.net_flags & NETCALC_AF_EUI64))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
-                        : (nbuff.net_flags & ~NETCALC_AF_EUI64);
-   };
-   if ((nbuff.net_flags & NETCALC_AF_INET))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
-                        : (nbuff.net_flags & ~NETCALC_AF_INET);
-   };
-   if ((nbuff.net_flags & NETCALC_AF_INET6))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
-                        : (nbuff.net_flags & ~NETCALC_AF_INET6 );
-   };
-   if ((rc))
+   if ((netp))
+   {  ptr = NULL;
+      rc = netcalc_parse(&ptr, address, flags);
+      *netp = ptr;
       return(rc);
-   switch(nbuff.net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:  break;
-      case NETCALC_AF_EUI64:  break;
-      case NETCALC_AF_INET:   break;
-      case NETCALC_AF_INET6:  break;
-      default:                return(NETCALC_EBADADDR);
    };
-
-   return((netp == NULL) ? 0 : netcalc_dup(netp, &nbuff));
+   return(netcalc_parse(netp, address, flags));
 }
 
 
@@ -1349,6 +1261,117 @@ netcalc_ntop_inet6(
    dst[off] = '\0';
 
    return(dst);
+}
+
+
+int
+netcalc_parse(
+         netcalc_net_t **              netp,
+         const char *                  address,
+         int                           flags )
+{
+   size_t               addrlen;
+   char *               str;
+   int                  rc;
+   char                 sbuff[NETCALC_ADDRESS_LENGTH];
+   char                 scope_name[NETCALC_SCOPE_NAME_LENGTH];
+   netcalc_net_t        nbuff;
+
+   assert(address != NULL);
+
+   // check flags
+   flags |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
+
+   // prepare netcalc_net_t buffer
+   memset(&nbuff,       0, sizeof(netcalc_net_t));
+   memset(&scope_name,  0, sizeof(scope_name));
+   nbuff.net_scope_name = scope_name;
+   nbuff.net_flags      = ((flags & NETCALC_AF)) ? flags : (flags | NETCALC_AF);
+   nbuff.net_cidr       = 128;
+
+   // prepare string buffer
+   addrlen = strlen(address);
+   if (NETCALC_ADDRESS_LENGTH <= (addrlen+1))
+      return(NETCALC_EBUFFLEN);
+   memcpy(sbuff, address, addrlen);
+   sbuff[addrlen] = '\0';
+   str            = sbuff;
+
+   // initial address checks
+   //    EUI48:   xx-xx-xx-xx-xx-xx
+   //             xx:xx:xx:xx:xx:xx
+   //             xxxx.xxxx.xxxx
+   //             xxxxxxxxxxxx
+   //    EUI48:   xx-xx-xx-xx-xx-xx-xx-xx
+   //             xx:xx:xx:xx:xx:xx:xx:xx
+   //             xxxx.xxxx.xxxx.xxxx
+   //             xxxxxxxxxxxxxxxx
+   //    INET:    ddd.ddd.ddd.ddd
+   //             ddd.ddd.ddd.ddd/cc
+   //             ddd.ddd.ddd.ddd:ppppp
+   //    INET6:   ::
+   //             ::1
+   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx%iface]:ppppp
+   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx]:ppppp
+   //             [xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd]:ppppp
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx%iface
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/ccc%iface
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd/ccc%iface
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/ccc
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd/ccc
+   //             xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:ddd.ddd.ddd.ddd
+   // where
+   //    * 'ddd' can be a decimal value betweem 0 and 255.
+   //    * 'ppppp' can be a decimal value between 0 and 65535
+   //    * IPv6 zero compression is supported, but not displayed.
+   //
+   if ( (addrlen != 12) && (addrlen != 14) && (addrlen != 17) )
+      nbuff.net_flags &= ~NETCALC_AF_EUI48;
+   if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
+      nbuff.net_flags &= ~NETCALC_AF_EUI64;
+   if ( (addrlen < 7) || (addrlen > 21) )
+      nbuff.net_flags &= ~NETCALC_AF_INET;
+   if (addrlen < 2)
+      nbuff.net_flags &= ~NETCALC_AF_INET6;
+   if (!(nbuff.net_flags & NETCALC_AF))
+      return(NETCALC_EBADADDR);
+
+   rc = NETCALC_SUCCESS;
+   if ((nbuff.net_flags & NETCALC_AF_EUI48))
+   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
+                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
+                        : (nbuff.net_flags & ~NETCALC_AF_EUI48);
+   };
+   if ((nbuff.net_flags & NETCALC_AF_EUI64))
+   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
+                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
+                        : (nbuff.net_flags & ~NETCALC_AF_EUI64);
+   };
+   if ((nbuff.net_flags & NETCALC_AF_INET))
+   {  nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
+                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
+                        : (nbuff.net_flags & ~NETCALC_AF_INET);
+   };
+   if ((nbuff.net_flags & NETCALC_AF_INET6))
+   {  nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
+                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
+                        : (nbuff.net_flags & ~NETCALC_AF_INET6 );
+   };
+   if ((rc))
+      return(rc);
+   switch(nbuff.net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:  break;
+      case NETCALC_AF_EUI64:  break;
+      case NETCALC_AF_INET:   break;
+      case NETCALC_AF_INET6:  break;
+      default:                return(NETCALC_EBADADDR);
+   };
+
+   if (netp == NULL)
+      return(0);
+   if ((*netp) == NULL)
+      return(netcalc_dup(netp, &nbuff));
+   return(netcalc_copy(*netp, &nbuff));
 }
 
 
