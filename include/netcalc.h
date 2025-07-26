@@ -177,6 +177,8 @@
 
 typedef union  _libnetcalc_address     netcalc_addr_t;
 typedef struct _libnetcalc_network     netcalc_net_t;
+typedef struct _libnetcalc_record      netcalc_rec_t;
+typedef struct _libnetcalc_set         netcalc_set_t;
 
 
 /////////////////
@@ -244,6 +246,17 @@ netcalc_ntop(
          char *                        dst,
          size_t                        size,
          int                           type,
+         int                           flags );
+
+
+_NETCALC_F void
+netcalc_set_free(
+         netcalc_set_t *               ns );
+
+
+_NETCALC_F int
+netcalc_set_init(
+         netcalc_set_t **              nsp,
          int                           flags );
 
 

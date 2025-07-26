@@ -30,11 +30,9 @@
  *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- *  lib/libnetcalc/libnetcalc.h - common includes and prototypes
- */
-#ifndef __LIB_LIBNETCALC_H
-#define __LIB_LIBNETCALC_H 1
+#define __LIB_LIBNETCALC_LSETS_C 1
+#include "libnetcalc.h"
+
 
 ///////////////
 //           //
@@ -43,16 +41,10 @@
 ///////////////
 // MARK: - Headers
 
-// defined in the Single UNIX Specification
-#ifndef _XOPEN_SOURCE
-#   define _XOPEN_SOURCE 600
-#endif
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
-#include <netcalc.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 
 
 //////////////
@@ -73,86 +65,88 @@
 
 //////////////////
 //              //
-//  Data Types  //
-//              //
-//////////////////
-// MARK: - Data Types
-
-union _libnetcalc_address
-{
-   uint8_t                    addr8[16];
-   uint16_t                   addr16[8];
-   uint32_t                   addr32[4];
-   uint64_t                   addr64[2];
-};
-
-
-struct _libnetcalc_network
-{
-   uint32_t                   net_flags;
-   uint16_t                   net_port;
-   uint8_t                    net_cidr;
-   uint8_t                    __pad;
-   netcalc_addr_t             net_addr;
-   char *                     net_scope_name;
-};
-
-
-struct _libnetcalc_record
-{
-   netcalc_net_t              rec_net;
-   char *                     rec_comment;
-   void *                     rec_data;
-   netcalc_rec_t *            rec_parent;
-   netcalc_rec_t **           rec_children;
-   uint32_t                   rec_children_len;
-   uint32_t                   __pad_int32;
-};
-
-
-struct _libnetcalc_set
-{
-   uint32_t                   set_flags;
-   uint32_t                   set_recs_len;
-   netcalc_rec_t **           set_recs;
-};
-
-
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
-// MARK: - Variables
-
-extern const netcalc_addr_t _netcalc_netmasks[];
-extern const netcalc_net_t _netcalc_lo_in;
-extern const netcalc_net_t _netcalc_lo_in6;
-extern const netcalc_net_t _netcalc_ipv4_mapped_ipv6;
-extern const netcalc_net_t _netcalc_link_local_in;
-extern const netcalc_net_t _netcalc_link_local_in6;
-extern const netcalc_net_t _netcalc_slaac_in6;
-
-
-//////////////////
-//              //
 //  Prototypes  //
 //              //
 //////////////////
 // MARK: - Prototypes
 
-extern int
-netcalc_copy(
-         netcalc_net_t *               dst,
-         const netcalc_net_t *         src );
+static void
+netcalc_rec_free(
+         netcalc_rec_t *               rec );
 
 
-extern size_t
-netcalc_strlcat(
-         char * restrict               dst,
-         const char * restrict         src,
-         size_t                        dstsize );
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
+// MARK: - Functions
+
+void
+netcalc_rec_free(
+         netcalc_rec_t *               rec )
+{
+   netcalc_rec_t *   parent;
+
+   while((rec))
+   {
+      while((rec->rec_children_len))
+      {  rec->rec_children_len--;
+         rec = rec->rec_children[rec->rec_children_len];
+      };
+
+      parent = rec->rec_parent;
+
+      if ((rec->rec_comment))
+         free(rec->rec_comment);
+      if ((rec->rec_children))
+         free(rec->rec_children);
+      netcalc_free(&rec->rec_net);
+
+      rec = parent;
+   };
+
+   return;
+}
 
 
-#endif /* end of header */
+void
+netcalc_set_free(
+         netcalc_set_t *               ns )
+{
+   uint32_t       idx;
 
+   if (!(ns))
+      return;
+
+   for(idx = 0; (idx < ns->set_recs_len); idx++)
+      netcalc_rec_free(ns->set_recs[idx]);
+   free(ns->set_recs);
+   free(ns);
+
+   return;
+}
+
+
+int
+netcalc_set_init(
+         netcalc_set_t **              nsp,
+         int                           flags )
+{
+   netcalc_set_t *      ns;
+
+   assert(nsp != NULL);
+
+   if ((ns = malloc(sizeof(netcalc_set_t))) == NULL)
+      return(NETCALC_ENOMEM);
+   memset(ns, 0, sizeof(netcalc_set_t));
+
+   ns->set_flags = flags;
+
+   *nsp = ns;
+
+   return(0);
+}
+
+
+/* end of source */

@@ -163,7 +163,8 @@ lib_libnetcalc_a_CPPFLAGS		= $(AM_CPPFLAGS) \
 lib_libnetcalc_a_SOURCES		= include/netcalc.h \
 					  lib/libnetcalc/libnetcalc.h \
 					  lib/libnetcalc/lmisc.c \
-					  lib/libnetcalc/lnets.c
+					  lib/libnetcalc/lnets.c \
+					  lib/libnetcalc/lsets.c
 
 
 # macros for lib/libnetcalc.la
