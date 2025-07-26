@@ -97,7 +97,6 @@ my_widget_superblock(
    int                  idx;
    int                  rc;
    int                  family;
-   int                  af_ipv4;
    int                  af_ipv6;
    int                  af_other;
    int                  cidr;
@@ -110,7 +109,6 @@ my_widget_superblock(
 
    cnf->flags &= ~cnf->flags_negate;
    family      = 0;
-   af_ipv4     = 0;
    af_ipv6     = 0;
    af_other    = 0;
 
@@ -142,18 +140,15 @@ my_widget_superblock(
          family = cnf->net_prefix_family;
       };
 
-      if (family == NETCALC_AF_INET)
-         af_ipv4 = family;
-      else if (family == NETCALC_AF_INET6)
+      if (family == NETCALC_AF_INET6)
          af_ipv6 = family;
-      else
+      else if (family != NETCALC_AF_INET)
          af_other = family;
    };
 
    // normalize address families
    if ((af_ipv6))
-   {  af_ipv4  = 0;
-      af_other = 0;
+   {  af_other = 0;
       for(idx = 0; (idx < cnf->argc); idx++)
          netcalc_convert(nets[idx], NETCALC_AF_INET6, NULL);
    };
@@ -161,10 +156,6 @@ my_widget_superblock(
    {  my_nets_free(nets);
       fprintf(stderr, "%s: %s: unsupported address families\n", my_prog_name(cnf), cnf->argv[idx]);
       return(1);
-   };
-   if ((af_ipv4))
-   {  af_ipv6  = 0;
-      af_other = 0;
    };
 
    // calculate superblock and free networks
