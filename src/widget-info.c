@@ -232,11 +232,11 @@ my_widget_info_eui(
       {
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          my_widget_info_print("EUI48",  str);
-         if ((rc = netcalc_convert(dup, NETCALC_AF_EUI64, NULL)) == 0)
+         if (netcalc_convert(dup, NETCALC_AF_EUI64, NULL) == 0)
          {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
             my_widget_info_print("Modified EUI64",  str);
          };
-      } else if ((rc = netcalc_convert(dup, NETCALC_AF_EUI48, NULL)) == 0)
+      } else if (netcalc_convert(dup, NETCALC_AF_EUI48, NULL) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          my_widget_info_print("EUI48",  str);
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
@@ -262,7 +262,7 @@ my_widget_info_eui(
       snprintf(buff, sizeof(buff), "%i %s", bit, str);
       my_widget_info_print("I/G Bit", buff);
 
-      if ((rc = netcalc_convert(dup, NETCALC_AF_INET6, NULL)) == 0)
+      if (netcalc_convert(dup, NETCALC_AF_INET6, NULL) == 0)
       {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          my_widget_info_print("IPv6 SLAAC Address",  str);
       };
@@ -419,10 +419,10 @@ my_widget_info_ip_verbose(
          my_widget_info_print(NULL, str);
       };
 
-      if ((rc = netcalc_convert(eui, NETCALC_AF_EUI48, NULL)) == 0)
+      if (netcalc_convert(eui, NETCALC_AF_EUI48, NULL) == 0)
       {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
          my_widget_info_print("MAC Address", str);
-         if ((rc = netcalc_convert(eui, NETCALC_AF_EUI64, NULL)) == 0)
+         if (netcalc_convert(eui, NETCALC_AF_EUI64, NULL) == 0)
          {  str = netcalc_ntop(eui, NULL, 0, NETCALC_TYPE_ADDRESS, 0);
             my_widget_info_print("Modified EUI64", str);
          };
