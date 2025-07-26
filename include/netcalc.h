@@ -219,7 +219,7 @@ netcalc_free(
 
 _NETCALC_F int
 netcalc_get_field(
-         netcalc_net_t  *              net,
+         const netcalc_net_t  *        net,
          int                           option,
          void *                        outvalue );
 

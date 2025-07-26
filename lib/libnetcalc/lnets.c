@@ -577,7 +577,7 @@ netcalc_free(
 
 int
 netcalc_get_field(
-         netcalc_net_t  *              net,
+         const netcalc_net_t  *        net,
          int                           option,
          void *                        outvalue )
 {
