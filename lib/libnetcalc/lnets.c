@@ -358,6 +358,42 @@ const netcalc_net_t _netcalc_slaac_in6 =
 // MARK: - Functions
 
 int
+netcalc_copy(
+         netcalc_net_t *               dst,
+         const netcalc_net_t *         src )
+{
+   char *         scope;
+   size_t         scope_len;
+
+   assert(dst != NULL);
+   assert(src != NULL);
+
+   scope = NULL;
+   if ((src->net_scope_name))
+   {  if ((dst->net_scope_name))
+      {  scope_len = strlen(src->net_scope_name) + 1;
+         if ((scope = realloc(dst->net_scope_name, scope_len)) == NULL)
+            return(NETCALC_ENOMEM);
+         scope[0] = '\0';
+         netcalc_strlcat(scope, src->net_scope_name, scope_len);
+      } else
+      {  if ((src->net_scope_name))
+            if ((scope = strdup(src->net_scope_name)) == NULL)
+               return(NETCALC_ENOMEM);
+      };
+   } else
+   {  if ((dst->net_scope_name))
+         free(dst->net_scope_name);
+   };
+
+   memcpy(dst, src, sizeof(netcalc_net_t));
+   dst->net_scope_name = scope;
+
+   return(0);
+}
+
+
+int
 netcalc_convert(
          netcalc_net_t *               net,
          int                           family,

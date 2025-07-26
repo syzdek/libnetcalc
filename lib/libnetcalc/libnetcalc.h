@@ -121,6 +121,12 @@ extern const netcalc_net_t _netcalc_slaac_in6;
 //////////////////
 // MARK: - Prototypes
 
+extern int
+netcalc_copy(
+         netcalc_net_t *               dst,
+         const netcalc_net_t *         src );
+
+
 extern size_t
 netcalc_strlcat(
          char * restrict               dst,
