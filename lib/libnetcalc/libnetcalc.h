@@ -79,8 +79,7 @@
 // MARK: - Data Types
 
 union _libnetcalc_address
-{
-   uint8_t                    addr8[16];
+{  uint8_t                    addr8[16];
    uint16_t                   addr16[8];
    uint32_t                   addr32[4];
    uint64_t                   addr64[2];
@@ -88,8 +87,7 @@ union _libnetcalc_address
 
 
 struct _libnetcalc_network
-{
-   uint32_t                   net_flags;
+{  uint32_t                   net_flags;
    uint16_t                   net_port;
    uint8_t                    net_cidr;
    uint8_t                    __pad;
@@ -99,8 +97,7 @@ struct _libnetcalc_network
 
 
 struct _libnetcalc_record
-{
-   netcalc_net_t              rec_net;
+{  netcalc_net_t              rec_net;
    char *                     rec_comment;
    void *                     rec_data;
    netcalc_rec_t *            rec_parent;
@@ -111,8 +108,7 @@ struct _libnetcalc_record
 
 
 struct _libnetcalc_set
-{
-   uint32_t                   set_flags;
+{  uint32_t                   set_flags;
    uint32_t                   set_recs_len;
    netcalc_rec_t **           set_recs;
 };

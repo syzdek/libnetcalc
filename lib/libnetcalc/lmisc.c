@@ -83,8 +83,7 @@ netcalc_strerror(
          int                           errnum )
 {
    switch(errnum)
-   {
-      case NETCALC_SUCCESS:      return("success");
+   {  case NETCALC_SUCCESS:      return("success");
 
       case NETCALC_EBADADDR:     return("bad address string");
       case NETCALC_EBUFFLEN:     return("buffer length exceeeded");

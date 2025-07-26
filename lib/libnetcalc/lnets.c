@@ -293,8 +293,7 @@ const netcalc_addr_t _netcalc_netmasks[] =
 
 // IPv6 Prefix for IPv4 addresses: ::ffff:0000:0000/96
 const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
-{
-   .net_flags        = NETCALC_AF_INET6,
+{  .net_flags        = NETCALC_AF_INET6,
    .net_cidr         = 96,
    .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 } },
 };
@@ -302,8 +301,7 @@ const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
 
 // IPv4 Link-local addresses: 169.254.0.0/16
 const netcalc_net_t _netcalc_link_local_in =
-{
-   .net_flags        = NETCALC_AF_INET,
+{  .net_flags        = NETCALC_AF_INET,
    .net_cidr         = 112,
    .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0xfe, 0x00, 0x00 } },
 };
@@ -311,8 +309,7 @@ const netcalc_net_t _netcalc_link_local_in =
 
 // IPv6 Link-local addresses: fe80::/10
 const netcalc_net_t _netcalc_link_local_in6 =
-{
-   .net_flags        = NETCALC_AF_INET6,
+{  .net_flags        = NETCALC_AF_INET6,
    .net_cidr         = 10,
    .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
 };
@@ -320,8 +317,7 @@ const netcalc_net_t _netcalc_link_local_in6 =
 
 // IPv4 localhost: 127.0.0.0/8
 const netcalc_net_t _netcalc_lo_in =
-{
-   .net_flags        = NETCALC_AF_INET,
+{  .net_flags        = NETCALC_AF_INET,
    .net_port         = 0,
    .net_cidr         = 104,
    .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0x00, 0x00, 0x01 } },
@@ -331,8 +327,7 @@ const netcalc_net_t _netcalc_lo_in =
 
 // IPv6 localhost: ::1/128
 const netcalc_net_t _netcalc_lo_in6 =
-{
-   .net_flags        = NETCALC_AF_INET6,
+{  .net_flags        = NETCALC_AF_INET6,
    .net_port         = 0,
    .net_cidr         = 128,
    .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } },
@@ -342,8 +337,7 @@ const netcalc_net_t _netcalc_lo_in6 =
 
 // IPv6 SLAAC addresses: fe80::/64
 const netcalc_net_t _netcalc_slaac_in6 =
-{
-   .net_flags        = NETCALC_AF_INET6,
+{  .net_flags        = NETCALC_AF_INET6,
    .net_cidr         = 64,
    .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
 };
@@ -583,10 +577,8 @@ netcalc_dup(
 
    // allocate memory and copy net_scope
    if ( ((src->net_scope_name)) && ((src->net_scope_name[0])) )
-   {
-      if ((net->net_scope_name = strdup(src->net_scope_name)) == NULL)
-      {
-         netcalc_free(net);
+   {  if ((net->net_scope_name = strdup(src->net_scope_name)) == NULL)
+      {  netcalc_free(net);
          return(NETCALC_ENOMEM);
       };
    };
@@ -628,8 +620,7 @@ netcalc_get_field(
    family = (int)(net->net_flags & NETCALC_AF);
 
    switch(option)
-   {
-      case NETCALC_FLD_ADDR:
+   {  case NETCALC_FLD_ADDR:
          if ((ptr = malloc(sizeof(net->net_addr.addr8))) == NULL)
             return(NETCALC_ENOMEM);
          memcpy(ptr, &net->net_addr, sizeof(netcalc_addr_t) );
@@ -797,34 +788,29 @@ netcalc_initialize(
 
    rc = NETCALC_SUCCESS;
    if ((nbuff.net_flags & NETCALC_AF_EUI48))
-   {
-      nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
+   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
                         : (nbuff.net_flags & ~NETCALC_AF_EUI48);
    };
    if ((nbuff.net_flags & NETCALC_AF_EUI64))
-   {
-      nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
+   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
                         : (nbuff.net_flags & ~NETCALC_AF_EUI64);
    };
    if ((nbuff.net_flags & NETCALC_AF_INET))
-   {
-      nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
+   {  nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
                         : (nbuff.net_flags & ~NETCALC_AF_INET);
    };
    if ((nbuff.net_flags & NETCALC_AF_INET6))
-   {
-      nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
+   {  nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
                         ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
                         : (nbuff.net_flags & ~NETCALC_AF_INET6 );
    };
    if ((rc))
       return(rc);
    switch(nbuff.net_flags & NETCALC_AF)
-   {
-      case NETCALC_AF_EUI48:  break;
+   {  case NETCALC_AF_EUI48:  break;
       case NETCALC_AF_EUI64:  break;
       case NETCALC_AF_INET:   break;
       case NETCALC_AF_INET6:  break;
@@ -1057,8 +1043,7 @@ netcalc_ntop(
    net = &nbuff;
 
    switch(net->net_flags & NETCALC_AF)
-   {
-      case NETCALC_AF_EUI48:  return(netcalc_ntop_eui(net, dst, size, flags));
+   {  case NETCALC_AF_EUI48:  return(netcalc_ntop_eui(net, dst, size, flags));
       case NETCALC_AF_EUI64:  return(netcalc_ntop_eui(net, dst, size, flags));
       case NETCALC_AF_INET:   return(netcalc_ntop_inet(net, dst, size, flags));
       case NETCALC_AF_INET6:  return(netcalc_ntop_inet6(net, dst, size, flags));
@@ -1090,8 +1075,7 @@ netcalc_ntop_eui(
 
    delim = (flags & NETCALC_DELIM);
    switch(net->net_flags & NETCALC_AF)
-   {
-      case NETCALC_AF_EUI64:
+   {  case NETCALC_AF_EUI64:
          idx_start = 8;
          delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI64 & NETCALC_DELIM);
          break;
@@ -1104,12 +1088,10 @@ netcalc_ntop_eui(
    };
 
    for(idx = idx_start, off = 0; (idx < 16); idx++)
-   {
-      if (size < (off + 3))
+   {  if (size < (off + 3))
          return(NULL);
       switch(delim)
-      {
-         case NETCALC_FLG_DOT:
+      {  case NETCALC_FLG_DOT:
             if ((off % 5) == 4)
                dst[off++] = '.';
             dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
@@ -1167,8 +1149,7 @@ netcalc_ntop_inet(
       flags = flags & ~NETCALC_FLG_PORT;
 
    for(idx = 12; (idx < 16); idx++)
-   {
-      if ((flags & NETCALC_FLG_SUPR))
+   {  if ((flags & NETCALC_FLG_SUPR))
          buff_len = snprintf(buff, sizeof(buff), "%i", net->net_addr.addr8[idx]);
       else
          buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
@@ -1182,8 +1163,7 @@ netcalc_ntop_inet(
 
    // append CIDR
    if ((flags & NETCALC_FLG_CIDR_ALWAYS))
-   {
-      buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
+   {  buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
       if (size < (off+buff_len+1))
          return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -1192,8 +1172,7 @@ netcalc_ntop_inet(
 
    // append port
    if ((flags & NETCALC_FLG_PORT))
-   {
-      buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
       if (size < (off+buff_len+1))
          return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -1263,15 +1242,12 @@ netcalc_ntop_inet6(
 
    // calculates zero compression
    if ((flags & NETCALC_FLG_COMPR))
-   {
-      zero_off = -1;
+   {  zero_off = -1;
       zero_len = 0;
       max_len  = (flags & NETCALC_FLG_V4MAPPED) ? 12 : 16;
       for(idx = 0; (idx < max_len); idx += 2)
-      {
-         if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
-         {
-            if (zero_off == -1)
+      {  if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
+         {  if (zero_off == -1)
                continue;
             if (zero_len > zero_max_len)
             {  zero_max_off = zero_off;
@@ -1280,8 +1256,7 @@ netcalc_ntop_inet6(
             zero_off = -1;
             zero_len = 0;
          } else
-         {
-            if (zero_off == -1)
+         {  if (zero_off == -1)
                zero_off = idx;
             zero_len += 2;
          };
@@ -1295,8 +1270,7 @@ netcalc_ntop_inet6(
    };
 
    for(idx = 0; (idx < 16); idx += 2)
-   {
-      // apply zero compression
+   {  // apply zero compression
       if (idx == zero_max_off)
       {  if (size <= (off+3))
             return(NULL);
@@ -1317,8 +1291,7 @@ netcalc_ntop_inet6(
 
       // save data
       if ( ((flags & NETCALC_FLG_V4MAPPED)) && (idx == 12) )
-      {
-         ipv4_flags = flags;
+      {  ipv4_flags = flags;
          ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_PORT);
          ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR);
          ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR_ALWAYS);
@@ -1343,8 +1316,7 @@ netcalc_ntop_inet6(
 
    // append scope name
    if ( ((flags & NETCALC_FLG_IFACE)) )
-   {
-      if (size <= (off+2+strlen(net->net_scope_name)))
+   {  if (size <= (off+2+strlen(net->net_scope_name)))
          return(NULL);
       dst[off++] = '%';
       for(idx = 0; ((net->net_scope_name[idx])); idx++)
@@ -1358,8 +1330,7 @@ netcalc_ntop_inet6(
 
    // append CIDR
    if ((flags & NETCALC_FLG_CIDR_ALWAYS))
-   {
-      buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
+   {  buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
       if (size <= (off+buff_len+1))
          return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -1368,8 +1339,7 @@ netcalc_ntop_inet6(
 
    // append port
    if ((flags & NETCALC_FLG_PORT))
-   {
-      buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
       if (size <= (off+buff_len+1))
          return(NULL);
       for(pos = 0; (pos < buff_len); pos++, off++)
@@ -1403,8 +1373,7 @@ netcalc_parse_eui(
    assert(address != NULL);
 
    switch(family)
-   {
-      case NETCALC_AF_EUI48: off = 10; byte_max = 5; break;
+   {  case NETCALC_AF_EUI48: off = 10; byte_max = 5; break;
       case NETCALC_AF_EUI64: off =  8; byte_max = 7; break;
       default: return(NETCALC_EBADADDR);
    }
@@ -1415,10 +1384,8 @@ netcalc_parse_eui(
    strncpy(str, address, sizeof(str));
 
    for(pos = 0, digit = 0, byte = 0, hex = 0; ((str[pos])); pos++)
-   {
-      switch(str[pos])
-      {
-         case '0': hex = (hex << 4) +  0; digit++; break;
+   {  switch(str[pos])
+      {  case '0': hex = (hex << 4) +  0; digit++; break;
          case '1': hex = (hex << 4) +  1; digit++; break;
          case '2': hex = (hex << 4) +  2; digit++; break;
          case '3': hex = (hex << 4) +  3; digit++; break;
@@ -1490,8 +1457,7 @@ netcalc_parse_eui(
    };
 
    switch(delim)
-   {
-      case ':':
+   {  case ':':
       case '-':
          if (digit != 2)
             return(NETCALC_EBADADDR);
@@ -1545,8 +1511,7 @@ netcalc_parse_inet(
 
    // check for port
    if ((ptr = strchr(str, ':')) != NULL)
-   {
-      ptr[0] = '\0';
+   {  ptr[0] = '\0';
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
       port = (int)strtoul(&ptr[1], &ptr, 10);
@@ -1556,8 +1521,7 @@ netcalc_parse_inet(
 
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
-   {
-      ptr[0] = '\0';
+   {  ptr[0] = '\0';
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
       cidr = (int)strtoul(&ptr[1], &ptr, 10);
@@ -1567,10 +1531,8 @@ netcalc_parse_inet(
    };
 
    for(pos = 0, digit = 0, byte = 0, dec = 0; ((str[pos])); pos++)
-   {
-      switch(str[pos])
-      {
-         case '0': dec = (dec * 10) + 0; digit++; break;
+   {  switch(str[pos])
+      {  case '0': dec = (dec * 10) + 0; digit++; break;
          case '1': dec = (dec * 10) + 1; digit++; break;
          case '2': dec = (dec * 10) + 2; digit++; break;
          case '3': dec = (dec * 10) + 3; digit++; break;
@@ -1661,8 +1623,7 @@ netcalc_parse_inet6(
 
    // check for bracketed address
    if (str[0] == '[')
-   {
-      bracketed   = 1;
+   {  bracketed   = 1;
 
       // adjust start of string
       str       = &str[1];
@@ -1674,8 +1635,7 @@ netcalc_parse_inet6(
 
       // check for port after bracketed address
       if ((ptr = strchr(tmp, ':')) != NULL)
-      {
-         ptr[0] = '\0';
+      {  ptr[0] = '\0';
          if (ptr[1] == '\0')
             return(NETCALC_EBADADDR);
          port = (int)strtoul(&ptr[1], &ptr, 10);
@@ -1685,8 +1645,7 @@ netcalc_parse_inet6(
 
       // check for CIDR after bracketed address
       if ((ptr = strchr(tmp, '/')) != NULL)
-      {
-         ptr[0] = '\0';
+      {  ptr[0] = '\0';
          if (ptr[1] == '\0')
             return(NETCALC_EBADADDR);
          cidr = (int)strtoul(&ptr[1], &ptr, 10);
@@ -1700,22 +1659,18 @@ netcalc_parse_inet6(
 
    // check for named scope
    if ((ptr = strchr(str, '%')) != NULL)
-   {
-      ptr[0] = '\0';
+   {  ptr[0] = '\0';
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
       for(pos = 1; ((ptr[pos])); pos++)
-      {
-         if (pos >= NETCALC_SCOPE_NAME_LENGTH)
+      {  if (pos >= NETCALC_SCOPE_NAME_LENGTH)
             return(NETCALC_EBUFFLEN);
          if       ( (ptr[pos] >= '0') && (ptr[pos] <= '9') ) scope_name[pos-1] = ptr[pos];
          else if  ( (ptr[pos] >= 'a') && (ptr[pos] <= 'z') ) scope_name[pos-1] = ptr[pos];
          else if  ( (ptr[pos] >= 'A') && (ptr[pos] <= 'Z') ) scope_name[pos-1] = ptr[pos];
          else
-         {
-            switch(ptr[pos])
-            {
-               case '.':
+         {  switch(ptr[pos])
+            {  case '.':
                case '-':
                case '_':
                case ':':
@@ -1732,8 +1687,7 @@ netcalc_parse_inet6(
 
    // check for CIDR
    if ((ptr = strchr(str, '/')) != NULL)
-   {
-      if (cidr != -1)
+   {  if (cidr != -1)
          return(NETCALC_EBADADDR);
       if ( (!(bracketed)) && (scope_name[0] != '\0') )
          return(NETCALC_EBADADDR);
@@ -1746,10 +1700,8 @@ netcalc_parse_inet6(
    };
 
    for(pos = 0, digit = 0, wyde = 0, dec = 0, hex = 0; ((str[pos])); pos++)
-   {
-      switch(str[pos])
-      {
-         case '0': hex = (hex << 4) +  0; digit++; break;
+   {  switch(str[pos])
+      {  case '0': hex = (hex << 4) +  0; digit++; break;
          case '1': hex = (hex << 4) +  1; digit++; break;
          case '2': hex = (hex << 4) +  2; digit++; break;
          case '3': hex = (hex << 4) +  3; digit++; break;
@@ -1778,16 +1730,14 @@ netcalc_parse_inet6(
          addr8[(wyde*2)+0] = (hex >> 8) & 0xff;
          addr8[(wyde*2)+1] = (hex >> 0) & 0xff;
          if (str[pos+1] == ':')
-         {
-            if (str[pos+2] == ':')
+         {  if (str[pos+2] == ':')
                return(NETCALC_EBADADDR);
             if ((zero))
                return(NETCALC_EBADADDR);
             zero++;
             pos++;
             for(fwd = pos+1, wyde_fwd = 1; ((str[fwd])); fwd++)
-            {
-               if (str[fwd] == ':')
+            {  if (str[fwd] == ':')
                   wyde_fwd++;
                else if (str[fwd] == '.')
                   dec++;
@@ -1818,8 +1768,7 @@ netcalc_parse_inet6(
 
       // check for IPv4 mapped address
       if (wyde == 6)
-      {
-         if (!(netcalc_parse_inet(n, &str[pos])))
+      {  if (!(netcalc_parse_inet(n, &str[pos])))
          {  n->net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : n->net_cidr);
             n->net_port    =  (uint16_t)((port != -1) ? port : n->net_port);
             n->net_flags   |= NETCALC_FLG_V4MAPPED;
@@ -1872,8 +1821,7 @@ netcalc_strfnet(
       s[0] = '\0';
 
    for(pos = 0, off = 0; ((fmt[pos])); pos++)
-   {
-      // copy non-keywords
+   {  // copy non-keywords
       if (fmt[pos] != '%')
       {  if ((off+1) < maxsize)
          {  s[off+0] = fmt[pos];
@@ -1899,8 +1847,7 @@ netcalc_strfnet(
 
          // process padding modifiers
          while ( ( (fmt[pos] >= '0') && (fmt[pos] <= '9') ) || (fmt[pos] == '-') )
-         {
-            if (fmt[pos] == '-') // left adjustment
+         {  if (fmt[pos] == '-') // left adjustment
             {  if ( ((pad_to_right)) || ((padding)) )
                   return(0);
                pad_to_right = 1;
@@ -1939,8 +1886,7 @@ netcalc_strfnet(
 
       // process key words
       switch(fmt[pos])
-      {
-         case '%':
+      {  case '%':
             buff[0] = '%';
             buff[1] = '\0';
             break;
@@ -2110,11 +2056,9 @@ netcalc_superblock(
 
    cidr = 1;
    while ((cidr < 129) && ((matches)))
-   {
-      addr8 = (const uint8_t *)&_netcalc_netmasks[cidr].addr8;
+   {  addr8 = (const uint8_t *)&_netcalc_netmasks[cidr].addr8;
       for(idx = 1; ((idx < nel) && ((matches))); idx++)
-      {
-         byte = (cidr-1) / 8;
+      {  byte = (cidr-1) / 8;
          if ( (ref->addr8[byte] & addr8[byte]) != (nets[idx]->net_addr.addr8[byte] & addr8[byte]) )
             matches = 0;
          else if (cidr > nets[idx]->net_cidr)

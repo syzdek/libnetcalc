@@ -89,8 +89,7 @@ netcalc_rec_free(
    netcalc_rec_t *   parent;
 
    while((rec))
-   {
-      while((rec->rec_children_len))
+   {  while((rec->rec_children_len))
       {  rec->rec_children_len--;
          rec = rec->rec_children[rec->rec_children_len];
       };
