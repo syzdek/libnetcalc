@@ -168,7 +168,7 @@ my_widget_superblock(
    };
 
    // calculate superblock and free networks
-   rc = netcalc_superblock(&superblock, nets, cnf->argc);
+   rc = netcalc_superblock(&superblock, (const netcalc_net_t * const *)nets, cnf->argc);
    for(idx = 0; ((nets[idx])); idx++)
       netcalc_free(nets[idx]);
    free(nets);

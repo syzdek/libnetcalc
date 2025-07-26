@@ -2045,7 +2045,7 @@ netcalc_strfnet(
 int
 netcalc_superblock(
          netcalc_net_t **              netp,
-         netcalc_net_t **              nets,
+         const netcalc_net_t * const * nets,
          size_t                        nel )
 {
    int                     byte;
@@ -2053,7 +2053,7 @@ netcalc_superblock(
    int                     matches;
    size_t                  idx;
    netcalc_net_t           nbuff;
-   netcalc_addr_t *        ref;
+   const netcalc_addr_t *  ref;
    const uint8_t *         addr8;
 
    assert(netp != NULL);

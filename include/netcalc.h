@@ -264,7 +264,7 @@ netcalc_strfnet(
 _NETCALC_F int
 netcalc_superblock(
          netcalc_net_t **              netp,
-         netcalc_net_t **              nets,
+         const netcalc_net_t * const * nets,
          size_t                        nel );
 
 
