@@ -122,8 +122,7 @@ main(
    // getopt options
    static const char *  short_opt = "hqVv";
    static struct option long_opt[] =
-   {
-      {"help",             no_argument,       NULL, 'h' },
+   {  {"help",             no_argument,       NULL, 'h' },
       {"quiet",            no_argument,       NULL, 'q' },
       {"silent",           no_argument,       NULL, 'q' },
       {"version",          no_argument,       NULL, 'V' },
@@ -132,45 +131,43 @@ main(
    };
 
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
-   {
-      switch(c)
-      {
-         case -1:       /* no more arguments */
+   {  switch(c)
+      {  case -1:       /* no more arguments */
          case 0:        /* long options toggles */
-         break;
+            break;
 
          case 'h':
-         printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
-         printf("       %s [OPTIONS] <string> <string> ... <string> \n", PROGRAM_NAME);
-         printf("OPTIONS:\n");
-         printf("  -h, --help                print this help and exit\n");
-         printf("  -q, --quiet, --silent     do not print messages\n");
-         printf("  -V, --version             print version number and exit\n");
-         printf("  -v, --verbose             print verbose messages\n");
-         printf("\n");
-         return(0);
+            printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
+            printf("       %s [OPTIONS] <string> <string> ... <string> \n", PROGRAM_NAME);
+            printf("OPTIONS:\n");
+            printf("  -h, --help                print this help and exit\n");
+            printf("  -q, --quiet, --silent     do not print messages\n");
+            printf("  -V, --version             print version number and exit\n");
+            printf("  -v, --verbose             print verbose messages\n");
+            printf("\n");
+            return(0);
 
          case 'q':
-         quiet++;
-         break;
+            quiet++;
+            break;
 
          case 'V':
-         printf("%s (%s) %s\n", PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION);
-         printf("Written by David M. Syzdek.\n");
-         return(0);
+            printf("%s (%s) %s\n", PROGRAM_NAME, PACKAGE_NAME, PACKAGE_VERSION);
+            printf("Written by David M. Syzdek.\n");
+            return(0);
 
          case 'v':
-         verbose++;
-         break;
+            verbose++;
+            break;
 
          case '?':
-         fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
-         return(1);
+            fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
+            return(1);
 
          default:
-         fprintf(stderr, "%s: unrecognized option `--%c'\n", PROGRAM_NAME, c);
-         fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
-         return(1);
+            fprintf(stderr, "%s: unrecognized option `--%c'\n", PROGRAM_NAME, c);
+            fprintf(stderr, "Try `%s --help' for more information.\n", PROGRAM_NAME);
+            return(1);
       };
    };
 
@@ -260,8 +257,7 @@ my_test(
    {  flags = NETCALC_FLG_IFACE | NETCALC_FLG_CIDR | NETCALC_FLG_PORT;
       net_addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags );
       if ((strcmp(dat_addr, net_addr)))
-      {
-         printf("   address:       %s\n", net_addr);
+      {  printf("   address:       %s\n", net_addr);
          printf("   expected:      %s\n", dat_addr);
          return(1);
       };

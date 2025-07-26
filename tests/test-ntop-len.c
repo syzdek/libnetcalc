@@ -143,10 +143,8 @@ main(
    };
 
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
-   {
-      switch(c)
-      {
-         case -1:       /* no more arguments */
+   {  switch(c)
+      {  case -1:       /* no more arguments */
          case 0:        /* long options toggles */
             break;
 

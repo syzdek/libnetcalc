@@ -87,8 +87,7 @@
 
 typedef struct _test_data testdata_t;
 struct _test_data
-{
-   const char *      addr_str;            // test string
+{  const char *      addr_str;            // test string
    const char *      addr_dflt;           // default notation
    const char *      addr_eui_dot;        // EUI using dot delimiters
    const char *      addr_eui_colon;      // EUI using colon delimiters

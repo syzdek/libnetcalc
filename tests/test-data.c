@@ -67,8 +67,7 @@
 
 //testdata_t test_data[] =
 testdata_t test_data[] =
-{
-   // EUI48
+{  // EUI48
    {  .addr_str            = "b2:be:e2:af:07:74",
       .addr_dflt           = "b2:be:e2:af:07:74",
       .addr_eui_colon      = "b2:be:e2:af:07:74",
