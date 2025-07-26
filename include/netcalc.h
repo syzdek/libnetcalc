@@ -240,7 +240,7 @@ netcalc_network_mask(
 
 _NETCALC_F const char *
 netcalc_ntop(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           type,

@@ -94,7 +94,7 @@ netcalc_convert_inet6(
 
 static const char *
 netcalc_ntop_eui(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags );
@@ -102,7 +102,7 @@ netcalc_ntop_eui(
 
 static const char *
 netcalc_ntop_inet(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags );
@@ -110,7 +110,7 @@ netcalc_ntop_inet(
 
 static const char *
 netcalc_ntop_inet6(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags );
@@ -851,7 +851,7 @@ netcalc_network_mask(
 
 const char *
 netcalc_ntop(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           type,
@@ -1038,7 +1038,7 @@ netcalc_ntop(
 
 const char *
 netcalc_ntop_eui(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags )
@@ -1106,7 +1106,7 @@ netcalc_ntop_eui(
 
 const char *
 netcalc_ntop_inet(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags )
@@ -1189,7 +1189,7 @@ netcalc_ntop_inet6(
    int               zero_max_len;
    int               ipv4_flags;
    int               max_len;
-   uint8_t *         dat8;
+   const uint8_t *   dat8;
    char              map[] = "0123456789abcdef";
    char              ipv4[NETCALC_ADDRESS_LENGTH];
 
