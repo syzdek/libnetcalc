@@ -1813,7 +1813,7 @@ netcalc_parse_inet6(
 
 size_t
 netcalc_strfnet(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        s,
          size_t                        maxsize,
          const char *                  fmt,
