@@ -1172,26 +1172,26 @@ netcalc_ntop_inet(
 
 const char *
 netcalc_ntop_inet6(
-         netcalc_net_t *               net,
+         const netcalc_net_t *         net,
          char *                        dst,
          size_t                        size,
          int                           flags )
 {
-   int         idx;
-   size_t      off;
-   char        buff[8];
-   int         buff_len;
-   int         pos;
-   int         bracketed;
-   int         zero_off;
-   int         zero_len;
-   int         zero_max_off;
-   int         zero_max_len;
-   int         ipv4_flags;
-   int         max_len;
-   uint8_t *   dat8;
-   char        map[] = "0123456789abcdef";
-   char        ipv4[NETCALC_ADDRESS_LENGTH];
+   int               idx;
+   size_t            off;
+   char              buff[8];
+   int               buff_len;
+   int               pos;
+   int               bracketed;
+   int               zero_off;
+   int               zero_len;
+   int               zero_max_off;
+   int               zero_max_len;
+   int               ipv4_flags;
+   int               max_len;
+   uint8_t *         dat8;
+   char              map[] = "0123456789abcdef";
+   char              ipv4[NETCALC_ADDRESS_LENGTH];
 
    assert(net != NULL);
    assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
