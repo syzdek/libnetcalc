@@ -109,18 +109,15 @@ my_widget_printf(
    len   = (size_t)cnf->argc;
    size  = sizeof(netcalc_net_t *) * len;
    if ((nets = malloc(size)) == NULL)
-   {
-      fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
+   {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
       return(1);
    };
    memset(nets, 0, size);
 
    // process network arguments
    for(idx = 1; (idx < cnf->argc); idx++)
-   {
-      if ((rc = netcalc_initialize(&nets[idx-1], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
-      {
-         fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+   {  if ((rc = netcalc_initialize(&nets[idx-1], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_nets_free(nets);
          return(1);
       };
@@ -138,10 +135,8 @@ my_widget_printf(
 
    // print address family information
    for(idx = 0; ((nets[idx])); idx++)
-   {
-      if (!(netcalc_strfnet(nets[idx], buff, sizeof(buff), cnf->argv[0], flags)))
-      {
-         fprintf(stderr, "%s: invalid format syntax or format character\n", my_prog_name(cnf));
+   {  if (!(netcalc_strfnet(nets[idx], buff, sizeof(buff), cnf->argv[0], flags)))
+      {  fprintf(stderr, "%s: invalid format syntax or format character\n", my_prog_name(cnf));
          return(1);
       };
       printf("%s\n", buff);

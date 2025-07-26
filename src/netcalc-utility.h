@@ -108,8 +108,7 @@ typedef struct _my_widget     my_widget_t;
 
 
 struct _my_config
-{
-   int                        quiet;
+{  int                        quiet;
    int                        verbose;
    int                        symlinked;
    int                        flags;
@@ -151,8 +150,7 @@ struct _my_record
 
 
 struct _my_widget
-{
-   const char *               name;
+{  const char *               name;
    const char *               desc;
    const char *               usage;
    const char *               short_opt;

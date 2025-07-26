@@ -321,8 +321,7 @@ main(
 
    // allocate and initialize config memory
    if ((cnf = malloc(sizeof(my_config_t))) == NULL)
-   {
-      fprintf(stderr, "%s; out of virtual memory\n", prog_name);
+   {  fprintf(stderr, "%s; out of virtual memory\n", prog_name);
       return(1);
    };
    memset(cnf, 0, sizeof(my_config_t));
@@ -337,8 +336,7 @@ main(
 
    // processing common cli arguments
    if (!(cnf->widget))
-   {
-      if ((rc = my_arguments(cnf, argc, argv)) != 0)
+   {  if ((rc = my_arguments(cnf, argc, argv)) != 0)
       {  my_free(cnf);
          return((rc == -1) ? 0 : 1);
       };
@@ -402,10 +400,8 @@ my_arguments(
                   : NETCALC_LONG();
 
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
-   {
-      switch(c)
-      {
-         case -1:       /* no more arguments */
+   {  switch(c)
+      {  case -1:       /* no more arguments */
          case 0:        /* long options toggles */
          break;
 
@@ -524,8 +520,7 @@ my_arguments(
          case 'v':
             cnf->verbose++;
             if ((cnf->quiet))
-            {
-               fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
+            {  fprintf(stderr, "%s: incompatible options `-q' and `-v'\n", my_prog_name(cnf));
                fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
                return(1);
             };
@@ -550,10 +545,8 @@ my_arguments(
    cnf->argv   = &argv[optind];
 
    if (!(widget))
-   {
-      if (cnf->argc < 1)
-      {
-         fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+   {  if (cnf->argc < 1)
+      {  fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
          fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
          return(1);
       };
@@ -561,14 +554,12 @@ my_arguments(
    };
 
    if (cnf->argc < widget->arg_min)
-   {
-      fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
+   {  fprintf(stderr, "%s: missing required argument\n", my_prog_name(cnf));
       fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
       return(1);
    };
    if ( (cnf->argc > widget->arg_max) && (widget->arg_max >= widget->arg_min) )
-   {
-      fprintf(stderr, "%s: unknown argument -- `%s'\n", my_prog_name(cnf), cnf->argv[widget->arg_max]);
+   {  fprintf(stderr, "%s: unknown argument -- `%s'\n", my_prog_name(cnf), cnf->argv[widget->arg_max]);
       fprintf(stderr, "Try `%s --help' for more information.\n", my_prog_name(cnf));
       return(1);
    };
@@ -617,8 +608,7 @@ my_prog_name(
                : PROGRAM_NAME;
 
    if ( (!(cnf->widget)) || ((cnf->symlinked)) )
-   {
-      snprintf(buff, sizeof(buff), "%s", prog_name);
+   {  snprintf(buff, sizeof(buff), "%s", prog_name);
       return(buff);
    };
 
@@ -648,18 +638,15 @@ my_usage(
       widget_help = ((cnf->widget->usage)) ? cnf->widget->usage : "";
 
    if ((widget = cnf->widget) == NULL)
-   {
-      printf("Usage: %s %s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
+   {  printf("Usage: %s %s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s-%s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s%s [OPTIONS]%s\n",  PROGRAM_NAME, widget_name, widget_help);
    } else if (cnf->symlinked == 0)
-   {
-      widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
+   {  widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
       printf("Usage: %s %s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
    }
    else
-   {
-      printf("Usage: %s [OPTIONS]%s\n", cnf->prog_name, widget_help);
+   {  printf("Usage: %s [OPTIONS]%s\n", cnf->prog_name, widget_help);
    };
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
@@ -678,11 +665,9 @@ my_usage(
    if ((strchr(short_opt, '1'))) printf("  --dash                    display using dash delimiters\n");
    if ((strchr(short_opt, '2'))) printf("  --dot                     display using dot delimiters\n");
    if (!(cnf->widget))
-   {
-      printf("WIDGETS:\n");
+   {  printf("WIDGETS:\n");
       for(pos = 0; my_widget_map[pos].name != NULL; pos++)
-      {
-         widget = &my_widget_map[pos];
+      {  widget = &my_widget_map[pos];
          if ((widget->desc))
             printf("  %-25s %s\n", widget->name, widget->desc);
       };
@@ -725,8 +710,7 @@ my_widget_lookup(
 
    // loop through widgets looking for match
    for(x = 0; ((my_widget_map[x].name)); x++)
-   {
-      // check widget
+   {  // check widget
       widget = &my_widget_map[x];
       if (widget->func_exec == NULL)
          continue;
@@ -734,8 +718,7 @@ my_widget_lookup(
 
       // compare widget name for match
       if (!(strncmp(widget->name, wname, wname_len)))
-      {
-         if (widget->name[wname_len] == '\0')
+      {  if (widget->name[wname_len] == '\0')
             return(widget);
          if ( ((match)) && (match != widget) )
             return(NULL);
@@ -747,13 +730,10 @@ my_widget_lookup(
          continue;
 
       for(y = 0; ((widget->aliases[y])); y++)
-      {
-         alias = widget->aliases[y];
+      {  alias = widget->aliases[y];
          if (!(strncmp(alias, wname, wname_len)))
-         {
-            if (alias[wname_len] == '\0')
-            {
-               widget->alias_idx = y;
+         {  if (alias[wname_len] == '\0')
+            {  widget->alias_idx = y;
                return(widget);
             };
             if ( ((match)) && (match != widget) )

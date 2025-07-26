@@ -137,8 +137,7 @@ my_widget_info(
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
-   {
-      if ((rc = netcalc_initialize(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_initialize(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_recs_free(recs);
          return(1);
@@ -207,8 +206,7 @@ my_widget_info_eui(
    assert(recs != NULL);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
-   {
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
+   {  netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
       if ( (family != NETCALC_AF_EUI48) && (family != NETCALC_AF_EUI64) )
          continue;
 
@@ -229,8 +227,7 @@ my_widget_info_eui(
       printf("\n");
 
       if (family == NETCALC_AF_EUI48)
-      {
-         str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+      {  str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
          my_widget_info_print("EUI48",  str);
          if (netcalc_convert(dup, NETCALC_AF_EUI64, NULL) == 0)
          {  str = netcalc_ntop(dup, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
@@ -293,8 +290,7 @@ my_widget_info_ip(
 
    // calculate superblock
    if ( (cnf->argc > 1) && (!(family_any)) )
-   {
-      size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
+   {  size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
       if ((nets = malloc(size)) == NULL)
       {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
          return(1);
@@ -345,8 +341,7 @@ my_widget_info_ip_verbose(
    assert(recs != NULL);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
-   {
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
+   {  netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_CIDR,     &cidr);
 
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
@@ -404,14 +399,12 @@ my_widget_info_ip_verbose(
 
       netcalc_get_field(recs[idx]->net, NETCALC_FLD_PORT, &ival);
       if ((ival))
-      {
-         snprintf(buff, sizeof(buff), "%i", ival);
+      {  snprintf(buff, sizeof(buff), "%i", ival);
          my_widget_info_print("Port", buff);
       };
 
       if ( ((family == NETCALC_AF_INET6) && (cidr < 128)) || ((family == NETCALC_AF_INET) && (cidr < 32)) )
-      {
-         flags |= NETCALC_FLG_SUPR;
+      {  flags |= NETCALC_FLG_SUPR;
          flags = NETCALC_UNSET(flags, (NETCALC_FLG_COMPR | NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
          str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_FIRST, flags);
          my_widget_info_print("Usable Range", str);

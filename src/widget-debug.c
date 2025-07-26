@@ -123,14 +123,12 @@ my_widget_debug(
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
-   {
-      printf("processing \"%s\" ...\n", cnf->argv[idx]);
+   {  printf("processing \"%s\" ...\n", cnf->argv[idx]);
       rc = netcalc_initialize(&net, cnf->argv[idx], cnf->flags);
       my_widget_debug_print( "status", netcalc_strerror(rc) );
       my_widget_debug_print_int( "return code", rc );
       if ((rc))
-      {
-         errs++;
+      {  errs++;
          printf("\n");
          continue;
       };
@@ -177,8 +175,7 @@ my_widget_debug(
       free(ptr);
 
       if (family == NETCALC_AF_INET6)
-      {
-         netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME,  &ptr);
+      {  netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME,  &ptr);
          my_widget_debug_print("Scope Name", (((ptr)) ? (char *)ptr : ""));
          free(ptr);
       };
@@ -218,8 +215,7 @@ my_widget_debug_print_bytes(
    char     map[] = "0123456789abcdef";
 
    for(idx = 0, pos = 0; (idx < len); idx++)
-   {
-      buff[pos++] = map[ (val[idx] >> 4) & 0x0f ];
+   {  buff[pos++] = map[ (val[idx] >> 4) & 0x0f ];
       buff[pos++] = map[ (val[idx] >> 0) & 0x0f ];
       if ((idx % 2) == 1)
          buff[pos++] = ' ';
