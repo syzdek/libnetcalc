@@ -123,6 +123,11 @@ my_arguments(
          char * const *                argv );
 
 
+void
+my_free(
+         my_config_t *                 cnf );
+
+
 static int
 my_usage(
          my_config_t *                 cnf );
@@ -334,18 +339,22 @@ main(
    if (!(cnf->widget))
    {
       if ((rc = my_arguments(cnf, argc, argv)) != 0)
+      {  my_free(cnf);
          return((rc == -1) ? 0 : 1);
+      };
       if ((cnf->widget = my_widget_lookup(cnf->argv[0], 0)) == NULL)
-      {
-         fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
+      {  fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+         my_free(cnf);
          return(1);
       };
    };
 
    // processing widget cli arguments
    if ((rc = my_arguments(cnf, cnf->argc, cnf->argv)) != 0)
+   {  my_free(cnf);
       return((rc == -1) ? 0 : 1);
+   };
 
    // adjust flags
    cnf->flags &= ~cnf->flags_negate;
@@ -355,12 +364,17 @@ main(
    {  if ((rc = netcalc_initialize(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: network prefix: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+         my_free(cnf);
          return(1);
       };
       netcalc_get_field(cnf->net_prefix, NETCALC_FLD_FAMILY, &cnf->net_prefix_family);
    };
 
-   return(cnf->widget->func_exec(cnf));
+   rc = cnf->widget->func_exec(cnf);
+
+   my_free(cnf);
+
+   return(rc);
 }
 
 
@@ -560,6 +574,19 @@ my_arguments(
    };
 
    return(0);
+}
+
+
+void
+my_free(
+         my_config_t *                 cnf )
+{
+   if (!(cnf))
+      return;
+   if ((cnf->net_prefix))
+      netcalc_free(cnf->net_prefix);
+   free(cnf);
+   return;
 }
 
 
