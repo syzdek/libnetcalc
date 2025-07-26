@@ -527,7 +527,7 @@ netcalc_convert_inet6(
    switch(net->net_flags & NETCALC_AF)
    {  case NETCALC_AF_EUI48:
          if ((rc = netcalc_convert_eui64(net)) != NETCALC_SUCCESS)
-            return(NETCALC_ENOTSUP);
+            return(rc);
 
       case NETCALC_AF_EUI64:
          net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
