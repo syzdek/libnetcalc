@@ -285,7 +285,7 @@ my_widget_info_ip(
    int                  flags;
    int                  idx;
    size_t               size;
-   netcalc_net_t **     mets;
+   netcalc_net_t **     nets;
    my_len_t             lens;
 
    assert(cnf  != NULL);
@@ -295,17 +295,17 @@ my_widget_info_ip(
    if ( (cnf->argc > 1) && (!(family_any)) )
    {
       size = sizeof(netcalc_net_t *) * ((size_t)(cnf->argc+1));
-      if ((mets = malloc(size)) == NULL)
+      if ((nets = malloc(size)) == NULL)
       {  fprintf(stderr, "%s: out of virtual memory\n", my_prog_name(cnf));
          return(1);
       };
-      memset(mets, 0, size);
+      memset(nets, 0, size);
       for(idx = 0; (idx < cnf->argc); idx++)
-         mets[idx] = recs[idx]->net;
-      netcalc_superblock(&recs[cnf->argc]->net, mets, cnf->argc);
+         nets[idx] = recs[idx]->net;
+      netcalc_superblock(&recs[cnf->argc]->net, nets, cnf->argc);
       recs[cnf->argc]->ip_superblock = 1;
       my_rec_process(cnf, recs[cnf->argc]);
-      free(mets);
+      free(nets);
    };
 
    if ( ((cnf->verbose)) || ((family_any)) )
