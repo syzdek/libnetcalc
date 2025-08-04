@@ -142,14 +142,6 @@ netcalc_parse_inet6(
 /////////////////
 // MARK: - Variables
 
-// IPv6 Link-local addresses: fe80::/10
-const netcalc_net_t _netcalc_link_local_in6 =
-{  .net_flags        = NETCALC_AF_INET6,
-   .net_cidr         = 10,
-   .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
-};
-
-
 // IPv4 localhost: 127.0.0.0/8
 const netcalc_net_t _netcalc_lo_in =
 {  .net_flags        = NETCALC_AF_INET,
