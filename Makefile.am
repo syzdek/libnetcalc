@@ -164,7 +164,8 @@ lib_libnetcalc_a_SOURCES		= include/netcalc.h \
 					  lib/libnetcalc/libnetcalc.h \
 					  lib/libnetcalc/lmisc.c \
 					  lib/libnetcalc/lnets.c \
-					  lib/libnetcalc/lsets.c
+					  lib/libnetcalc/lsets.c \
+					  lib/libnetcalc/lvars.c
 
 
 # macros for lib/libnetcalc.la

@@ -335,15 +335,6 @@ const netcalc_net_t _netcalc_lo_in6 =
 };
 
 
-// IPv6 SLAAC addresses: fe80::/64
-const netcalc_net_t _netcalc_slaac_in6 =
-{  .net_flags        = NETCALC_AF_INET6,
-   .net_cidr         = 64,
-   .net_addr         = { .addr8 = { 0xfe, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } },
-};
-
-
-
 /////////////////
 //             //
 //  Functions  //
