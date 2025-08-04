@@ -60,6 +60,15 @@ const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
 };
 
 
+// IPv4 Link-local addresses: 169.254.0.0/16
+// MARK: _netcalc_link_local_in
+const netcalc_net_t _netcalc_link_local_in =
+{  .net_flags        = NETCALC_AF_INET,
+   .net_cidr         = 112,
+   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x45, 0xfe, 0x00, 0x00 } },
+};
+
+
 // IPv6 netmasks
 // MARK: _netcalc_netmasks[]
 const netcalc_addr_t _netcalc_netmasks[] =
