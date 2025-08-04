@@ -335,22 +335,6 @@ netcalc_convert_inet6(
 
 
 int
-netcalc_dflt_flags(
-         int                           family )
-{
-   family &= NETCALC_AF;
-   switch(family)
-   {  case NETCALC_AF_EUI48: return(NETCALC_DFLT_EUI48);
-      case NETCALC_AF_EUI64: return(NETCALC_DFLT_EUI64);
-      case NETCALC_AF_INET:  return(NETCALC_DFLT_INET);
-      case NETCALC_AF_INET6: return(NETCALC_DFLT_INET6);
-      default: break;
-   };
-   return(0);
-}
-
-
-int
 netcalc_dup(
          netcalc_net_t **              netp,
          const netcalc_net_t *         src )

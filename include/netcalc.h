@@ -232,11 +232,6 @@ netcalc_convert(
 
 
 _NETCALC_F int
-netcalc_dflt_flags(
-         int                           family );
-
-
-_NETCALC_F int
 netcalc_dup(
          netcalc_net_t **              netp,
          const netcalc_net_t *         src );

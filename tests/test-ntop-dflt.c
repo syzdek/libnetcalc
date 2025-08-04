@@ -211,7 +211,14 @@ my_test(
 
    net      = NULL;
    dat_addr = dat->addr_dflt;
-   flags    = netcalc_dflt_flags(dat->addr_flgs);
+
+   switch(dat->addr_flgs & NETCALC_AF)
+   {  case NETCALC_AF_EUI48: flags = NETCALC_DFLT_EUI48; break;
+      case NETCALC_AF_EUI64: flags = NETCALC_DFLT_EUI64; break;
+      case NETCALC_AF_INET:  flags = NETCALC_DFLT_INET;  break;
+      case NETCALC_AF_INET6: flags = NETCALC_DFLT_INET6; break;
+      default:               flags = NETCALC_DFLTS;      break;
+   };
 
    my_info("checking: \"%s\" ...\n", dat->addr_str);
 
