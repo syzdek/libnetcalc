@@ -188,7 +188,7 @@ main(
    for(idx = 0; ((test_strs[idx])); idx++)
    {  addr = test_strs[idx];
       my_info("parsing  \"%s\" ...\n", addr);
-      rc = netcalc_initialize(&net, addr, 0);
+      rc = netcalc_init(&net, addr, 0);
       my_verbose("   status:        %s\n", netcalc_strerror(rc));
       my_verbose("   return code:   %i\n", rc);
       netcalc_get_field(net, NETCALC_FLD_FAMILY, &ival);

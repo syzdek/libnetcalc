@@ -122,7 +122,7 @@ my_widget_superblock(
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
-   {  if ((rc = netcalc_initialize(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_init(&nets[idx], cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_nets_free(nets);
          return(1);

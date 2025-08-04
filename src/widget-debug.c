@@ -124,7 +124,7 @@ my_widget_debug(
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
    {  printf("processing \"%s\" ...\n", cnf->argv[idx]);
-      rc = netcalc_initialize(&net, cnf->argv[idx], cnf->flags);
+      rc = netcalc_init(&net, cnf->argv[idx], cnf->flags);
       my_widget_debug_print( "status", netcalc_strerror(rc) );
       my_widget_debug_print_int( "return code", rc );
       if ((rc))

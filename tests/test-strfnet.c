@@ -298,7 +298,7 @@ my_test(
       my_info("        \"%s\" ...\n", dat->fmt_results);
    };
 
-   rc = netcalc_initialize(&net, dat->fmt_input, 0);
+   rc = netcalc_init(&net, dat->fmt_input, 0);
    if ((rc))
    {  my_info("        netcalc_initialize():  %i (%s)\n", rc, netcalc_strerror(rc));
       my_verbose("\n");

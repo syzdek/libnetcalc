@@ -490,7 +490,7 @@ netcalc_get_field(
 
 
 int
-netcalc_initialize(
+netcalc_init(
          netcalc_net_t **              netp,
          const char *                  address,
          int                           flags )

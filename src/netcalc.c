@@ -359,7 +359,7 @@ main(
 
    // process network prefix
    if ((cnf->net_prefix_str))
-   {  if ((rc = netcalc_initialize(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_init(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: network prefix: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
          my_free(cnf);

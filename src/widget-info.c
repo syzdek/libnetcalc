@@ -137,7 +137,7 @@ my_widget_info(
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
-   {  if ((rc = netcalc_initialize(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_init(&recs[idx]->net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          my_recs_free(recs);
          return(1);

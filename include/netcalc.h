@@ -250,7 +250,7 @@ netcalc_get_field(
 
 
 _NETCALC_F int
-netcalc_initialize(
+netcalc_init(
          netcalc_net_t **              netp,
          const char *                  address,
          int                           flags );

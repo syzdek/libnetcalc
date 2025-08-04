@@ -32,7 +32,7 @@ netcalc_convert
 netcalc_dup
 netcalc_free
 netcalc_get_field
-netcalc_initialize
+netcalc_init
 netcalc_network_mask
 netcalc_ntop
 netcalc_strerror
