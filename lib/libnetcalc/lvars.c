@@ -51,6 +51,15 @@
 /////////////////
 // MARK: - Variables
 
+// IPv6 Prefix for IPv4 addresses: ::ffff:0000:0000/96
+// MARK: _netcalc_ipv4_mapped_ipv6
+const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
+{  .net_flags        = NETCALC_AF_INET6,
+   .net_cidr         = 96,
+   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 } },
+};
+
+
 // IPv6 netmasks
 // MARK: _netcalc_netmasks[]
 const netcalc_addr_t _netcalc_netmasks[] =

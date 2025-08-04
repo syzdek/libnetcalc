@@ -142,14 +142,6 @@ netcalc_parse_inet6(
 /////////////////
 // MARK: - Variables
 
-// IPv6 Prefix for IPv4 addresses: ::ffff:0000:0000/96
-const netcalc_net_t _netcalc_ipv4_mapped_ipv6  =
-{  .net_flags        = NETCALC_AF_INET6,
-   .net_cidr         = 96,
-   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00 } },
-};
-
-
 // IPv4 Link-local addresses: 169.254.0.0/16
 const netcalc_net_t _netcalc_link_local_in =
 {  .net_flags        = NETCALC_AF_INET,
