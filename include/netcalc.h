@@ -158,7 +158,7 @@
 #define NETCALC_AF_EUI64               NETCALC_FLG_AF_EUI64
 
 
-#define NETCALC_FLGS_ADDRESS           (  NETCALC_FLG_V4MAPPED \
+#define NETCALC_FLGS_NETWORK           (  NETCALC_FLG_V4MAPPED \
                                           | NETCALC_FLG_COMPR \
                                           | NETCALC_FLG_SUPR \
                                           | NETCALC_FLG_IFACE \
