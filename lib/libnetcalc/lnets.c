@@ -498,6 +498,7 @@ netcalc_initialize(
    int                  rc;
    netcalc_net_t *      ptr;
    assert(address != NULL);
+   assert((flags & ~NETCALC_FLGS_NETWORK) == 0);
    if ((netp))
    {  ptr = NULL;
       rc = netcalc_parse(&ptr, address, flags);

@@ -135,6 +135,7 @@ netcalc_set_init(
    netcalc_set_t *      ns;
 
    assert(nsp != NULL);
+   assert((flags & ~NETCALC_FLGS_SET) == 0);
 
    if ((ns = malloc(sizeof(netcalc_set_t))) == NULL)
       return(NETCALC_ENOMEM);
