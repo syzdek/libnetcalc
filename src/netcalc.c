@@ -409,15 +409,15 @@ my_arguments(
          case '1':
          case '2':
          case '3':
-            if ((cnf->flags & (NETCALC_FLG_COLON | NETCALC_FLG_DASH | NETCALC_FLG_DOT | NETCALC_FLG_NODELIM)))
+            if ((cnf->flags & NETCALC_DELIM))
             {  fprintf(stderr, "%s: incompatible options `--colon', `--dash', `--dot' and `--no-delimiter'\n", my_prog_name(cnf));
                fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
                return(1);
             }
-            if (c == '0') cnf->flags |= NETCALC_FLG_COLON;
-            if (c == '1') cnf->flags |= NETCALC_FLG_DASH;
-            if (c == '2') cnf->flags |= NETCALC_FLG_DOT;
-            if (c == '3') cnf->flags |= NETCALC_FLG_NODELIM;
+            if (c == '0') cnf->flags |= NETCALC_FLG_DELIM_COLON;
+            if (c == '1') cnf->flags |= NETCALC_FLG_DELIM_DASH;
+            if (c == '2') cnf->flags |= NETCALC_FLG_DELIM_DOT;
+            if (c == '3') cnf->flags |= NETCALC_FLG_DELIM_NODELIM;
             break;
 
          case '4':

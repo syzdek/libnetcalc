@@ -140,7 +140,8 @@ netcalc_set_init(
       return(NETCALC_ENOMEM);
    memset(ns, 0, sizeof(netcalc_set_t));
 
-   ns->set_flags = flags;
+   ns->set_flags   = flags;
+   ns->set_flags  |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
 
    *nsp = ns;
 

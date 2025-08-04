@@ -125,32 +125,60 @@
 //                                     0x00000020  // flag: OPEN
 //                                     0x00000040  // flag: OPEN
 //                                     0x00000080  // flag: OPEN
-#define NETCALC_USR                    0x0000f000
-#define NETCALC_FLG_USR1               0x00001000
-#define NETCALC_FLG_USR2               0x00002000
-#define NETCALC_FLG_USR3               0x00004000
-#define NETCALC_FLG_USR4               0x00008000
+//                                     0x00000100  // flag: OPEN
+//                                     0x00000200  // flag: OPEN
+//                                     0x00000400  // flag: OPEN
+#define NETCALC_FLG_UNIQ               0x00000800  // flag set: require unique subnets
+#define NETCALC_USR                    0x0000f000  // user: mask for user reserved flags
+#define NETCALC_FLG_USR1               0x00001000  // user: reserved for use by library users
+#define NETCALC_FLG_USR2               0x00002000  // user: reserved for use by library users
+#define NETCALC_FLG_USR3               0x00004000  // user: reserved for use by library users
+#define NETCALC_FLG_USR4               0x00008000  // user: reserved for use by library users
 #define NETCALC_DELIM                  0x000f0000  // delimiter: mask for EUI delimiters
-#define NETCALC_FLG_COLON              0x00010000  // delimiter: use colon delimiters with 1 byte chunks
-#define NETCALC_FLG_DASH               0x00020000  // delimiter: use dash delimiters with 1 byte chunks
-#define NETCALC_FLG_DOT                0x00040000  // delimiter: use dot delimiters with 2 byte chunks
-#define NETCALC_FLG_NODELIM            0x00080000  // delimiter: do not use delimiters
+#define NETCALC_FLG_DELIM_COLON        0x00010000  // delimiter: use colon delimiters with 1 byte chunks
+#define NETCALC_FLG_DELIM_DASH         0x00020000  // delimiter: use dash delimiters with 1 byte chunks
+#define NETCALC_FLG_DELIM_DOT          0x00040000  // delimiter: use dot delimiters with 2 byte chunks
+#define NETCALC_FLG_DELIM_NODELIM      0x00080000  // delimiter: do not use delimiters
 //                                     0x00f00000  // UNUSED
 #define NETCALC_AF                     0x0f000000  // af: mask for address familly
-#define NETCALC_AF_AUTO                0x00000000  // af: added for consistenency
-#define NETCALC_AF_INET                0x01000000  // af: IPv4 encapsulation [RFC2003]
-#define NETCALC_AF_INET6               0x02000000  // af: IPv6 encapsulation [RFC2473]
-#define NETCALC_AF_EUI48               0x04000000  // af: MAC-48/EUI-48 encapsulation
-#define NETCALC_AF_EUI64               0x08000000  // af: EUI-64 encapsulation
+#define NETCALC_FLG_AF_AUTO            0x00000000  // af: added for consistenency
+#define NETCALC_FLG_AF_INET            0x01000000  // af: IPv4 encapsulation [RFC2003]
+#define NETCALC_FLG_AF_INET6           0x02000000  // af: IPv6 encapsulation [RFC2473]
+#define NETCALC_FLG_AF_EUI48           0x04000000  // af: MAC-48/EUI-48 encapsulation
+#define NETCALC_FLG_AF_EUI64           0x08000000  // af: EUI-64 encapsulation
 //                                     0x70000000  // UNUSED
 //                                     0x80000000  // DO NOT USE
 #define NETCALC_AF_MAC                 NETCALC_AF_EUI48
 
 
+#define NETCALC_AF_AUTO                NETCALC_FLG_AF_AUTO
+#define NETCALC_AF_INET                NETCALC_FLG_AF_INET
+#define NETCALC_AF_INET6               NETCALC_FLG_AF_INET6
+#define NETCALC_AF_EUI48               NETCALC_FLG_AF_EUI48
+#define NETCALC_AF_EUI64               NETCALC_FLG_AF_EUI64
+
+
+#define NETCALC_FLGS_ADDRESS           (  NETCALC_FLG_V4MAPPED \
+                                          | NETCALC_FLG_COMPR \
+                                          | NETCALC_FLG_SUPR \
+                                          | NETCALC_FLG_IFACE \
+                                          | NETCALC_FLG_CIDR \
+                                          | NETCALC_FLG_CIDR_ALWAYS \
+                                          | NETCALC_FLG_PORT \
+                                          | NETCALC_USR \
+                                          | NETCALC_DELIM \
+                                          | NETCALC_AF \
+                                       )
+#define NETCALC_FLGS_SET               (  NETCALC_FLG_UNIQ \
+                                          | NETCALC_USR \
+                                          | NETCALC_AF \
+                                       )
+
+
 // defaults flags
 #define NETCALC_DFLTS                        (NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT | NETCALC_FLG_IFACE)
-#define NETCALC_DFLT_EUI48                   (NETCALC_FLG_COLON)
-#define NETCALC_DFLT_EUI64                   (NETCALC_FLG_DOT)
+#define NETCALC_DFLT_EUI48                   (NETCALC_FLG_DELIM_COLON)
+#define NETCALC_DFLT_EUI64                   (NETCALC_FLG_DELIM_DOT)
 #define NETCALC_DFLT_INET                    (NETCALC_FLG_SUPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT)
 #define NETCALC_DFLT_INET6                   (NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR | NETCALC_FLG_PORT | NETCALC_FLG_IFACE)
 

@@ -794,23 +794,23 @@ netcalc_ntop_eui(
    {  if (size < (off + 3))
          return(NULL);
       switch(delim)
-      {  case NETCALC_FLG_DOT:
+      {  case NETCALC_FLG_DELIM_DOT:
             if ((off % 5) == 4)
                dst[off++] = '.';
             dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
             dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
             break;
 
-         case NETCALC_FLG_NODELIM:
+         case NETCALC_FLG_DELIM_NODELIM:
             dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
             dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
             break;
 
-         case NETCALC_FLG_DASH:
-         case NETCALC_FLG_COLON:
+         case NETCALC_FLG_DELIM_DASH:
+         case NETCALC_FLG_DELIM_COLON:
          default:
             if ((off))
-               dst[off++] = ((delim == NETCALC_FLG_DASH) ? '-' : ':');
+               dst[off++] = ((delim == NETCALC_FLG_DELIM_DASH) ? '-' : ':');
             dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
             dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
             break;
@@ -1681,10 +1681,10 @@ netcalc_strfnet(
             case 'S': mflgs = NETCALC_UNSET( mflgs, NETCALC_FLG_SUPR);        break;
             case 's': mflgs = NETCALC_SET(   mflgs, NETCALC_FLG_SUPR);        break;
 
-            case 'B': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_NODELIM; break;
-            case 'L': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_COLON;   break;
-            case 'H': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DASH;    break;
-            case 'O': mflgs &= ~NETCALC_DELIM; mflgs |=  NETCALC_FLG_DOT;  break;
+            case 'B': mflgs &= ~NETCALC_DELIM; mflgs |= NETCALC_FLG_DELIM_NODELIM;  break;
+            case 'L': mflgs &= ~NETCALC_DELIM; mflgs |= NETCALC_FLG_DELIM_COLON;    break;
+            case 'H': mflgs &= ~NETCALC_DELIM; mflgs |= NETCALC_FLG_DELIM_DASH;     break;
+            case 'O': mflgs &= ~NETCALC_DELIM; mflgs |= NETCALC_FLG_DELIM_DOT;      break;
 
             default: // applies spacing modifer
                modifiers = 0;
