@@ -89,6 +89,17 @@ const netcalc_net_t _netcalc_lo_in =
 };
 
 
+// IPv6 localhost: ::1/128
+// MARK: _netcalc_lo_in6
+const netcalc_net_t _netcalc_lo_in6 =
+{  .net_flags        = NETCALC_AF_INET6,
+   .net_port         = 0,
+   .net_cidr         = 128,
+   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } },
+   .net_scope_name   = NULL
+};
+
+
 // IPv6 netmasks
 // MARK: _netcalc_netmasks[]
 const netcalc_addr_t _netcalc_netmasks[] =

@@ -142,15 +142,6 @@ netcalc_parse_inet6(
 /////////////////
 // MARK: - Variables
 
-// IPv6 localhost: ::1/128
-const netcalc_net_t _netcalc_lo_in6 =
-{  .net_flags        = NETCALC_AF_INET6,
-   .net_port         = 0,
-   .net_cidr         = 128,
-   .net_addr         = { .addr8 = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } },
-   .net_scope_name   = NULL
-};
-
 
 /////////////////
 //             //
