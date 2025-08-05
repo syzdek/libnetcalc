@@ -91,6 +91,7 @@
 #define NETCALC_EINVAL                 -5
 #define NETCALC_EFIELD                 -6
 #define NETCALC_ENOTSUP                -7
+#define NETCALC_ETYPE                  -8
 
 
 #define NETCALC_FLD_FAMILY             0

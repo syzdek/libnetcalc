@@ -91,6 +91,7 @@ netcalc_strerror(
       case NETCALC_EINVAL:       return("invalid argument");
       case NETCALC_ENOMEM:       return("out of virtual memory");
       case NETCALC_ENOTSUP:      return("operation not supported");
+      case NETCALC_ETYPE:        return("not of type");
 
       case NETCALC_EUNKNOWN:     break;
       default:                   break;
