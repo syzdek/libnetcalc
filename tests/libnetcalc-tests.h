@@ -97,6 +97,8 @@ struct _test_data
    const char *      addr_ip_suppress;    // IP address with zero suppression
    const char *      addr_ip_compress;    // IP address with zero compression
    const char *      addr_ip_network;     // network address with CIDR
+   const char *      addr_ip_first;       // first useable address
+   const char *      addr_ip_last;        // last useable address
    const char *      addr_ip_broadcast;   // broadcast address without CIDR
    const char *      addr_ip_iface;       // interface name
    const char *      addr_ip_4mapped6;    // IPv4-mapped IPv6 address
