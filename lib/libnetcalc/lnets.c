@@ -1881,27 +1881,33 @@ netcalc_verify(
          netcalc_net_t *               net,
          int                           type )
 {
-   int      idx;
+   int               idx;
+   int               family;
    const uint8_t *   addr8;
    const uint8_t *   cidr8;
    uint8_t           byte;
 
    assert(net != NULL);
 
-   addr8 = net->net_addr.addr8;
-   cidr8 = _netcalc_netmasks[net->net_cidr].addr8;
+   family   = net->net_flags & NETCALC_AF;
+   addr8    = net->net_addr.addr8;
+   cidr8    = _netcalc_netmasks[net->net_cidr].addr8;
 
    switch(type)
    {  case NETCALC_TYPE_ADDRESS:
          return(0);
 
       case NETCALC_TYPE_BROADCAST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 16); idx++)
             if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
                return(NETCALC_ETYPE);
          return(0);
 
       case NETCALC_TYPE_FIRST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 15); idx++)
             if (addr8[idx] != (addr8[idx] & cidr8[idx]))
                return(NETCALC_ETYPE);
@@ -1910,6 +1916,8 @@ netcalc_verify(
          return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
 
       case NETCALC_TYPE_LAST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 15); idx++)
             if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
                return(NETCALC_ETYPE);
@@ -1918,18 +1926,24 @@ netcalc_verify(
          return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
 
       case NETCALC_TYPE_NETMASK:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 16); idx++)
             if (addr8[idx] != cidr8[idx])
                return(NETCALC_ETYPE);
          return(0);
 
       case NETCALC_TYPE_NETWORK:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 16); idx++)
             if (addr8[idx] != (addr8[idx] & cidr8[idx]))
                return(NETCALC_ETYPE);
          return(0);
 
       case NETCALC_TYPE_WILDCARD:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
          for(idx = 0; (idx < 16); idx++)
             if (addr8[idx] != ((uint8_t)~cidr8[idx]))
                return(NETCALC_ETYPE);
@@ -1939,7 +1953,7 @@ netcalc_verify(
          break;
    };
 
-   return(1);
+   return(NETCALC_EINVAL);
 }
 
 
