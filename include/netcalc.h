@@ -118,10 +118,10 @@
 #define NETCALC_FLG_V4MAPPED           0x00000001  // flag: display IPv6 addresses as IPv4 mapped address
 #define NETCALC_FLG_COMPR              0x00000002  // flag: zero compression
 #define NETCALC_FLG_SUPR               0x00000004  // flag: zero suppression
-#define NETCALC_FLG_IFACE              0x00000008  // flag: append interface
-#define NETCALC_FLG_CIDR               0x00000010  // flag: append CIDR
-#define NETCALC_FLG_CIDR_ALWAYS        0x00000020  // flag: always append CIDR
-#define NETCALC_FLG_PORT               0x00000040  // flag: append port
+#define NETCALC_FLG_IFACE              0x00000008  // flag: include interface
+#define NETCALC_FLG_CIDR               0x00000010  // flag: include CIDR
+#define NETCALC_FLG_CIDR_ALWAYS        0x00000020  // flag: always include CIDR
+#define NETCALC_FLG_PORT               0x00000040  // flag: include port
 //                                     0x00000010  // flag: OPEN
 //                                     0x00000020  // flag: OPEN
 //                                     0x00000040  // flag: OPEN
@@ -150,6 +150,7 @@
 //                                     0x70000000  // UNUSED
 //                                     0x80000000  // DO NOT USE
 #define NETCALC_AF_MAC                 NETCALC_AF_EUI48
+#define NETCALC_FLG_NETWORK            (NETCALC_FLG_CIDR | NETCALC_FLG_CIDR_ALWAYS)
 
 
 #define NETCALC_AF_AUTO                NETCALC_FLG_AF_AUTO
@@ -197,6 +198,13 @@
 #define NETCALC_TYPE_ARPA_HOST         0x0a
 
 
+#define  NETCALC_CMP_BEFORE            -2
+#define  NETCALC_CMP_SUBNET            -1
+#define  NETCALC_CMP_SAME              0
+#define  NETCALC_CMP_SUPERNET          1
+#define  NETCALC_CMP_AFTER             2
+
+
 //////////////////
 //              //
 //  Data Types  //
@@ -224,6 +232,13 @@ typedef struct _libnetcalc_set         netcalc_set_t;
 //              //
 //////////////////
 // MARK: - Prototypes
+
+_NETCALC_F int
+netcalc_cmp(
+         const netcalc_net_t *         n1,
+         const netcalc_net_t *         n2,
+         int                           flags );
+
 
 _NETCALC_F int
 netcalc_convert(

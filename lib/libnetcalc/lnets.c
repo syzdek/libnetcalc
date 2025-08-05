@@ -143,6 +143,80 @@ netcalc_parse_inet6(
 // MARK: - Functions
 
 int
+netcalc_cmp(
+         const netcalc_net_t *         n1,
+         const netcalc_net_t *         n2,
+         int                           flags )
+{
+   int                     cidr;
+   int                     idx;
+   int                     rc;
+   const netcalc_addr_t *  mask;
+   uint8_t                 b1;      // byte
+   uint8_t                 b2;      // byte
+
+   assert(n1 != NULL);
+   assert(n2 != NULL);
+
+   // compare networks
+   if ((flags & NETCALC_FLG_NETWORK))
+   {  // check for network before or after
+      cidr  = (n1->net_cidr < n2->net_cidr) ? n1->net_cidr : n2->net_cidr;
+      mask  = &_netcalc_netmasks[cidr];
+      for(idx = 0; (idx < 16); idx++)
+      {  b1    = mask->addr8[idx] & n1->net_addr.addr8[idx];
+         b2    = mask->addr8[idx] & n2->net_addr.addr8[idx];
+         if (b1 < b2)
+            return(NETCALC_CMP_BEFORE);
+         if (b1 > b2)
+            return(NETCALC_CMP_AFTER);
+      };
+
+      // check for subnet or supernet
+      if (n1->net_cidr < n2->net_cidr)
+         return(NETCALC_CMP_SUPERNET);
+      if (n1->net_cidr > n2->net_cidr)
+         return(NETCALC_CMP_SUBNET);
+   };
+
+   // compare addresses
+   if (!(flags & NETCALC_FLG_NETWORK))
+   {  for(idx = 0; (idx < 16); idx++)
+      {  if (n1->net_addr.addr8[idx] < n2->net_addr.addr8[idx])
+            return(NETCALC_CMP_BEFORE);
+         if (n1->net_addr.addr8[idx] > n2->net_addr.addr8[idx])
+            return(NETCALC_CMP_AFTER);
+      };
+   };
+
+   // compare scope
+   if ((flags & NETCALC_FLG_IFACE))
+   {  if ( (!(n1->net_scope_name)) && ((n2->net_scope_name)) )
+         return(NETCALC_CMP_BEFORE);
+      if ( ((n1->net_scope_name)) && (!(n2->net_scope_name)) )
+         return(NETCALC_CMP_AFTER);
+      if ( ((n1->net_scope_name)) && ((n2->net_scope_name)) )
+      {  rc = strcasecmp(n1->net_scope_name, n2->net_scope_name);
+         if (rc < 0)
+            return(NETCALC_CMP_BEFORE);
+         if (rc > 0)
+            return(NETCALC_CMP_AFTER);
+      };
+   };
+
+   // compare port
+   if ((flags & NETCALC_FLG_PORT))
+   {  if (n1->net_port < n2->net_port)
+         return(NETCALC_CMP_BEFORE);
+      if (n1->net_port > n2->net_port)
+         return(NETCALC_CMP_AFTER);
+   };
+
+   return(NETCALC_CMP_SAME);
+}
+
+
+int
 netcalc_copy(
          netcalc_net_t *               dst,
          const netcalc_net_t *         src )
