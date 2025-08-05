@@ -1875,4 +1875,72 @@ netcalc_superblock(
    return(netcalc_dup(netp, &nbuff));
 }
 
+
+int
+netcalc_verify(
+         netcalc_net_t *               net,
+         int                           type )
+{
+   int      idx;
+   const uint8_t *   addr8;
+   const uint8_t *   cidr8;
+   uint8_t           byte;
+
+   assert(net != NULL);
+
+   addr8 = net->net_addr.addr8;
+   cidr8 = _netcalc_netmasks[net->net_cidr].addr8;
+
+   switch(type)
+   {  case NETCALC_TYPE_ADDRESS:
+         return(0);
+
+      case NETCALC_TYPE_BROADCAST:
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_FIRST:
+         for(idx = 0; (idx < 15); idx++)
+            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
+               return(NETCALC_ETYPE);
+         byte  = addr8[15] & cidr8[15];
+         byte += (net->net_cidr < 127) ? 1 : 0;
+         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
+
+      case NETCALC_TYPE_LAST:
+         for(idx = 0; (idx < 15); idx++)
+            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
+               return(NETCALC_ETYPE);
+         byte  = addr8[15] | ~cidr8[15];
+         byte -= (net->net_cidr < 127) ? 1 : 0;
+         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
+
+      case NETCALC_TYPE_NETMASK:
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != cidr8[idx])
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_NETWORK:
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_WILDCARD:
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != ((uint8_t)~cidr8[idx]))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      default:
+         break;
+   };
+
+   return(1);
+}
+
+
 /* end of source */

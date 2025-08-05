@@ -39,5 +39,6 @@ netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat
 netcalc_superblock
+netcalc_verify
 #
 # end of symbol export file

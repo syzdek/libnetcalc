@@ -305,4 +305,10 @@ netcalc_superblock(
          size_t                        nel );
 
 
+_NETCALC_F int
+netcalc_verify(
+         netcalc_net_t *               net,
+         int                           type );
+
+
 #endif /* end of header */
