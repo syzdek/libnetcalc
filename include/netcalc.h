@@ -149,7 +149,7 @@
 #define NETCALC_FLG_AF_EUI64           0x08000000  // af: EUI-64 encapsulation
 //                                     0x70000000  // UNUSED
 //                                     0x80000000  // DO NOT USE
-#define NETCALC_AF_MAC                 NETCALC_AF_EUI48
+#define NETCALC_FLG_AF_MAC             NETCALC_AF_EUI48
 #define NETCALC_FLG_NETWORK            (NETCALC_FLG_CIDR | NETCALC_FLG_CIDR_ALWAYS)
 
 
@@ -158,6 +158,7 @@
 #define NETCALC_AF_INET6               NETCALC_FLG_AF_INET6
 #define NETCALC_AF_EUI48               NETCALC_FLG_AF_EUI48
 #define NETCALC_AF_EUI64               NETCALC_FLG_AF_EUI64
+#define NETCALC_AF_MAC                 NETCALC_AF_EUI48
 
 
 #define NETCALC_FLGS_NETWORK           (  NETCALC_FLG_V4MAPPED \
