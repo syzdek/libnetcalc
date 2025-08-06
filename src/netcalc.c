@@ -660,15 +660,15 @@ my_usage(
       widget_help = ((cnf->widget->usage)) ? cnf->widget->usage : "";
 
    if ((widget = cnf->widget) == NULL)
-   {  printf("Usage: %s %s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
-      printf("       %s-%s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
-      printf("       %s%s [OPTIONS]%s\n",  PROGRAM_NAME, widget_name, widget_help);
+   {  printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("       %s-%s %s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("       %s%s %s\n",  PROGRAM_NAME, widget_name, widget_help);
    } else if (cnf->symlinked == 0)
    {  widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
-      printf("Usage: %s %s [OPTIONS]%s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
    }
    else
-   {  printf("Usage: %s [OPTIONS]%s\n", cnf->prog_name, widget_help);
+   {  printf("Usage: %s %s\n", cnf->prog_name, widget_help);
    };
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
