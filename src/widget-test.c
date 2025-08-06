@@ -101,7 +101,7 @@
 // MARK: - Functions
 
 int
-my_widget_compare(
+my_widget_test(
          my_config_t *                 cnf )
 {
    int                  idx;
@@ -240,7 +240,7 @@ my_widget_compare(
 
 
 int
-my_widget_compare_arguments(
+my_widget_test_arguments(
          my_config_t *                 cnf,
          int                           argc,
          char * const *                argv )
@@ -267,7 +267,7 @@ my_widget_compare_arguments(
 
 
 int
-my_widget_compare_usage(
+my_widget_test_usage(
          my_config_t *                 cnf )
 {
    assert(cnf != NULL);

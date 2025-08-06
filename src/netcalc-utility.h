@@ -246,19 +246,19 @@ my_recs_lengths(
 #pragma mark widgets prototypes
 
 extern int
-my_widget_compare(
+my_widget_test(
          my_config_t *                 cnf );
 
 
 extern int
-my_widget_compare_arguments(
+my_widget_test_arguments(
          my_config_t *                 cnf,
          int                           argc,
          char * const *                argv );
 
 
 extern int
-my_widget_compare_usage(
+my_widget_test_usage(
          my_config_t *                 cnf );
 
 
