@@ -782,11 +782,11 @@ my_rec_length(
 {
    assert(rec  != NULL);
    assert(l    != NULL);
-   l->address        = (int)(((int)strlen(rec->address)        > l->address)        ? strlen(rec->address)       : l->address);
-   l->ip_broadcast   = (int)(((int)strlen(rec->ip_broadcast)   > l->ip_broadcast)   ? strlen(rec->ip_broadcast)  : l->ip_broadcast);
-   l->ip_netmask     = (int)(((int)strlen(rec->ip_netmask)     > l->ip_netmask)     ? strlen(rec->ip_netmask)    : l->ip_netmask);
-   l->ip_network     = (int)(((int)strlen(rec->ip_network)     > l->ip_network)     ? strlen(rec->ip_network)    : l->ip_network);
-   l->ip_wildcard    = (int)(((int)strlen(rec->ip_wildcard)    > l->ip_wildcard)    ? strlen(rec->ip_wildcard)   : l->ip_wildcard);
+   l->address        = ((int)strlen(rec->address)        > l->address)        ? (int)strlen(rec->address)       : l->address;
+   l->ip_broadcast   = ((int)strlen(rec->ip_broadcast)   > l->ip_broadcast)   ? (int)strlen(rec->ip_broadcast)  : l->ip_broadcast;
+   l->ip_netmask     = ((int)strlen(rec->ip_netmask)     > l->ip_netmask)     ? (int)strlen(rec->ip_netmask)    : l->ip_netmask;
+   l->ip_network     = ((int)strlen(rec->ip_network)     > l->ip_network)     ? (int)strlen(rec->ip_network)    : l->ip_network;
+   l->ip_wildcard    = ((int)strlen(rec->ip_wildcard)    > l->ip_wildcard)    ? (int)strlen(rec->ip_wildcard)   : l->ip_wildcard;
    return;
 }
 
