@@ -162,6 +162,7 @@ struct _my_widget
    int                        padint;
    int  (*func_exec)(my_config_t * cnf);
    int  (*func_usage)(my_config_t * cnf);
+   int  (*func_args)(my_config_t * cnf, int argc, char * const * argv );
 };
 
 
@@ -243,6 +244,23 @@ my_recs_lengths(
 // widgets prototypes //
 //--------------------//
 #pragma mark widgets prototypes
+
+extern int
+my_widget_compare(
+         my_config_t *                 cnf );
+
+
+extern int
+my_widget_compare_arguments(
+         my_config_t *                 cnf,
+         int                           argc,
+         char * const *                argv );
+
+
+extern int
+my_widget_compare_usage(
+         my_config_t *                 cnf );
+
 
 extern int
 my_widget_debug(

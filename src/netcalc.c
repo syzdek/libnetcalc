@@ -179,6 +179,20 @@ my_widget_version(
 #pragma mark netcalc_widget_map[]
 static my_widget_t my_widget_map[] =
 {
+   // compare widget
+   {  .name       = "compare",
+      .desc       = "compares two IP addresses or networks",
+      .usage      = "[OPTIONS] <address> <address>",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FAMILY,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
+      .arg_min    = 3,
+      .arg_max    = 3,
+      .aliases    = (const char * const[]) { "netinfo", NULL },
+      .func_exec  = &my_widget_compare,
+      .func_usage = &my_widget_compare_usage,
+      .func_args  = &my_widget_compare_arguments,
+   },
+
    // copyright widget
    {  .name       = "copyright",
       .desc       = "display copyright",
@@ -345,6 +359,14 @@ main(
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
          my_free(cnf);
          return(1);
+      };
+   };
+
+   // process arguments using widget specific function
+   if ((cnf->widget->func_args))
+   {  if ((rc = cnf->widget->func_args(cnf, cnf->argc, cnf->argv)) != 0)
+      {  my_free(cnf);
+         return((rc == -1) ? 0 : 1);
       };
    };
 
