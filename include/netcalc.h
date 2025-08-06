@@ -173,6 +173,9 @@
                                           | NETCALC_AF \
                                        )
 #define NETCALC_FLGS_SET               (  NETCALC_FLG_UNIQ \
+                                          | NETCALC_FLG_IFACE \
+                                          | NETCALC_FLG_PORT \
+                                          | NETCALC_FLG_NETWORK \
                                           | NETCALC_USR \
                                           | NETCALC_AF \
                                        )
