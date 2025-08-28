@@ -149,28 +149,24 @@ netcalc_cmp(
          int                           flags )
 {
    int                     cidr;
-   int                     idx;
    int                     rc;
-   const netcalc_addr_t *  mask;
-   uint8_t                 b1;      // byte
-   uint8_t                 b2;      // byte
+   const netcalc_addr_t *  a1;
+   const netcalc_addr_t *  a2;
 
    assert(n1 != NULL);
    assert(n2 != NULL);
 
+   a1    = &n1->net_addr;
+   a2    = &n2->net_addr;
+   cidr  = (n1->net_cidr < n2->net_cidr)
+         ? n1->net_cidr
+         : n2->net_cidr;
+
    // compare networks
    if ((flags & NETCALC_FLG_NETWORK))
    {  // check for network before or after
-      cidr  = (n1->net_cidr < n2->net_cidr) ? n1->net_cidr : n2->net_cidr;
-      mask  = &_netcalc_netmasks[cidr];
-      for(idx = 0; (idx < 16); idx++)
-      {  b1    = mask->addr8[idx] & n1->net_addr.addr8[idx];
-         b2    = mask->addr8[idx] & n2->net_addr.addr8[idx];
-         if (b1 < b2)
-            return(NETCALC_CMP_BEFORE);
-         if (b1 > b2)
-            return(NETCALC_CMP_AFTER);
-      };
+      if ((rc = netcalc_cmp_addr(a1, a2, cidr)) != NETCALC_CMP_SAME)
+         return(rc);
 
       // check for subnet or supernet
       if (n1->net_cidr < n2->net_cidr)
@@ -181,13 +177,8 @@ netcalc_cmp(
 
    // compare addresses
    if (!(flags & NETCALC_FLG_NETWORK))
-   {  for(idx = 0; (idx < 16); idx++)
-      {  if (n1->net_addr.addr8[idx] < n2->net_addr.addr8[idx])
-            return(NETCALC_CMP_BEFORE);
-         if (n1->net_addr.addr8[idx] > n2->net_addr.addr8[idx])
-            return(NETCALC_CMP_AFTER);
-      };
-   };
+      if ((rc = netcalc_cmp_addr(a1, a2, cidr)) != NETCALC_CMP_SAME)
+         return(rc);
 
    // compare scope
    if ((flags & NETCALC_FLG_IFACE))
