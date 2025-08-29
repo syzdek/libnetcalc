@@ -1278,7 +1278,7 @@ netcalc_parse_eui(
    memset(&net_addr, 0, sizeof(netcalc_addr_t));
    delim = 0;
    addr8 = net_addr.addr8;
-   strncpy(str, address, sizeof(str)-1);
+   netcalc_strlcpy(str, address, sizeof(str)-1);
 
    for(pos = 0, digit = 0, byte = 0, hex = 0; ((str[pos])); pos++)
    {  switch(str[pos])
@@ -1404,7 +1404,7 @@ netcalc_parse_inet(
    addr8 = net_addr.addr8;
    cidr  = -1;
    port  = -1;
-   strncpy(str, address, sizeof(str)-1);
+   netcalc_strlcpy(str, address, sizeof(str)-1);
 
    // check for port
    if ((ptr = strchr(str, ':')) != NULL)
@@ -1516,7 +1516,7 @@ netcalc_parse_inet6(
    port        = -1;
    cidr        = -1;
    bracketed   = 0;
-   strncpy(sbuff, address, sizeof(sbuff));
+   netcalc_strlcpy(sbuff, address, sizeof(sbuff));
 
    // check for bracketed address
    if (str[0] == '[')
