@@ -1088,7 +1088,8 @@ netcalc_ntop_inet6(
          if (size <= (off+strlen(ipv4)+1))
             return(NULL);
          dst[off] = '\0';
-         off += netcalc_strlcat(dst, ipv4, size);
+         netcalc_strlcat(dst, ipv4, size);
+         off += strlen(dst);
          continue;
       };
       if (size <= (off+5))
@@ -1912,7 +1913,8 @@ netcalc_strfnet(
          buff[padding] = '\0';
       };
 
-      off = netcalc_strlcat(s, buff, maxsize);
+      netcalc_strlcat(s, buff, maxsize);
+      off = strlen(s);
    };
 
    // NULL terminate string

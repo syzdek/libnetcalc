@@ -106,22 +106,20 @@ netcalc_strlcat(
          const char * restrict         src,
          size_t                        dstsize )
 {
-   size_t      pos;
-   size_t      offset;
    size_t      len;
 
    assert(src     != NULL);
+   assert(dstsize  > 0);
 
-   if (!(dst))
-      return(strlen(src));
-   pos = strlen(dst);
+   for(len = 0; ((*dst)); len++, dst++);
+   if (!(src))
+      return(len);
 
-   for(offset = 0; ((src[offset])); offset++)
-      if ((pos+offset) < dstsize)
-         dst[pos+offset] = src[offset];
-   len = offset + pos;
+   dstsize--;
+   for(; ( (len < dstsize) && ((*dst = *src)) ); len++, dst++, src++);
+   *dst = '\0';
 
-   dst[((len < dstsize) ? len : (dstsize-1))] = '\0';
+   for(; ((*src)); len++, src++);
 
    return(len);
 }
