@@ -285,6 +285,8 @@ netcalc_convert(
          const netcalc_net_t *         prefix )
 {
    assert(net != NULL);
+   if ( ((prefix)) && (family != NETCALC_AF_INET6) )
+      return(NETCALC_ENOTSUP);
    switch(family)
    {  case NETCALC_AF_EUI48:  return(netcalc_convert_eui48(net));
       case NETCALC_AF_EUI64:  return(netcalc_convert_eui64(net));
