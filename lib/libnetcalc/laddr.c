@@ -114,4 +114,39 @@ netcalc_addr_convert_eui48(
 }
 
 
+int
+netcalc_addr_convert_eui64(
+         netcalc_addr_t *              addr,
+         int                           family  )
+{
+   assert(addr != NULL);
+   switch(family)
+   {  case NETCALC_AF_EUI48:
+         addr->addr32[0] = 0;
+         addr->addr32[1] = 0;
+         addr->addr8[8]  = (addr->addr8[10] ^ 0x02);
+         addr->addr8[9]  = addr->addr8[11];
+         addr->addr8[10] = addr->addr8[12];
+         addr->addr8[11] = 0xff;
+         addr->addr8[12] = 0xfe;
+         return(0);
+
+      case NETCALC_AF_EUI64:
+         return(0);
+
+      case NETCALC_AF_INET:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_INET6:
+         addr->addr32[0] = 0;
+         addr->addr32[1] = 0;
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
 /* end of source */
