@@ -349,31 +349,32 @@ netcalc_convert_inet6(
          const netcalc_net_t *         prefix )
 {
    int      rc;
-
+   int      family;
    assert(net != NULL);
+   family = net->net_flags & NETCALC_AF;
+   if ((rc = netcalc_addr_convert_inet(&net->net_addr, family)) != 0)
+      return(rc);
+   if ((prefix))
+   {  switch(net->net_flags & NETCALC_AF)
+      {  case NETCALC_AF_EUI48:
+         case NETCALC_AF_EUI64:
+            net->net_addr.addr64[0] = prefix->net_addr.addr64[0];
+            break;
 
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:
-         if ((rc = netcalc_convert_eui64(net)) != NETCALC_SUCCESS)
-            return(rc);
+         case NETCALC_AF_INET:
+            net->net_addr.addr64[0] = prefix->net_addr.addr64[0];
+            net->net_addr.addr32[2] = prefix->net_addr.addr32[2];
+            break;
 
-      case NETCALC_AF_EUI64:
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
-         prefix         = ((prefix)) ? prefix : &_netcalc_slaac_in6;
-         return(netcalc_network_mask(net, prefix, net->net_cidr));
-
-      case NETCALC_AF_INET:
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
-         prefix         = ((prefix)) ? prefix : &_netcalc_ipv4_mapped_ipv6;
-         return(netcalc_network_mask(net, prefix, net->net_cidr));
-
-      case NETCALC_AF_INET6:
-         return(0);
-
-      default:
-         break;
+         default:
+            break;
+      };
+      net->net_cidr  = (prefix->net_cidr < net->net_cidr)
+                     ? prefix->net_cidr
+                     : net->net_cidr;
    };
-   return(NETCALC_ENOTSUP);
+   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET;
+   return(0);
 }
 
 
