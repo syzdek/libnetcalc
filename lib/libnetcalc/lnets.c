@@ -302,38 +302,14 @@ int
 netcalc_convert_eui48(
          netcalc_net_t *               net  )
 {
-   uint8_t *      addr8;
-
+   int      rc;
+   int      family;
    assert(net != NULL);
-
-   addr8 = (uint8_t *)&net->net_addr.addr8;
-
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:
-         return(0);
-
-      case NETCALC_AF_INET6:
-      case NETCALC_AF_EUI64:
-         if ( (addr8[11] != 0xff) || (addr8[12] != 0xfe) )
-            return(NETCALC_ENOTSUP);
-         net->net_addr.addr8[12] = net->net_addr.addr8[10];
-         net->net_addr.addr8[11] = net->net_addr.addr8[9];
-         net->net_addr.addr8[10] = (net->net_addr.addr8[8] ^ 0x02);
-         net->net_addr.addr8[9]  = 0;
-         net->net_addr.addr8[8]  = 0;
-         net->net_addr.addr32[0] = 0;
-         net->net_addr.addr32[1] = 0;
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48;
-         return(0);
-
-      case NETCALC_AF_INET:
-         return(NETCALC_ENOTSUP);
-
-      default:
-         break;
-   };
-
-   return(NETCALC_ENOTSUP);
+   family = net->net_flags & NETCALC_AF;
+   if ((rc = netcalc_addr_convert_eui48(&net->net_addr, family)) != 0)
+      return(rc);
+   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48;
+   return(0);
 }
 
 
