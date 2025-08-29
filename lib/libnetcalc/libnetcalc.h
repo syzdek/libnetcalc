@@ -78,6 +78,9 @@
 //////////////////
 // MARK: - Data Types
 
+typedef struct _libnetcalc_network_buffer    netcalc_buff_t;
+
+
 union _libnetcalc_address
 {  uint8_t                    addr8[16];
    uint16_t                   addr16[8];
@@ -111,6 +114,12 @@ struct _libnetcalc_set
 {  uint32_t                   set_flags;
    uint32_t                   set_recs_len;
    netcalc_rec_t **           set_recs;
+};
+
+
+struct _libnetcalc_network_buffer
+{  char                       buff_scope_name[NETCALC_SCOPE_NAME_LENGTH];
+   netcalc_net_t              buff_net;
 };
 
 
@@ -152,7 +161,7 @@ netcalc_copy(
 
 extern int
 netcalc_parse(
-         netcalc_net_t **              netp,
+         netcalc_buff_t *              b,
          const char *                  address,
          int                           flags );
 

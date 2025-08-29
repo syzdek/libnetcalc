@@ -118,20 +118,20 @@ netcalc_ntop_inet6(
 
 static int
 netcalc_parse_eui(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address,
          int                           family );
 
 
 static int
 netcalc_parse_inet(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address );
 
 
 static int
 netcalc_parse_inet6(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address );
 
 
@@ -596,16 +596,17 @@ netcalc_init(
          int                           flags )
 {
    int                  rc;
-   netcalc_net_t *      ptr;
+   netcalc_buff_t       nbuff;
+
    assert(address != NULL);
    assert((flags & ~NETCALC_FLGS_NETWORK) == 0);
-   if ((netp))
-   {  ptr = NULL;
-      rc = netcalc_parse(&ptr, address, flags);
-      *netp = ptr;
+
+   if ((rc = netcalc_parse(&nbuff, address, flags)) != NETCALC_SUCCESS)
       return(rc);
-   };
-   return(netcalc_parse(netp, address, flags));
+
+   if (netp == NULL)
+      return(0);
+   return(netcalc_dup(netp, &nbuff.buff_net));
 }
 
 
@@ -1143,7 +1144,7 @@ netcalc_ntop_inet6(
 
 int
 netcalc_parse(
-         netcalc_net_t **              netp,
+         netcalc_buff_t *              b,
          const char *                  address,
          int                           flags )
 {
@@ -1151,20 +1152,20 @@ netcalc_parse(
    char *               str;
    int                  rc;
    char                 sbuff[NETCALC_ADDRESS_LENGTH];
-   char                 scope_name[NETCALC_SCOPE_NAME_LENGTH];
-   netcalc_net_t        nbuff;
+   netcalc_net_t *      net;
 
    assert(address != NULL);
 
    // check flags
    flags |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
 
-   // prepare netcalc_net_t buffer
-   memset(&nbuff,       0, sizeof(netcalc_net_t));
-   memset(&scope_name,  0, sizeof(scope_name));
-   nbuff.net_scope_name = scope_name;
-   nbuff.net_flags      = ((flags & NETCALC_AF)) ? flags : (flags | NETCALC_AF);
-   nbuff.net_cidr       = 128;
+   // prepare netcalc_buff_t buffer
+   memset(b, 0, sizeof(netcalc_buff_t));
+   net                  = &b->buff_net;
+   net->net_cidr        = 128;
+   net->net_flags       = ((flags & NETCALC_AF))
+                        ? flags
+                        : (flags | NETCALC_AF);
 
    // prepare string buffer
    addrlen = strlen(address);
@@ -1203,40 +1204,40 @@ netcalc_parse(
    //    * IPv6 zero compression is supported, but not displayed.
    //
    if ( (addrlen != 12) && (addrlen != 14) && (addrlen != 17) )
-      nbuff.net_flags &= ~NETCALC_AF_EUI48;
+      net->net_flags &= ~NETCALC_AF_EUI48;
    if ( (addrlen != 16) && (addrlen != 23) && (addrlen != 19) )
-      nbuff.net_flags &= ~NETCALC_AF_EUI64;
+      net->net_flags &= ~NETCALC_AF_EUI64;
    if ( (addrlen < 7) || (addrlen > 21) )
-      nbuff.net_flags &= ~NETCALC_AF_INET;
+      net->net_flags &= ~NETCALC_AF_INET;
    if (addrlen < 2)
-      nbuff.net_flags &= ~NETCALC_AF_INET6;
-   if (!(nbuff.net_flags & NETCALC_AF))
+      net->net_flags &= ~NETCALC_AF_INET6;
+   if (!(net->net_flags & NETCALC_AF))
       return(NETCALC_EBADADDR);
 
    rc = NETCALC_SUCCESS;
-   if ((nbuff.net_flags & NETCALC_AF_EUI48))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
-                        : (nbuff.net_flags & ~NETCALC_AF_EUI48);
+   if ((net->net_flags & NETCALC_AF_EUI48))
+   {  net->net_flags    = ((rc = netcalc_parse_eui(b, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
+                        ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
+                        : (net->net_flags & ~NETCALC_AF_EUI48);
    };
-   if ((nbuff.net_flags & NETCALC_AF_EUI64))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_eui(&nbuff, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
-                        : (nbuff.net_flags & ~NETCALC_AF_EUI64);
+   if ((net->net_flags & NETCALC_AF_EUI64))
+   {  net->net_flags    = ((rc = netcalc_parse_eui(b, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
+                        ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
+                        : (net->net_flags & ~NETCALC_AF_EUI64);
    };
-   if ((nbuff.net_flags & NETCALC_AF_INET))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_inet(&nbuff, str)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET
-                        : (nbuff.net_flags & ~NETCALC_AF_INET);
+   if ((net->net_flags & NETCALC_AF_INET))
+   {  net->net_flags    = ((rc = netcalc_parse_inet(b, str)) == NETCALC_SUCCESS)
+                        ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET
+                        : (net->net_flags & ~NETCALC_AF_INET);
    };
-   if ((nbuff.net_flags & NETCALC_AF_INET6))
-   {  nbuff.net_flags   = ((rc = netcalc_parse_inet6(&nbuff, str)) == NETCALC_SUCCESS)
-                        ? (nbuff.net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
-                        : (nbuff.net_flags & ~NETCALC_AF_INET6 );
+   if ((net->net_flags & NETCALC_AF_INET6))
+   {  net->net_flags    = ((rc = netcalc_parse_inet6(b, str)) == NETCALC_SUCCESS)
+                        ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
+                        : (net->net_flags & ~NETCALC_AF_INET6 );
    };
    if ((rc))
       return(rc);
-   switch(nbuff.net_flags & NETCALC_AF)
+   switch(net->net_flags & NETCALC_AF)
    {  case NETCALC_AF_EUI48:  break;
       case NETCALC_AF_EUI64:  break;
       case NETCALC_AF_INET:   break;
@@ -1244,17 +1245,13 @@ netcalc_parse(
       default:                return(NETCALC_EBADADDR);
    };
 
-   if (netp == NULL)
-      return(0);
-   if ((*netp) == NULL)
-      return(netcalc_dup(netp, &nbuff));
-   return(netcalc_copy(*netp, &nbuff));
+   return(0);
 }
 
 
 int
 netcalc_parse_eui(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address,
          int                           family )
 {
@@ -1269,7 +1266,7 @@ netcalc_parse_eui(
    char              str[NETCALC_ADDRESS_LENGTH];
    netcalc_addr_t    net_addr;
 
-   assert(n       != NULL);
+   assert(b       != NULL);
    assert(address != NULL);
 
    switch(family)
@@ -1376,9 +1373,9 @@ netcalc_parse_eui(
          return(NETCALC_EBADADDR);
    };
 
-   memcpy(&n->net_addr, &net_addr,  sizeof(net_addr));
-   n->net_cidr = 0;
-   n->net_port = 0;
+   memcpy(&b->buff_net.net_addr, &net_addr,  sizeof(net_addr));
+   b->buff_net.net_cidr = 0;
+   b->buff_net.net_port = 0;
 
    return(0);
 }
@@ -1386,7 +1383,7 @@ netcalc_parse_eui(
 
 int
 netcalc_parse_inet(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address )
 {
    size_t            pos;
@@ -1400,7 +1397,7 @@ netcalc_parse_inet(
    netcalc_addr_t    net_addr;
    char              str[NETCALC_ADDRESS_LENGTH];
 
-   assert(n       != NULL);
+   assert(b       != NULL);
    assert(address != NULL);
 
    memset(net_addr.addr8, 0, sizeof(net_addr.addr8));
@@ -1465,9 +1462,9 @@ netcalc_parse_inet(
 
    addr8[12+byte] = dec;
 
-   memcpy(&n->net_addr.addr8[12], &net_addr.addr8[12], 4);
-   n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
-   n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
+   memcpy(&b->buff_net.net_addr.addr8[12], &net_addr.addr8[12], 4);
+   b->buff_net.net_cidr =  (uint8_t)((cidr != -1) ? cidr : b->buff_net.net_cidr);
+   b->buff_net.net_port = (uint16_t)((port != -1) ? port : b->buff_net.net_port);
 
    return(0);
 }
@@ -1475,7 +1472,7 @@ netcalc_parse_inet(
 
 int
 netcalc_parse_inet6(
-         netcalc_net_t *               n,
+         netcalc_buff_t *              b,
          char *                        address )
 {
    size_t            pos;
@@ -1497,17 +1494,17 @@ netcalc_parse_inet6(
    char              scope_name[NETCALC_SCOPE_NAME_LENGTH];
    char              sbuff[NETCALC_ADDRESS_LENGTH];
 
-   assert(n       != NULL);
+   assert(b       != NULL);
    assert(address != NULL);
 
-   if (!(n->net_flags & NETCALC_AF_INET6))
+   if (!(b->buff_net.net_flags & NETCALC_AF_INET6))
       return(NETCALC_EBADADDR);
 
    // attempt to process as IPv4-mapped IPv6 address
-   if (netcalc_parse_inet(n, address) == NETCALC_SUCCESS)
-   {  n->net_flags |= NETCALC_FLG_V4MAPPED;
-      n->net_addr.addr8[10] = 0xff;
-      n->net_addr.addr8[11] = 0xff;
+   if (netcalc_parse_inet(b, address) == NETCALC_SUCCESS)
+   {  b->buff_net.net_flags |= NETCALC_FLG_V4MAPPED;
+      b->buff_net.net_addr.addr8[10] = 0xff;
+      b->buff_net.net_addr.addr8[11] = 0xff;
       return(NETCALC_SUCCESS);
    };
 
@@ -1668,11 +1665,11 @@ netcalc_parse_inet6(
 
       // check for IPv4 mapped address
       if (wyde == 6)
-      {  if (!(netcalc_parse_inet(n, &str[pos])))
-         {  n->net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : n->net_cidr);
-            n->net_port    =  (uint16_t)((port != -1) ? port : n->net_port);
-            n->net_flags   |= NETCALC_FLG_V4MAPPED;
-            memcpy(&n->net_addr.addr8, &net_addr.addr8, 12);
+      {  if (!(netcalc_parse_inet(b, &str[pos])))
+         {  b->buff_net.net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : b->buff_net.net_cidr);
+            b->buff_net.net_port    =  (uint16_t)((port != -1) ? port : b->buff_net.net_port);
+            b->buff_net.net_flags   |= NETCALC_FLG_V4MAPPED;
+            memcpy(&b->buff_net.net_addr.addr8, &net_addr.addr8, 12);
             return(0);
          };
       };
@@ -1687,10 +1684,13 @@ netcalc_parse_inet6(
    addr8[(wyde*2)+0] = (hex >> 8) & 0xff;
    addr8[(wyde*2)+1] = (hex >> 0) & 0xff;
 
-   memcpy(&n->net_addr,       &net_addr,  sizeof(net_addr));
-   memcpy(n->net_scope_name,  scope_name, sizeof(scope_name));
-   n->net_cidr =  (uint8_t)((cidr != -1) ? cidr : n->net_cidr);
-   n->net_port = (uint16_t)((port != -1) ? port : n->net_port);
+   memcpy(&b->buff_net.net_addr,       &net_addr,  sizeof(net_addr));
+   b->buff_net.net_cidr =  (uint8_t)((cidr != -1) ? cidr : b->buff_net.net_cidr);
+   b->buff_net.net_port = (uint16_t)((port != -1) ? port : b->buff_net.net_port);
+   if ((scope_name[0]))
+   {  b->buff_net.net_scope_name = b->buff_scope_name;
+      memcpy(b->buff_scope_name,  scope_name, sizeof(scope_name));
+   };
 
    return(0);
 }
