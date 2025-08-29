@@ -510,6 +510,8 @@ netcalc_get_field(
          val_i = (int)net->net_cidr;
          switch(family)
          {  case  NETCALC_AF_INET:  val_i = val_i - 96; break;
+            case  NETCALC_AF_EUI48: val_i = 0; break;
+            case  NETCALC_AF_EUI64: val_i = 0; break;
             default: break;
          };
          *((int *)outvalue) = val_i;
@@ -1374,7 +1376,7 @@ netcalc_parse_eui(
    };
 
    memcpy(&b->buff_net.net_addr, &net_addr,  sizeof(net_addr));
-   b->buff_net.net_cidr = 0;
+   b->buff_net.net_cidr = 128;
    b->buff_net.net_port = 0;
 
    return(0);
