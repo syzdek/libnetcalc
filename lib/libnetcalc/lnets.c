@@ -341,35 +341,14 @@ int
 netcalc_convert_eui64(
          netcalc_net_t *               net )
 {
+   int      rc;
+   int      family;
    assert(net != NULL);
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:
-         net->net_addr.addr32[0] = 0;
-         net->net_addr.addr32[1] = 0;
-         net->net_addr.addr8[8]  = (net->net_addr.addr8[10] ^ 0x02);
-         net->net_addr.addr8[9]  = net->net_addr.addr8[11];
-         net->net_addr.addr8[10] = net->net_addr.addr8[12];
-         net->net_addr.addr8[11] = 0xff;
-         net->net_addr.addr8[12] = 0xfe;
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64;
-         return(0);
-
-      case NETCALC_AF_EUI64:
-         return(0);
-
-      case NETCALC_AF_INET:
-         return(NETCALC_ENOTSUP);
-
-      case NETCALC_AF_INET6:
-         net->net_addr.addr32[0] = 0;
-         net->net_addr.addr32[1] = 0;
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64;
-         return(0);
-
-      default:
-         break;
-   };
-   return(NETCALC_ENOTSUP);
+   family = net->net_flags & NETCALC_AF;
+   if ((rc = netcalc_addr_convert_eui64(&net->net_addr, family)) != 0)
+      return(rc);
+   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64;
+   return(0);
 }
 
 
