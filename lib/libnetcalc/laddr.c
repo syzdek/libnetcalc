@@ -149,4 +149,33 @@ netcalc_addr_convert_eui64(
 }
 
 
+int
+netcalc_addr_convert_inet(
+         netcalc_addr_t *              addr,
+         int                           family  )
+{
+   assert(addr != NULL);
+   switch(family)
+   {  case NETCALC_AF_EUI48:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_EUI64:
+         return(NETCALC_ENOTSUP);
+
+      case NETCALC_AF_INET:
+         return(0);
+
+      case NETCALC_AF_INET6:
+         addr->addr32[0] = 0;
+         addr->addr32[1] = 0;
+         addr->addr32[2] = 0;
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
 /* end of source */
