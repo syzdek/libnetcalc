@@ -850,7 +850,7 @@ my_rec_process(
    if (!(rec->ip_superblock))
       netcalc_ntop(n, rec->address, sizeof(((my_rec_t *)0)->address), NETCALC_TYPE_ADDRESS, cnf->flags);
    else
-      strncpy(rec->address, "SUPERBLOCK", sizeof(((my_rec_t *)0)->address));
+      netcalc_strlcpy(rec->address, "SUPERBLOCK", sizeof(((my_rec_t *)0)->address));
 
    if ( (rec->family == NETCALC_AF_INET) || (rec->family == NETCALC_AF_INET6) )
    {  netcalc_ntop(n, rec->ip_network,    sizeof(((my_rec_t *)0)->ip_network),    NETCALC_TYPE_NETWORK,   NETCALC_UNSET(cnf->flags, NETCALC_FLG_CIDR));
