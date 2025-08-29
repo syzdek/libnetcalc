@@ -39,6 +39,7 @@ netcalc_ntop
 netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat
+netcalc_strlcpy
 netcalc_superblock
 netcalc_verify
 #

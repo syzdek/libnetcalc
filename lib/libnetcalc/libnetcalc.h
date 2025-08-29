@@ -164,5 +164,12 @@ netcalc_strlcat(
          size_t                        dstsize );
 
 
+extern size_t
+netcalc_strlcpy(
+         char * restrict               dst,
+         const char * restrict         src,
+         size_t                        dstsize );
+
+
 #endif /* end of header */
 
