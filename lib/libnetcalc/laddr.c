@@ -178,4 +178,37 @@ netcalc_addr_convert_inet(
 }
 
 
+int
+netcalc_addr_convert_inet6(
+         netcalc_addr_t *              addr,
+         int                           family  )
+{
+   int      rc;
+
+   assert(addr != NULL);
+
+   switch(family)
+   {  case NETCALC_AF_EUI48:
+         if ((rc = netcalc_addr_convert_eui64(addr, family)) != NETCALC_SUCCESS)
+            return(rc);
+
+      case NETCALC_AF_EUI64:
+         addr->addr64[0] = _netcalc_slaac_in6.net_addr.addr64[0];
+         return(0);
+
+      case NETCALC_AF_INET:
+         addr->addr64[0] = _netcalc_ipv4_mapped_ipv6.net_addr.addr64[0];
+         addr->addr32[2] = _netcalc_ipv4_mapped_ipv6.net_addr.addr32[2];
+         return(0);
+
+      case NETCALC_AF_INET6:
+         return(0);
+
+      default:
+         break;
+   };
+   return(NETCALC_ENOTSUP);
+}
+
+
 /* end of source */

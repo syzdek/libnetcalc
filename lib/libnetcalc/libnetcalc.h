@@ -165,6 +165,12 @@ netcalc_addr_convert_inet(
 
 
 extern int
+netcalc_addr_convert_inet6(
+         netcalc_addr_t *              addr,
+         int                           family  );
+
+
+extern int
 netcalc_cmp_addr(
          const netcalc_addr_t *        a1,
          const netcalc_addr_t *        a2,
