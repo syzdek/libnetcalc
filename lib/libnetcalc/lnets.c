@@ -377,28 +377,14 @@ int
 netcalc_convert_inet(
          netcalc_net_t *               net )
 {
+   int      rc;
+   int      family;
    assert(net != NULL);
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:
-         return(NETCALC_ENOTSUP);
-
-      case NETCALC_AF_EUI64:
-         return(NETCALC_ENOTSUP);
-
-      case NETCALC_AF_INET:
-         return(0);
-
-      case NETCALC_AF_INET6:
-         net->net_addr.addr32[0] = 0;
-         net->net_addr.addr32[1] = 0;
-         net->net_addr.addr32[2] = 0;
-         net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET;
-         return(0);
-
-      default:
-         break;
-   };
-   return(NETCALC_ENOTSUP);
+   family = net->net_flags & NETCALC_AF;
+   if ((rc = netcalc_addr_convert_inet(&net->net_addr, family)) != 0)
+      return(rc);
+   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET;
+   return(0);
 }
 
 
