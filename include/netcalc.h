@@ -203,9 +203,9 @@
 
 
 #define  NETCALC_CMP_BEFORE            -2
-#define  NETCALC_CMP_SUBNET            -1
+#define  NETCALC_CMP_SUPERNET          -1
 #define  NETCALC_CMP_SAME              0
-#define  NETCALC_CMP_SUPERNET          1
+#define  NETCALC_CMP_SUBNET            1
 #define  NETCALC_CMP_AFTER             2
 
 
