@@ -147,6 +147,13 @@ extern const netcalc_net_t    _netcalc_slaac_in6;
 // MARK: - Prototypes
 
 extern int
+netcalc_addr_cmp(
+         const netcalc_addr_t *        a1,
+         const netcalc_addr_t *        a2,
+         uint8_t                       cidr );
+
+
+extern int
 netcalc_addr_convert_eui48(
          netcalc_addr_t *              addr,
          int                           family  );
@@ -168,13 +175,6 @@ extern int
 netcalc_addr_convert_inet6(
          netcalc_addr_t *              addr,
          int                           family  );
-
-
-extern int
-netcalc_cmp_addr(
-         const netcalc_addr_t *        a1,
-         const netcalc_addr_t *        a2,
-         uint8_t                       cidr );
 
 
 extern int
