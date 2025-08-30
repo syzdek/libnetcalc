@@ -82,9 +82,11 @@
 int
 netcalc_addr_cmp(
          const netcalc_addr_t *        a1,
+         uint8_t                       c1,
          const netcalc_addr_t *        a2,
-         uint8_t                       cidr )
+         uint8_t                       c2 )
 {
+   uint8_t                 cidr;
    uint32_t                idx8;
    uint32_t                idx32;
    uint8_t                 b1;   // byte 1 (32 bits)
@@ -93,6 +95,7 @@ netcalc_addr_cmp(
    uint32_t                t2;   // tetra 2 (32 bits)
    const netcalc_addr_t *  mask;
 
+   cidr = (c1 < c2) ? c1 : c2;
    mask = &_netcalc_netmasks[cidr];
 
    for(idx32 = 0; (idx32 < 4); idx32++)
@@ -110,6 +113,10 @@ netcalc_addr_cmp(
       };
    };
 
+   if (c1 < c2)
+      return(NETCALC_CMP_SUPERNET);
+   if (c2 < c1)
+      return(NETCALC_CMP_SUBNET);
    return(NETCALC_CMP_SAME);
 }
 

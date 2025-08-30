@@ -149,8 +149,9 @@ extern const netcalc_net_t    _netcalc_slaac_in6;
 extern int
 netcalc_addr_cmp(
          const netcalc_addr_t *        a1,
+         uint8_t                       c1,
          const netcalc_addr_t *        a2,
-         uint8_t                       cidr );
+         uint8_t                       c2 );
 
 
 extern int

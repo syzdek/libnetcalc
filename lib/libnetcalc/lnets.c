@@ -148,7 +148,6 @@ netcalc_cmp(
          const netcalc_net_t *         n2,
          int                           flags )
 {
-   int                     cidr;
    int                     rc;
    const netcalc_addr_t *  a1;
    const netcalc_addr_t *  a2;
@@ -158,14 +157,11 @@ netcalc_cmp(
 
    a1    = &n1->net_addr;
    a2    = &n2->net_addr;
-   cidr  = (n1->net_cidr < n2->net_cidr)
-         ? n1->net_cidr
-         : n2->net_cidr;
 
    // compare networks
    if ((flags & NETCALC_FLG_NETWORK))
    {  // check for network before or after
-      if ((rc = netcalc_addr_cmp(a1, a2, cidr)) != NETCALC_CMP_SAME)
+      if ((rc = netcalc_addr_cmp(a1, n1->net_cidr, a2, n2->net_cidr)) != NETCALC_CMP_SAME)
          return(rc);
 
       // check for subnet or supernet
@@ -177,7 +173,7 @@ netcalc_cmp(
 
    // compare addresses
    if (!(flags & NETCALC_FLG_NETWORK))
-      if ((rc = netcalc_addr_cmp(a1, a2, cidr)) != NETCALC_CMP_SAME)
+      if ((rc = netcalc_addr_cmp(a1, 128, a2, 128)) != NETCALC_CMP_SAME)
          return(rc);
 
    // compare scope
