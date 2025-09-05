@@ -36,6 +36,10 @@ netcalc_get_field
 netcalc_init
 netcalc_network_mask
 netcalc_ntop
+netcalc_set_add
+netcalc_set_add_str
+netcalc_set_free
+netcalc_set_init
 netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat

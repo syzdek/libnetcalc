@@ -205,11 +205,19 @@
 #define NETCALC_TYPE_ARPA_HOST         0x0a
 
 
-#define  NETCALC_CMP_BEFORE            -2
-#define  NETCALC_CMP_SUPERNET          -1
-#define  NETCALC_CMP_SAME              0
-#define  NETCALC_CMP_SUBNET            1
-#define  NETCALC_CMP_AFTER             2
+#define  NETCALC_IDX_BEFORE            -2
+#define  NETCALC_IDX_SUPERNET          -1
+#define  NETCALC_IDX_SAME              0
+#define  NETCALC_IDX_SUBNET            1
+#define  NETCALC_IDX_AFTER             2
+#define  NETCALC_IDX_INSERT            0x7fffffff
+
+
+#define  NETCALC_CMP_BEFORE            NETCALC_IDX_BEFORE
+#define  NETCALC_CMP_SUPERNET          NETCALC_IDX_SUPERNET
+#define  NETCALC_CMP_SAME              NETCALC_IDX_SAME
+#define  NETCALC_CMP_SUBNET            NETCALC_IDX_SUBNET
+#define  NETCALC_CMP_AFTER             NETCALC_IDX_AFTER
 
 
 //////////////////
@@ -222,6 +230,7 @@
 typedef union  _libnetcalc_address     netcalc_addr_t;
 typedef struct _libnetcalc_network     netcalc_net_t;
 typedef struct _libnetcalc_record      netcalc_rec_t;
+typedef struct _libnetcalc_records     netcalc_recs_t;
 typedef struct _libnetcalc_set         netcalc_set_t;
 
 
@@ -293,6 +302,30 @@ netcalc_ntop(
          size_t                        size,
          int                           type,
          int                           flags );
+
+
+_NETCALC_F int
+netcalc_set_add(
+         netcalc_set_t *               ns,
+         netcalc_net_t *               net,
+         const char *                  comment,
+         void *                        data,
+         int                           flags );
+
+
+_NETCALC_F int
+netcalc_set_add_str(
+         netcalc_set_t *               ns,
+         const char *                  address,
+         const char *                  comment,
+         void *                        data,
+         int                           flags );
+
+
+_NETCALC_F void
+netcalc_set_debug(
+         netcalc_set_t *               ns,
+         const char *                  prefix );
 
 
 _NETCALC_F void

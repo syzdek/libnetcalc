@@ -99,21 +99,29 @@ struct _libnetcalc_network
 };
 
 
+struct _libnetcalc_records
+{  uint32_t                   len;
+   uint32_t                   size;
+   netcalc_rec_t **           list;
+};
+
+
 struct _libnetcalc_record
-{  netcalc_net_t              rec_net;
+{  uint32_t                   rec_flags;
+   uint16_t                   __pad_uint16_t;
+   uint8_t                    rec_cidr;
+   uint8_t                    rec_used;
+   netcalc_addr_t             rec_addr;
    char *                     rec_comment;
    void *                     rec_data;
-   netcalc_rec_t *            rec_parent;
-   netcalc_rec_t **           rec_children;
-   uint32_t                   rec_children_len;
-   uint32_t                   __pad_int32;
+   netcalc_recs_t             rec_children;
 };
 
 
 struct _libnetcalc_set
 {  uint32_t                   set_flags;
-   uint32_t                   set_recs_len;
-   netcalc_rec_t **           set_recs;
+   uint32_t                   __pad_uint32_t;
+   netcalc_recs_t            set_recs;
 };
 
 
