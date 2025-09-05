@@ -1820,8 +1820,12 @@ netcalc_strfnet(
          buff[padding] = '\0';
       };
 
-      netcalc_strlcat(s, buff, maxsize);
-      off = strlen(s);
+      if ((maxsize))
+      {  netcalc_strlcat(s, buff, maxsize);
+         off = strlen(s);
+      } else
+      {  off += strlen(buff);
+      };
    };
 
    // NULL terminate string
