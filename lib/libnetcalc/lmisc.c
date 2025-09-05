@@ -87,10 +87,13 @@ netcalc_strerror(
 
       case NETCALC_EBADADDR:     return("bad address string");
       case NETCALC_EBUFFLEN:     return("buffer length exceeeded");
+      case NETCALC_EEXISTS:      return("record exists");
       case NETCALC_EFIELD:       return("unknown or unsupported field");
       case NETCALC_EINVAL:       return("invalid argument");
       case NETCALC_ENOMEM:       return("out of virtual memory");
       case NETCALC_ENOTSUP:      return("operation not supported");
+      case NETCALC_ESUBNET:      return("subnet record exists");
+      case NETCALC_ESUPERNET:    return("supernet record exists");
       case NETCALC_ETYPE:        return("not of type");
 
       case NETCALC_EUNKNOWN:     break;

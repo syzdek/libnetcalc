@@ -92,6 +92,9 @@
 #define NETCALC_EFIELD                 -6
 #define NETCALC_ENOTSUP                -7
 #define NETCALC_ETYPE                  -8
+#define NETCALC_EEXISTS                -9
+#define NETCALC_ESUPERNET              -10
+#define NETCALC_ESUBNET                -11
 
 
 #define NETCALC_FLD_FAMILY             0
