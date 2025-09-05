@@ -125,7 +125,6 @@ my_widget_test(
    strs[2]  = NULL;
    op_str   = cnf->argv[1];
 
-   cmp_op      = 0;
    if      (!(strcmp("<",    op_str))) { cmp_op = MY_CMP_LT; }
    else if (!(strcmp("<=",   op_str))) { cmp_op = MY_CMP_LE; }
    else if (!(strcmp("=",    op_str))) { cmp_op = MY_CMP_EQ; }
