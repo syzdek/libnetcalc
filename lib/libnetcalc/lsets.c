@@ -75,6 +75,15 @@ netcalc_rec_free(
          netcalc_rec_t *               rec );
 
 
+static int
+netcalc_rec_get(
+         netcalc_rec_t *               rec,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp );
+
+
 extern int
 netcalc_set_bindex(
          netcalc_set_t *               ns,
@@ -89,6 +98,123 @@ netcalc_set_bindex(
 //             //
 /////////////////
 // MARK: - Functions
+
+_NETCALC_F int
+netcalc_cur_first(
+         netcalc_cur_t *               cur,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp,
+         int *                         depthp )
+{
+   assert(cur != NULL);
+   cur->cur_idx[0]   = 0;
+   cur->cur_depth    = 0;
+   cur->cur_serial   = cur->cur_set->set_serial;
+   return(netcalc_cur_next(cur, netp, commentp, datap, flagsp, depthp));
+}
+
+
+void
+netcalc_cur_free(
+         netcalc_cur_t *               cur )
+{
+   assert(cur != NULL);
+   free(cur);
+   return;
+}
+
+
+int
+netcalc_cur_init(
+         netcalc_set_t *               ns,
+         netcalc_cur_t **              curp )
+{
+   netcalc_cur_t *   cur;
+
+   assert(ns   != NULL);
+   assert(curp != NULL);
+
+   if ((cur = malloc(sizeof(netcalc_cur_t))) == NULL)
+      return(NETCALC_ENOMEM);
+   memset(cur, 0, sizeof(netcalc_cur_t));
+
+   cur->cur_set = ns;
+   *curp = cur;
+
+   return(0);
+}
+
+
+int
+netcalc_cur_next(
+         netcalc_cur_t *               cur,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp,
+         int *                         depthp )
+{
+   uint32_t             depth;
+   uint32_t             idx;
+   netcalc_rec_t *      rec;
+   netcalc_recs_t *     recs;
+   netcalc_recs_t *     list[129];
+
+   assert(cur != NULL);
+
+   if ((netp))
+      *netp = NULL;
+   if ((commentp))
+      *commentp = NULL;
+   if ((datap))
+      *datap = NULL;
+   if ((flagsp))
+      *flagsp = 0;
+   if ((depthp))
+      *depthp = 0;
+
+   if (cur->cur_serial != cur->cur_set->set_serial)
+      return(NETCALC_ESETMOD);
+
+   rec      = NULL;
+   recs     = &cur->cur_set->set_recs;
+
+   // fast forward to position
+   for(depth = 0; (depth <= cur->cur_depth); depth++)
+   {  list[depth] = recs;
+      idx         = cur->cur_idx[depth];
+      if (depth < cur->cur_depth)
+         recs     = &recs->list[idx]->rec_children;
+   };
+
+   // retrieve current record
+   depth = cur->cur_depth;
+   idx   = cur->cur_idx[depth];
+   if (idx >= list[depth]->len)
+      return(NETCALC_ENOREC);
+   rec = list[depth]->list[idx];
+   if ((depthp))
+      *depthp = (int)cur->cur_depth;
+
+   // increment index
+   depth = cur->cur_depth;
+   idx   = cur->cur_idx[depth];
+   if ((list[depth]->list[idx]->rec_children.len))
+   {  cur->cur_depth++;
+      cur->cur_idx[cur->cur_depth] = 0;
+   } else
+   {  cur->cur_idx[depth]++;
+      while ( (cur->cur_idx[depth] >= list[depth]->len) && (depth != 0) )
+      {  cur->cur_depth--;
+         depth = cur->cur_depth;
+         cur->cur_idx[depth]++;
+      };
+   };
+
+   return(netcalc_rec_get(rec, netp, commentp, datap, flagsp));
+}
 
 
 void
@@ -122,6 +248,59 @@ netcalc_rec_free(
    };
 
    return;
+}
+
+
+int
+netcalc_rec_get(
+         netcalc_rec_t *               rec,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp )
+{
+   int                  rc;
+   netcalc_buff_t       nbuff;
+   netcalc_net_t *      net;
+
+   assert(rec != NULL);
+
+   net = &nbuff.buff_net;
+
+   if ((datap))
+      *datap = rec->rec_data;
+   if ((flagsp))
+      *flagsp = rec->rec_flags;
+
+   if ( ((netp)) && ((net)) )
+   {  memset(net, 0, sizeof(netcalc_net_t));
+      memcpy(&net->net_addr, &rec->rec_addr, sizeof(netcalc_addr_t));
+      net->net_cidr  = rec->rec_cidr;
+      net->net_flags = rec->rec_flags;
+      if ((rc = netcalc_dup(netp, net)) != NETCALC_SUCCESS)
+      {  if ((datap))
+            *datap = NULL;
+         if ((flagsp))
+            *flagsp = 0;
+         return(rc);
+      };
+   };
+
+   if ( ((commentp)) && ((rec->rec_comment)) )
+   {  if ((*commentp = strdup(rec->rec_comment)) == NULL)
+      {  if ((datap))
+            *datap = NULL;
+         if ((flagsp))
+            *flagsp = 0;
+         if ((netp))
+         {  netcalc_free(*netp);
+            *netp = NULL;
+         };
+         return(NETCALC_ENOMEM);
+      };
+   };
+
+   return(0);
 }
 
 
@@ -271,6 +450,7 @@ netcalc_set_add(
             // record new record
             base->len++;
             base->list[wouldbe]  = rec;
+            ns->set_serial++;
             return(NETCALC_SUCCESS);
 
          case NETCALC_IDX_SUBNET:
@@ -311,6 +491,7 @@ netcalc_set_add(
                   base->list[wouldbe+off] = base->list[wouldbe+off+count];
                base->len -= count;
             };
+            ns->set_serial++;
             return(NETCALC_SUCCESS);
 
          default:

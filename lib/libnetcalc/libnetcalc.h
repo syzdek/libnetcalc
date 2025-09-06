@@ -120,8 +120,16 @@ struct _libnetcalc_record
 
 struct _libnetcalc_set
 {  uint32_t                   set_flags;
-   uint32_t                   __pad_uint32_t;
-   netcalc_recs_t            set_recs;
+   uint32_t                   set_serial;
+   netcalc_recs_t             set_recs;
+};
+
+
+struct _libnetcalc_cursor
+{  uint32_t                   cur_depth;
+   uint32_t                   cur_serial;
+   uint32_t                   cur_idx[130];
+   netcalc_set_t *            cur_set;
 };
 
 

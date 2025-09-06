@@ -230,6 +230,7 @@
 // MARK: - Data Types
 
 typedef union  _libnetcalc_address     netcalc_addr_t;
+typedef struct _libnetcalc_cursor      netcalc_cur_t;
 typedef struct _libnetcalc_network     netcalc_net_t;
 typedef struct _libnetcalc_record      netcalc_rec_t;
 typedef struct _libnetcalc_records     netcalc_recs_t;
@@ -263,6 +264,37 @@ netcalc_convert(
          netcalc_net_t *               net,
          int                           family,
          const netcalc_net_t *         prefix );
+
+
+_NETCALC_F int
+netcalc_cur_first(
+         netcalc_cur_t *               cur,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp,
+         int *                         depthp );
+
+
+_NETCALC_F void
+netcalc_cur_free(
+         netcalc_cur_t *               cur );
+
+
+_NETCALC_F int
+netcalc_cur_init(
+         netcalc_set_t *               ns,
+         netcalc_cur_t **              curp );
+
+
+_NETCALC_F int
+netcalc_cur_next(
+         netcalc_cur_t *               cur,
+         netcalc_net_t **              netp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp,
+         int *                         depthp );
 
 
 _NETCALC_F int
