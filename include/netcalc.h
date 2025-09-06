@@ -95,6 +95,8 @@
 #define NETCALC_EEXISTS                -9
 #define NETCALC_ESUPERNET              -10
 #define NETCALC_ESUBNET                -11
+#define NETCALC_ENOREC                 -12
+#define NETCALC_ESETMOD                -13
 
 
 #define NETCALC_FLD_FAMILY             0

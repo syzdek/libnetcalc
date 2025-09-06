@@ -91,7 +91,9 @@ netcalc_strerror(
       case NETCALC_EFIELD:       return("unknown or unsupported field");
       case NETCALC_EINVAL:       return("invalid argument");
       case NETCALC_ENOMEM:       return("out of virtual memory");
+      case NETCALC_ENOREC:       return("no record found or availble");
       case NETCALC_ENOTSUP:      return("operation not supported");
+      case NETCALC_ESETMOD:      return("set was modified");
       case NETCALC_ESUBNET:      return("subnet record exists");
       case NETCALC_ESUPERNET:    return("supernet record exists");
       case NETCALC_ETYPE:        return("not of type");
