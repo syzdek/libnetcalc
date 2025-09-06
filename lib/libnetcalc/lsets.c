@@ -222,7 +222,7 @@ netcalc_rec_free(
          netcalc_rec_t *               rec )
 {
    uint32_t                   rec_idx;
-   netcalc_rec_t *            recs[128];
+   netcalc_rec_t *            recs[129];
 
    assert(rec != NULL);
 
