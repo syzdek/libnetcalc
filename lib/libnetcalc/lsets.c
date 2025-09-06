@@ -84,7 +84,7 @@ netcalc_rec_get(
          int *                         flagsp );
 
 
-extern int
+static int
 netcalc_set_bindex(
          netcalc_set_t *               ns,
          const netcalc_net_t *         key,
