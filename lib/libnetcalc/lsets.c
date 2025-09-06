@@ -562,6 +562,7 @@ netcalc_set_debug(
    };
    if ((rc = netcalc_cur_first(cur, &net, &comment, NULL, &flags, &depth)) != 0)
    {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
+      netcalc_cur_free(cur);
       return;
    };
    netcalc_set_debug_print(prefix, count++, (3*depth), (3*depth), net, comment, flags);
@@ -577,6 +578,9 @@ netcalc_set_debug(
          free(comment);
    };
    netcalc_cur_free(cur);
+
+   if (rc != NETCALC_ENOREC)
+      fprintf(stderr, "netcalc_cur_next(): %s\n", netcalc_strerror(rc));
 
    return;
 }
