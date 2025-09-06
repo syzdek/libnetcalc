@@ -45,6 +45,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <stdio.h>
 
 
 //////////////
@@ -90,6 +91,17 @@ netcalc_set_bindex(
          const netcalc_net_t *         key,
          const netcalc_recs_t *        base,
          uint32_t *                    wouldbep );
+
+
+static void
+netcalc_set_debug_print(
+         const char *                  prefix,
+         int                           count,
+         int                           indent,
+         int                           maxlen,
+         netcalc_net_t *               net,
+         const char *                  comment,
+         int                           flags );
 
 
 /////////////////
@@ -524,6 +536,77 @@ netcalc_set_add_str(
       return(rc);
 
    return(netcalc_set_add(ns, &b.buff_net, comment, data, flags));
+}
+
+
+void
+netcalc_set_debug(
+         netcalc_set_t *               ns,
+         const char *                  prefix )
+{
+   int               rc;
+   int               flags;
+   int               depth;
+   uint32_t          count;
+   char *            comment;
+   netcalc_net_t *   net;
+   netcalc_cur_t *   cur;
+
+   assert(ns != NULL);
+
+   count = 0;
+
+   if ((rc = netcalc_cur_init(ns, &cur)) != 0)
+   {  fprintf(stderr, "netcalc_cur_init(): %s\n", netcalc_strerror(rc));
+      return;
+   };
+   if ((rc = netcalc_cur_first(cur, &net, &comment, NULL, &flags, &depth)) != 0)
+   {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
+      return;
+   };
+   netcalc_set_debug_print(prefix, count++, (3*depth), (3*depth), net, comment, flags);
+   if ((net))
+      netcalc_free(net);
+   if ((comment))
+      free(comment);
+   while((rc = netcalc_cur_next(cur, &net, &comment, NULL, &flags, &depth)) == 0)
+   {  netcalc_set_debug_print(prefix, count++, (3*depth), (3*depth), net, comment, flags);
+      if ((net))
+         netcalc_free(net);
+      if ((comment))
+         free(comment);
+   };
+   netcalc_cur_free(cur);
+
+   return;
+}
+
+
+void
+netcalc_set_debug_print(
+         const char *                  prefix,
+         int                           count,
+         int                           indent,
+         int                           maxlen,
+         netcalc_net_t *               net,
+         const char *                  comment,
+         int                           flags )
+{
+   char        addr[NETCALC_ADDRESS_LENGTH];
+   char        str[NETCALC_ADDRESS_LENGTH*3];
+
+   if (!(net))
+      return;
+   netcalc_ntop(net, addr, sizeof(addr), NETCALC_TYPE_ADDRESS, NETCALC_FLG_CIDR);
+
+   prefix   = ((prefix))   ? prefix    : "";
+   comment  = ((comment))  ? comment   : "";
+
+   snprintf(str, sizeof(str), "%*s%s", indent, " ", addr);
+
+   printf("%s%5i: %-*s  0x%x %s\n", prefix, count, maxlen, str, flags, comment);
+
+   return;
 }
 
 
