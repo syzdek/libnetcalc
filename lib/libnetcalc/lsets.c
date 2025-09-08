@@ -478,10 +478,10 @@ netcalc_set_add(
             {  netcalc_rec_free(rec);
                return(NETCALC_ESUPERNET);
             };
-            count   = 0;
+            count   = 1;
             rc    = NETCALC_CMP_SUPERNET;
-            while((rc == NETCALC_CMP_SUPERNET) && ((count+wouldbe+1) < base->len))
-            {  child = base->list[count+wouldbe+1];
+            while((rc == NETCALC_CMP_SUPERNET) && ((count+wouldbe) < base->len))
+            {  child = base->list[count+wouldbe];
                rc    = netcalc_addr_cmp(&rec->rec_addr, rec->rec_cidr, &child->rec_addr, child->rec_cidr);
                count++;
             };
