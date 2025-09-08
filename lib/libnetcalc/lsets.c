@@ -547,6 +547,7 @@ netcalc_set_debug(
    int               rc;
    int               flags;
    int               depth;
+   int               maxdepth;
    uint32_t          count;
    char *            comment;
    netcalc_net_t *   net;
@@ -556,6 +557,22 @@ netcalc_set_debug(
 
    count = 0;
 
+   // determine max depth
+   if ((rc = netcalc_cur_init(ns, &cur)) != 0)
+   {  fprintf(stderr, "netcalc_cur_init(): %s\n", netcalc_strerror(rc));
+      return;
+   };
+   if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, NULL, &depth)) != 0)
+   {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
+      netcalc_cur_free(cur);
+      return;
+   };
+   maxdepth = depth;
+   while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, NULL, &depth)) == 0)
+      maxdepth = (depth > maxdepth) ? depth : maxdepth;
+   netcalc_cur_free(cur);
+
+   // print records
    if ((rc = netcalc_cur_init(ns, &cur)) != 0)
    {  fprintf(stderr, "netcalc_cur_init(): %s\n", netcalc_strerror(rc));
       return;
@@ -565,13 +582,13 @@ netcalc_set_debug(
       netcalc_cur_free(cur);
       return;
    };
-   netcalc_set_debug_print(prefix, count++, (3*depth), (3*depth), net, comment, flags);
+   netcalc_set_debug_print(prefix, count++, depth, maxdepth, net, comment, flags);
    if ((net))
       netcalc_free(net);
    if ((comment))
       free(comment);
    while((rc = netcalc_cur_next(cur, &net, &comment, NULL, &flags, &depth)) == 0)
-   {  netcalc_set_debug_print(prefix, count++, (3*depth), (3*depth), net, comment, flags);
+   {  netcalc_set_debug_print(prefix, count++, depth, maxdepth, net, comment, flags);
       if ((net))
          netcalc_free(net);
       if ((comment))
@@ -590,8 +607,8 @@ void
 netcalc_set_debug_print(
          const char *                  prefix,
          int                           count,
-         int                           indent,
-         int                           maxlen,
+         int                           depth,
+         int                           maxdepth,
          netcalc_net_t *               net,
          const char *                  comment,
          int                           flags )
@@ -605,10 +622,11 @@ netcalc_set_debug_print(
 
    prefix   = ((prefix))   ? prefix    : "";
    comment  = ((comment))  ? comment   : "";
+   maxdepth = (maxdepth * 3) + 44;
 
-   snprintf(str, sizeof(str), "%*s%s", indent, " ", addr);
+   snprintf(str, sizeof(str), "%*s%s", (depth*3), "", addr);
 
-   printf("%s%5i: %-*s  0x%x %s\n", prefix, count, maxlen, str, flags, comment);
+   printf("%s%5i: %-*s 0x%x %s\n", prefix, count, maxdepth, str, flags, comment);
 
    return;
 }
