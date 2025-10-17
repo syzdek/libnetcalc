@@ -213,7 +213,7 @@ static my_widget_t my_widget_map[] =
       .long_opt   = NETCALC_LONG( ),
       .arg_min    = 1,
       .arg_max    = -1,
-      .aliases    = (const char * const[]) { "netdefault", NULL },
+      .aliases    = NULL,
       .func_exec  = &my_widget_info,
       .func_usage = &my_widget_null,
    },
@@ -239,7 +239,7 @@ static my_widget_t my_widget_map[] =
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 1,
       .arg_max    = -1,
-      .aliases    = (const char * const[]) { "netinfo", NULL },
+      .aliases    = NULL,
       .func_exec  = &my_widget_info,
       .func_usage = &my_widget_null,
    },
@@ -252,7 +252,7 @@ static my_widget_t my_widget_map[] =
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 2,
       .arg_max    = -1,
-      .aliases    = (const char * const[]) { "netprint", "netprintf", NULL },
+      .aliases    = (const char * const[]) { "print", NULL },
       .func_exec  = &my_widget_printf,
       .func_usage = &my_widget_printf_usage,
    },
@@ -265,7 +265,7 @@ static my_widget_t my_widget_map[] =
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 1,
       .arg_max    = -1,
-      .aliases    = NULL,
+      .aliases    = (const char * const[]) { "super", "supernet", NULL },
       .func_exec  = &my_widget_superblock,
       .func_usage = &my_widget_null,
    },
@@ -304,7 +304,7 @@ static my_widget_t my_widget_map[] =
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 3,
       .arg_max    = 3,
-      .aliases    = (const char * const[]) { "nettest", NULL },
+      .aliases    = NULL,
       .func_exec  = &my_widget_test,
       .func_usage = &my_widget_test_usage,
       .func_args  = &my_widget_test_arguments,
@@ -711,6 +711,7 @@ my_usage(
       printf("       %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
       printf("       %s-%s %s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s%s %s\n",  PROGRAM_NAME, widget_name, widget_help);
+      printf("       net%s %s\n", widget_name, widget_help);
    } else if (cnf->symlinked == 0)
    {  widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
       printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
@@ -770,9 +771,16 @@ my_widget_lookup(
    // strip program prefix from widget name
    len = strlen(PROGRAM_NAME);
    if (!(strncasecmp(wname, PROGRAM_NAME, len)))
+   {
       wname = &wname[len];
-   if (wname[0] == '-')
-      wname = &wname[1];
+      if (wname[0] == '-')
+         wname = &wname[1];
+   } else
+   {
+      len = strlen("net");
+      if (!(strncasecmp(wname, "net", len)))
+         wname = &wname[len];
+   };
    if (!(wname[0]))
       return(NULL);
 
