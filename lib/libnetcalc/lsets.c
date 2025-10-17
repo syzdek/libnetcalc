@@ -597,19 +597,10 @@ netcalc_set_debug(
    count = 0;
 
    // determine max depth
-   if ((rc = netcalc_cur_init(ns, &cur)) != 0)
-   {  fprintf(stderr, "netcalc_cur_init(): %s\n", netcalc_strerror(rc));
+   if ((rc = netcalc_set_maxdepth(ns, &maxdepth)) != 0)
+   {  fprintf(stderr, "netcalc_set_maxdepth(): %s\n", netcalc_strerror(rc));
       return;
    };
-   if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, NULL, &depth)) != 0)
-   {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
-      netcalc_cur_free(cur);
-      return;
-   };
-   maxdepth = depth;
-   while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, NULL, &depth)) == 0)
-      maxdepth = (depth > maxdepth) ? depth : maxdepth;
-   netcalc_cur_free(cur);
 
    // print records
    if ((rc = netcalc_cur_init(ns, &cur)) != 0)
@@ -710,6 +701,38 @@ netcalc_set_init(
    ns->set_flags     |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
 
    *nsp = ns;
+
+   return(0);
+}
+
+
+int
+netcalc_set_maxdepth(
+         netcalc_set_t *               ns,
+         int *                         maxdepthp )
+{
+   int               rc;
+   int               depth;
+   int               maxdepth;
+   netcalc_cur_t *   cur;
+   netcalc_cur_t     cbuff;
+
+   assert(ns         != NULL);
+   assert(maxdepthp  != NULL);
+
+   cur = &cbuff;
+   memset(cur, 0, sizeof(netcalc_cur_t));
+   cur->cur_serial   = ns->set_serial;
+   cur->cur_set      = ns;
+
+   // determine max depth
+   if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, NULL, &depth)) != 0)
+      return(rc);
+   maxdepth = depth;
+   while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, NULL, &depth)) == 0)
+      maxdepth = (depth > maxdepth) ? depth : maxdepth;
+
+   *maxdepthp = maxdepth;
 
    return(0);
 }

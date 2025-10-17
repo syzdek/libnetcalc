@@ -374,6 +374,12 @@ netcalc_set_init(
          int                           flags );
 
 
+_NETCALC_F int
+netcalc_set_maxdepth(
+         netcalc_set_t *               ns,
+         int *                         maxdepthp );
+
+
 _NETCALC_F const char *
 netcalc_strerror(
          int                           errnum );
