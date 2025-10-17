@@ -707,8 +707,8 @@ my_usage(
       widget_help = ((cnf->widget->usage)) ? cnf->widget->usage : "";
 
    if ((widget = cnf->widget) == NULL)
-   {  printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
-      printf("       %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
+   {  printf("Usage: %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
+      printf("       %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s-%s %s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s%s %s\n",  PROGRAM_NAME, widget_name, widget_help);
       printf("       net%s %s\n", widget_name, widget_help);
