@@ -13,6 +13,7 @@ All rights reserved.
    * libnetcalc
      - adding 'sort' widget
      - adding 'tree' widget
+     - adding the prefix 'net' for linked widgets
 
 0.1 2025-08-06
    - initial alpha release
