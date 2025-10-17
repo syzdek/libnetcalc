@@ -270,7 +270,7 @@ static my_widget_t my_widget_map[] =
       .func_usage = &my_widget_null,
    },
 
-   // superblock widget
+   // sort widget
    {  .name       = "sort",
       .desc       = "sorts networks",
       .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
@@ -308,6 +308,19 @@ static my_widget_t my_widget_map[] =
       .func_exec  = &my_widget_test,
       .func_usage = &my_widget_test_usage,
       .func_args  = &my_widget_test_arguments,
+   },
+
+   // tree widget
+   {  .name       = "tree",
+      .desc       = "sorts networks and display is a tree structure",
+      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
+      .arg_min    = 1,
+      .arg_max    = -1,
+      .aliases    = NULL,
+      .func_exec  = &my_widget_tree,
+      .func_usage = &my_widget_null,
    },
 
    // version widget

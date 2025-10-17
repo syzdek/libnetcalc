@@ -300,5 +300,10 @@ my_widget_superblock(
          my_config_t *                 cnf );
 
 
+extern int
+my_widget_tree(
+         my_config_t *                 cnf );
+
+
 #endif /* end of header */
 

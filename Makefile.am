@@ -201,7 +201,8 @@ src_netcalc_SOURCES			= src/netcalc-utility.h \
 					  src/widget-printf.c \
 					  src/widget-sort.c \
 					  src/widget-superblock.c \
-					  src/widget-test.c
+					  src/widget-test.c \
+					  src/widget-tree.c
 
 
 # macros for src/netcalc-dmstools
