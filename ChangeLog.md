@@ -10,6 +10,9 @@ All rights reserved.
        mimics the behavior of BSD strlcpy().
      - refactored network conversion functions
      - refactored network set functions
+   * libnetcalc
+     - adding 'sort' widget
+     - adding 'tree' widget
 
 0.1 2025-08-06
    - initial alpha release
