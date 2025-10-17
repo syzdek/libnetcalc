@@ -89,7 +89,7 @@ static int
 netcalc_set_bindex(
          netcalc_set_t *               ns,
          const netcalc_net_t *         key,
-         const netcalc_recs_t *        base,
+         netcalc_recs_t **             basep,
          uint32_t *                    wouldbep );
 
 
@@ -316,11 +316,19 @@ netcalc_rec_get(
 }
 
 
+// returns code which describes the key's relation to the record specified
+// by 'wouldbe'
+//    NETCALC_IDX_BEFORE   - key is before specified record
+//    NETCALC_IDX_SUPERNET - key is supernet of specified record
+//    NETCALC_IDX_SAME     - key is same as specified record
+//    NETCALC_IDX_SUBNET   - key is subnet of specified record
+//    NETCALC_IDX_AFTER    - key is after specified record
+//    NETCALC_IDX_ERROR    - an error was detected
 int
 netcalc_set_bindex(
          netcalc_set_t *               ns,
          const netcalc_net_t *         key,
-         const netcalc_recs_t *        base,
+         netcalc_recs_t **             basep,
          uint32_t *                    wouldbep )
 {
    int                  rc;
@@ -328,73 +336,75 @@ netcalc_set_bindex(
    int32_t              mid;
    int32_t              high;
    netcalc_rec_t *      rec;
-   uint32_t             nel;
+   netcalc_recs_t *     base;
 
    assert(ns         != NULL);
    assert(key        != NULL);
-   assert(base       != NULL);
+   assert(basep      != NULL);
+   assert(*basep     != NULL);
    assert(wouldbep   != NULL);
 
-   nel = base->len;
-
-   if (nel == 0)
+   base = *basep;
+   if (base->len == 0)
    {  if ((wouldbep))
          *wouldbep = 0;
       return(NETCALC_IDX_INSERT);
    };
 
    low  = 0;
-   high = (int32_t)(nel - 1);
-   mid  = high / 2;
+   high = (int32_t)(base->len - 1);
 
-   while ( (mid >= low) && (mid <= high) && (high != low) )
-   {  rec   = base->list[mid];
+   rc = NETCALC_IDX_SAME;
+   while ( rc != NETCALC_IDX_ERROR )
+   {  mid   = (low+high) / 2;
+      rec   = base->list[mid];
       rc    = netcalc_addr_cmp(&key->net_addr, key->net_cidr, &rec->rec_addr, rec->rec_cidr);
       switch(rc)
-      {  case NETCALC_CMP_SAME:
-            *wouldbep = (uint32_t)mid;
-            return(NETCALC_IDX_SAME);
-
-         case NETCALC_CMP_SUPERNET:
+      {  case NETCALC_CMP_BEFORE:
+            if (low == mid)
+            {  *wouldbep = (uint32_t)mid;
+               return(NETCALC_CMP_BEFORE);
+            };
             high = mid;
             break;
 
-         case NETCALC_CMP_SUBNET:
+         case NETCALC_CMP_SUPERNET:
+            if (low == mid)
+            {  *wouldbep = (uint32_t)mid;
+               return(NETCALC_CMP_SUPERNET);
+            };
+            high = mid;
+            break;
+
+         case NETCALC_CMP_SAME:
             *wouldbep = (uint32_t)mid;
-            return(NETCALC_IDX_SUBNET);
+            return(NETCALC_IDX_SAME);
+
+         case NETCALC_CMP_SUBNET:
+            if (!(rec->rec_children.len))
+            {  *wouldbep = (uint32_t)mid;
+               return(NETCALC_IDX_SUBNET);
+            };
+            *basep   = &rec->rec_children;
+            base     = *basep;
+            low      = 0;
+            high     = (int32_t)(base->len - 1);
+            break;
+
+         case NETCALC_CMP_AFTER:
+            if (high == mid)
+            {  *wouldbep = (uint32_t)mid;
+               return(NETCALC_CMP_AFTER);
+            };
+            low = (mid < high) ? mid + 1 : mid;
+            break;
 
          default:
-            if (rc < 0)
-               high = mid - 1;
-            else
-               low = mid + 1;
             break;
       };
-      mid = (high + low) / 2;
    };
 
-   rec   = base->list[mid];
-   rc    = netcalc_addr_cmp(&key->net_addr, key->net_cidr, &rec->rec_addr, rec->rec_cidr);
-   switch(rc)
-   {  case NETCALC_CMP_SAME:
-         *wouldbep = (uint32_t)mid;
-         return(NETCALC_IDX_SAME);
-
-      case NETCALC_CMP_SUPERNET:
-         *wouldbep = (uint32_t)mid;
-         return(NETCALC_IDX_SUPERNET);
-
-      case NETCALC_CMP_SUBNET:
-         *wouldbep = (uint32_t)mid;
-         return(NETCALC_IDX_SUBNET);
-
-      default:
-         break;
-   };
-
-   *wouldbep = (uint32_t)((rc < 0) ? mid : mid+1);
-
-   return(NETCALC_IDX_INSERT);
+   return(NETCALC_IDX_ERROR);
 }
 
 
