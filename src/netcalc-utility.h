@@ -291,6 +291,11 @@ my_widget_printf_usage(
 
 
 extern int
+my_widget_sort(
+         my_config_t *                 cnf );
+
+
+extern int
 my_widget_superblock(
          my_config_t *                 cnf );
 

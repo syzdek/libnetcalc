@@ -199,6 +199,7 @@ src_netcalc_SOURCES			= src/netcalc-utility.h \
 					  src/widget-debug.c \
 					  src/widget-info.c \
 					  src/widget-printf.c \
+					  src/widget-sort.c \
 					  src/widget-superblock.c \
 					  src/widget-test.c
 

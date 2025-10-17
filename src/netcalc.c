@@ -270,6 +270,19 @@ static my_widget_t my_widget_map[] =
       .func_usage = &my_widget_null,
    },
 
+   // superblock widget
+   {  .name       = "sort",
+      .desc       = "sorts networks",
+      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
+      .arg_min    = 1,
+      .arg_max    = -1,
+      .aliases    = NULL,
+      .func_exec  = &my_widget_sort,
+      .func_usage = &my_widget_null,
+   },
+
    // syntaxes widget
    {  .name       = "syntaxes",
       .desc       = "display supported address syntaxes",
@@ -697,6 +710,7 @@ my_usage(
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
+   if ((strchr(short_opt, 'f'))) printf("  -f file                   input file\n");
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
    if ((strchr(short_opt, 'p'))) printf("  -p net, --prefix=net      use prefix when converting families\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
