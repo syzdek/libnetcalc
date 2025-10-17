@@ -193,8 +193,6 @@ main(
       return(1);
    };
 
-   netcalc_set_debug(ns, NULL);
-
    for(pos = 0; ((test_strs[pos])); pos++)
    {  printf("%4u: adding %s ...\n", (unsigned)pos, test_strs[pos]);
       if ((rc = netcalc_set_add_str(ns, test_strs[pos], NULL, NULL, 0)) != 0)
