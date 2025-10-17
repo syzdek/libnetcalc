@@ -426,6 +426,7 @@ netcalc_set_add(
    uint32_t             wouldbe;
    netcalc_rec_t *      rec;
    netcalc_rec_t *      child;
+   netcalc_buff_t       nbuff;
 
    assert(ns   != NULL);
    assert(net  != NULL);
@@ -435,6 +436,15 @@ netcalc_set_add(
 
    if ((netcalc_verify(net, NETCALC_TYPE_NETWORK)))
       return(NETCALC_EINVAL);
+
+   // adjust nbuff
+   memcpy(&nbuff.buff_net.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
+   nbuff.buff_net.net_cidr       = net->net_cidr;
+   nbuff.buff_net.net_port       = net->net_port;
+   nbuff.buff_net.net_flags      = net->net_flags;
+   nbuff.buff_net.net_scope_name = NULL;
+   net                           = &nbuff.buff_net;
+   netcalc_addr_convert_inet6(&nbuff.buff_net.net_addr, (nbuff.buff_net.net_flags & NETCALC_AF));
 
    // add information to record
    if ((rec = malloc(sizeof(netcalc_rec_t))) == NULL)
@@ -454,77 +464,96 @@ netcalc_set_add(
    };
 
    base = &ns->set_recs;
-   while ((rc = netcalc_set_bindex(ns, net, base, &wouldbe)) != NETCALC_IDX_SAME)
-   {  switch(rc)
-      {  case NETCALC_IDX_INSERT:
-            // allocate memory for net record pointer
-            size = (base->size + 2) * sizeof(netcalc_rec_t *);
-            if ((ptr = realloc(base->list, size)) == NULL)
-            {  netcalc_rec_free(rec);
-               return(NETCALC_ENOMEM);
-            };
-            base->size++;
-            base->list              = ptr;
-            base->list[base->size]  = NULL;
-            // shift records down list
-            for(idx = base->len; (idx > wouldbe); idx--)
-               base->list[idx] = base->list[idx-1];
-            // record new record
-            base->len++;
-            base->list[wouldbe]  = rec;
-            ns->set_serial++;
-            return(NETCALC_SUCCESS);
+   rc = netcalc_set_bindex(ns, net, &base, &wouldbe);
+   switch(rc)
+   {  case NETCALC_IDX_AFTER:
+         wouldbe++;
+      case NETCALC_IDX_BEFORE:
+      case NETCALC_IDX_INSERT:
+         // allocate memory for net record pointer
+         size = (base->size + 2) * sizeof(netcalc_rec_t *);
+         if ((ptr = realloc(base->list, size)) == NULL)
+         {  netcalc_rec_free(rec);
+            return(NETCALC_ENOMEM);
+         };
+         base->size++;
+         base->list              = ptr;
+         base->list[base->size]  = NULL;
+         // shift records down list
+         for(idx = base->len; (idx > wouldbe); idx--)
+            base->list[idx] = base->list[idx-1];
+         // record new record
+         base->list[wouldbe]  = rec;
+         base->len++;
+         ns->set_serial++;
+         return(NETCALC_SUCCESS);
 
-         case NETCALC_IDX_SUBNET:
-            if ((ns->set_flags & NETCALC_FLG_UNIQ))
-            {  netcalc_rec_free(rec);
-               return(NETCALC_ESUBNET);
-            };
-            base = &base->list[wouldbe]->rec_children;
-            break;
+      case NETCALC_IDX_SAME:
+         netcalc_rec_free(rec);
+         return(NETCALC_EEXISTS);
 
-         case NETCALC_IDX_SUPERNET:
-            if ((ns->set_flags & NETCALC_FLG_UNIQ))
-            {  netcalc_rec_free(rec);
-               return(NETCALC_ESUPERNET);
-            };
-            count   = 1;
-            rc    = NETCALC_CMP_SUPERNET;
-            while((rc == NETCALC_CMP_SUPERNET) && ((count+wouldbe) < base->len))
-            {  child = base->list[count+wouldbe];
-               rc    = netcalc_addr_cmp(&rec->rec_addr, rec->rec_cidr, &child->rec_addr, child->rec_cidr);
+      case NETCALC_IDX_SUBNET:
+         // check if set allows supernets/subnets
+         if ((ns->set_flags & NETCALC_FLG_UNIQ))
+         {  netcalc_rec_free(rec);
+            return(NETCALC_ESUBNET);
+         };
+         // allocate memory for list of children of record
+         size = sizeof(netcalc_rec_t *) * 2;
+         if ((base->list[wouldbe]->rec_children.list = malloc(size)) == NULL)
+         {  netcalc_rec_free(rec);
+            return(NETCALC_ENOMEM);
+         };
+         // save record as subnet
+         base->list[wouldbe]->rec_children.size     = 1;
+         base->list[wouldbe]->rec_children.len      = 1;
+         base->list[wouldbe]->rec_children.list[0]  = rec;
+         base->list[wouldbe]->rec_children.list[1]  = NULL;
+         return(NETCALC_SUCCESS);
+
+      case NETCALC_IDX_SUPERNET:
+         // check if set allows supernets/subnets
+         if ((ns->set_flags & NETCALC_FLG_UNIQ))
+         {  netcalc_rec_free(rec);
+            return(NETCALC_ESUPERNET);
+         };
+         // determine number of subnets for the the record is supernet
+         count    = 1;
+         rc       = NETCALC_CMP_SUPERNET;
+         while((rc == NETCALC_CMP_SUPERNET) && ((count+wouldbe) < base->len))
+         {  child = base->list[count+wouldbe];
+            rc    = netcalc_addr_cmp(&rec->rec_addr, rec->rec_cidr, &child->rec_addr, child->rec_cidr);
+            if (rc == NETCALC_CMP_SUPERNET)
                count++;
-            };
-            size = ((size_t)count+1) * sizeof(netcalc_rec_t *);
-            if ((rec->rec_children.list = malloc(size)) == NULL)
-            {  netcalc_rec_free(rec);
-               return(NETCALC_ENOMEM);
-            };
-            memset(rec->rec_children.list, 0, size);
-            for(off = 0; (off < count); off++)
-               rec->rec_children.list[off]   = base->list[wouldbe+off];
-            rec->rec_children.list[off]      = NULL;
-            rec->rec_children.size           = count;
-            rec->rec_children.len            = count;
-            base->list[wouldbe]              = rec;
-            if (count > 1)
-            {  count--;
-               for(off = 1; ((wouldbe+count+off) < base->len); off++)
-                  base->list[wouldbe+off] = base->list[wouldbe+off+count];
-               base->len -= count;
-            };
-            ns->set_serial++;
-            return(NETCALC_SUCCESS);
+         };
+         size = ((size_t)count+1) * sizeof(netcalc_rec_t *);
+         if ((rec->rec_children.list = malloc(size)) == NULL)
+         {  netcalc_rec_free(rec);
+            return(NETCALC_ENOMEM);
+         };
+         memset(rec->rec_children.list, 0, size);
+         for(off = 0; (off < count); off++)
+            rec->rec_children.list[off]   = base->list[wouldbe+off];
+         rec->rec_children.list[off]      = NULL;
+         rec->rec_children.size           = count;
+         rec->rec_children.len            = count;
+         base->list[wouldbe]              = rec;
+         if (count > 1)
+         {  count--;
+            for(off = 1; ((wouldbe+count+off) < base->len); off++)
+               base->list[wouldbe+off] = base->list[wouldbe+off+count];
+            base->len -= count;
+         };
+         ns->set_serial++;
+         return(NETCALC_SUCCESS);
 
-         default:
-            netcalc_rec_free(rec);
-            return(NETCALC_EUNKNOWN);
-      };
+      default:
+         break;
    };
 
    netcalc_rec_free(rec);
 
-   return(NETCALC_EEXISTS);
+   return(NETCALC_EUNKNOWN);
 }
 
 
