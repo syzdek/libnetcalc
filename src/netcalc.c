@@ -205,6 +205,19 @@ static my_widget_t my_widget_map[] =
       .func_usage = &my_widget_null,
    },
 
+   // default widget
+   {  .name       = "default",
+      .desc       = NULL,
+      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT,
+      .long_opt   = NETCALC_LONG( ),
+      .arg_min    = 1,
+      .arg_max    = -1,
+      .aliases    = (const char * const[]) { "netdefault", NULL },
+      .func_exec  = &my_widget_info,
+      .func_usage = &my_widget_null,
+   },
+
    // help widget
    {  .name       = "help",
       .desc       = "display help",
@@ -326,6 +339,7 @@ main(
    int                  rc;
    const char *         prog_name;
    my_config_t *        cnf;
+   netcalc_net_t *      net;
 
    // determine program name
    if ((prog_name = strrchr(argv[0], '/')) != NULL)
@@ -355,10 +369,17 @@ main(
          return((rc == -1) ? 0 : 1);
       };
       if ((cnf->widget = my_widget_lookup(cnf->argv[0], 0)) == NULL)
-      {  fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
-         fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
-         my_free(cnf);
-         return(1);
+      {  if ((rc = netcalc_init(&net, cnf->argv[0], cnf->flags)) != NETCALC_SUCCESS)
+         {  fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
+            fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+            my_free(cnf);
+            return(1);
+         };
+         netcalc_free(net);
+         cnf->argv--;
+         cnf->argc++;
+         cnf->symlinked = 1;
+         cnf->widget    = my_widget_lookup("default", 0);
       };
    };
 
@@ -661,6 +682,7 @@ my_usage(
 
    if ((widget = cnf->widget) == NULL)
    {  printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("       %s [OPTIONS] <address> [ <address> [ ... <address> ] ]\n", PROGRAM_NAME);
       printf("       %s-%s %s\n", PROGRAM_NAME, widget_name, widget_help);
       printf("       %s%s %s\n",  PROGRAM_NAME, widget_name, widget_help);
    } else if (cnf->symlinked == 0)
