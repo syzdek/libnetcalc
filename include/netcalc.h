@@ -213,6 +213,7 @@
 #define  NETCALC_IDX_SUBNET            1
 #define  NETCALC_IDX_AFTER             2
 #define  NETCALC_IDX_INSERT            0x7fffffff
+#define  NETCALC_IDX_ERROR             0x77777777
 
 
 #define  NETCALC_CMP_BEFORE            NETCALC_IDX_BEFORE
