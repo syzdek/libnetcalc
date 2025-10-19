@@ -41,6 +41,7 @@ Contents
 
    * Overview
    * Utility
+     - info widget
      - sort widget
      - tree widget
    * Maintainers
@@ -208,6 +209,48 @@ Example usage:
       21: 2001:db8:e:ffff::/64
       22: 2001:db8:f:ffff::/64
       23: 8000::/1
+
+
+test widget
+-----------
+
+The test widget compares two addresses according to the operator specified. If
+the expression evaluates to true, then the utility returns an exit code of
+zero.  If the expression evaluates to false, then an non-zero exit code is
+returned.  This allows shell scripts to compare IPv4 and IPv6 addresses much
+like the shell 'test' macro allows the comparison of strings and numbers.
+
+Example usages comparing if an address is contained within a subnet:
+
+    netcalc test 209.193.4.7 '<<' 209.193.4.4/30
+    echo $?
+    0
+
+    netcalc test -- 209.193.4.7 -llt 209.193.4.4/30
+    echo $?
+    0
+    
+    if netcalc test -- 209.193.4.7 -llt 209.193.4.4/30; then 
+        echo "is within subnet"
+    else 
+        echo "is not in subnet";
+    fi
+
+Example usages testing if two addresses are the same:
+
+    netcalc test 2001:db8:f:300::cb00:712a = 2001:db8:f:300::203.0.113.42
+    echo $?
+    0
+
+    netcalc test -- 2001:db8:f:300::cb00:712a -eq 2001:db8:f:300::203.0.113.42
+    echo $?
+    0
+
+    if netcalc test 2001:db8:f:300::cb00:712a = 2001:db8:f:300::203.0.113.42; then 
+        echo "addresses are the same"
+    else 
+        echo "addresses are not the same";
+    fi
 
 
 tree widget
