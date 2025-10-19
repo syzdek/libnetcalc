@@ -791,7 +791,7 @@ my_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
-   if ((strchr(short_opt, 'c'))) printf("  -c family                 convert input to address family (eui48, eui64, ipv4, or ipv6)\n");
+   if ((strchr(short_opt, 'c'))) printf("  -c family                 convert input to address family\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'f'))) printf("  -f file                   input file\n");
