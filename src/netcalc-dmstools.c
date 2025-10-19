@@ -362,7 +362,7 @@ netcalc_free(
       cnf->superblock = NULL;
    };
 
-   bzero(cnf, sizeof(netcalc));
+   memset(cnf, 0, sizeof(netcalc));
    free(cnf);
 
    return;
@@ -380,7 +380,7 @@ netcalc_init(
       fprintf(stderr, "%s: out of virtual memory\n", PROGRAM_NAME);
       return(1);
    };
-   bzero(*cnfp, sizeof(netcalc));
+   memset(*cnfp, 0, sizeof(netcalc));
 
    if (((*cnfp)->list = malloc(sizeof(netcalc_ip *))) == NULL)
    {
@@ -396,7 +396,7 @@ netcalc_init(
       fprintf(stderr, "%s: out of virtual memory\n", PROGRAM_NAME);
       return(1);
    };
-   bzero((*cnfp)->superblock, sizeof(netcalc_ip));
+   memset((*cnfp)->superblock, 0, sizeof(netcalc_ip));
 
    (*cnfp)->cidr          = 128;
    (*cnfp)->cidr_limit    = -1;
@@ -464,7 +464,7 @@ netcalc_ip_free(
 {
    if (!(ip))
       return;
-   bzero(ip, sizeof(netcalc_ip));
+   memset(ip, 0, sizeof(netcalc_ip));
    free(ip);
    return;
 }
@@ -663,7 +663,7 @@ netcalc_ip_parse_ipv6(
    };
 
    // set state
-   bzero(nodes, sizeof(nodes));
+   memset(nodes, 0, sizeof(nodes));
 
    // splits octets
    for(pos = 0; ((pos < 8) && (str[0] != ':') && ((ptr = strchr(str, ':')) != NULL)); pos++)
@@ -933,7 +933,7 @@ netcalc_net_netmask_r(
          int32_t                       cidr )
 {
    int32_t pos;
-   bzero(netmask, sizeof(netcalc_ip));
+   memset(netmask, 0, sizeof(netcalc_ip));
    for(pos = 0; (pos < (cidr / 16)); pos++)
       netmask->addr[pos] = 0xffff;
    for(cidr %= 16; (cidr > 0); cidr--)
@@ -1211,7 +1211,7 @@ netcalc_results_list(
    memcpy(&network, cnf->superblock, sizeof(netcalc_ip));
    network.cidr = cnf->cidr_incr;
 
-   bzero(&incr, sizeof(netcalc_ip));
+   memset(&incr, 0, sizeof(netcalc_ip));
    if (cnf->cidr_incr > 0)
    {
       cidr               = cnf->cidr_incr-1;
