@@ -72,6 +72,12 @@
 // MARK: - Prototypes
 
 static void
+netcalc_cur_reset(
+         netcalc_set_t *               ns,
+         netcalc_cur_t *               cur );
+
+
+static void
 netcalc_rec_free(
          netcalc_rec_t *               rec );
 
@@ -150,9 +156,9 @@ netcalc_cur_init(
 
    if ((cur = malloc(sizeof(netcalc_cur_t))) == NULL)
       return(NETCALC_ENOMEM);
-   memset(cur, 0, sizeof(netcalc_cur_t));
 
-   cur->cur_set = ns;
+   netcalc_cur_reset(ns, cur);
+
    *curp = cur;
 
    return(0);
@@ -226,6 +232,22 @@ netcalc_cur_next(
    };
 
    return(netcalc_rec_get(rec, netp, commentp, datap, flagsp));
+}
+
+
+void
+netcalc_cur_reset(
+         netcalc_set_t *               ns,
+         netcalc_cur_t *               cur )
+{
+   assert(ns   != NULL);
+   assert(cur  != NULL);
+
+   memset(cur, 0, sizeof(netcalc_cur_t));
+   cur->cur_serial   = ns->set_serial;
+   cur->cur_set      = ns;
+
+   return;
 }
 
 
@@ -591,9 +613,13 @@ netcalc_set_debug(
    char *            comment;
    netcalc_net_t *   net;
    netcalc_cur_t *   cur;
+   netcalc_cur_t     cbuff;
 
    assert(ns != NULL);
 
+   netcalc_cur_reset(ns, &cbuff);
+
+   cur   = &cbuff;
    count = 0;
 
    // determine max depth
@@ -603,10 +629,6 @@ netcalc_set_debug(
    };
 
    // print records
-   if ((rc = netcalc_cur_init(ns, &cur)) != 0)
-   {  fprintf(stderr, "netcalc_cur_init(): %s\n", netcalc_strerror(rc));
-      return;
-   };
    if ((rc = netcalc_cur_first(cur, &net, &comment, NULL, &flags, &depth)) != 0)
    {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
       netcalc_cur_free(cur);
@@ -624,7 +646,6 @@ netcalc_set_debug(
       if ((comment))
          free(comment);
    };
-   netcalc_cur_free(cur);
 
    if (rc != NETCALC_ENOREC)
       fprintf(stderr, "netcalc_cur_next(): %s\n", netcalc_strerror(rc));
@@ -724,10 +745,8 @@ netcalc_set_stats(
 
    assert(ns != NULL);
 
-   memset(&cbuff, 0, sizeof(netcalc_cur_t));
-   cur               = &cbuff;
-   cur->cur_serial   = ns->set_serial;
-   cur->cur_set      = ns;
+   netcalc_cur_reset(ns, &cbuff);
+   cur = &cbuff;
 
    // loops through set and gathers stats
    if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, &flags, &depth)) != 0)
