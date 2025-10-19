@@ -143,7 +143,7 @@ my_widget_sort(
    maxlen = strlen(addr);
    if ((net))
       netcalc_free(net);;
-   while((rc = netcalc_cur_next(cur, &net, NULL, NULL, NULL, NULL)) == 0)
+   while(netcalc_cur_next(cur, &net, NULL, NULL, NULL, NULL) == 0)
    {  addr     = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       len      = strlen(addr);
       maxlen   = (len > maxlen) ? len : maxlen;
@@ -168,7 +168,7 @@ my_widget_sort(
       netcalc_free(net);
    if ((comment))
       free(comment);
-   while((rc = netcalc_cur_next(cur, &net, &comment, NULL, NULL, NULL)) == 0)
+   while(netcalc_cur_next(cur, &net, &comment, NULL, NULL, NULL) == 0)
    {  idx++;
       addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       if ((comment))
