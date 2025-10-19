@@ -395,7 +395,7 @@ main(
          return((rc == -1) ? 0 : 1);
       };
       if ((cnf->widget = my_widget_lookup(cnf->argv[0], 0)) == NULL)
-      {  if ((rc = netcalc_init(&net, cnf->argv[0], cnf->flags)) != NETCALC_SUCCESS)
+      {  if (netcalc_init(&net, cnf->argv[0], cnf->flags) != NETCALC_SUCCESS)
          {  fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
             fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
             my_free(cnf);
