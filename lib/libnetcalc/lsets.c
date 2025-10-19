@@ -731,6 +731,8 @@ netcalc_set_maxdepth(
    maxdepth = depth;
    while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, NULL, &depth)) == 0)
       maxdepth = (depth > maxdepth) ? depth : maxdepth;
+   if (rc != NETCALC_ENOREC)
+      return(rc);
 
    *maxdepthp = maxdepth;
 
