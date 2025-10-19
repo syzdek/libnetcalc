@@ -313,7 +313,7 @@ netcalc_convert_inet6(
    int      family;
    assert(net != NULL);
    family = net->net_flags & NETCALC_AF;
-   if ((rc = netcalc_addr_convert_inet(&net->net_addr, family)) != 0)
+   if ((rc = netcalc_addr_convert_inet6(&net->net_addr, family)) != 0)
       return(rc);
    if ((prefix))
    {  switch(net->net_flags & NETCALC_AF)
