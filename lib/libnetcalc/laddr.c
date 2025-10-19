@@ -180,8 +180,8 @@ netcalc_addr_convert_eui64(
          return(NETCALC_ENOTSUP);
 
       case NETCALC_AF_INET6:
-         addr->addr32[0] = 0;
-         addr->addr32[1] = 0;
+         addr->addr32[0] = _netcalc_slaac_in6.net_addr.addr32[0];
+         addr->addr32[1] = _netcalc_slaac_in6.net_addr.addr32[1];
          return(0);
 
       default:
