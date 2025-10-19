@@ -208,9 +208,9 @@ netcalc_addr_convert_inet(
          return(0);
 
       case NETCALC_AF_INET6:
-         addr->addr32[0] = 0;
-         addr->addr32[1] = 0;
-         addr->addr32[2] = 0;
+         addr->addr32[0] = _netcalc_ipv4_mapped_ipv6.net_addr.addr32[0];
+         addr->addr32[1] = _netcalc_ipv4_mapped_ipv6.net_addr.addr32[1];
+         addr->addr32[2] = _netcalc_ipv4_mapped_ipv6.net_addr.addr32[2];
          return(0);
 
       default:
