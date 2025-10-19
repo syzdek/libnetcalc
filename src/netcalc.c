@@ -650,6 +650,54 @@ my_free(
 }
 
 
+int
+my_netcalc_init(
+         my_config_t *                 cnf,
+         netcalc_net_t **              netp,
+         const char *                  addr )
+{
+   int                     rc;
+   int                     family;
+   const netcalc_net_t *   prefix;
+   netcalc_net_t *         net;
+
+   assert(cnf  != NULL);
+   assert(netp != NULL);
+   assert(addr != NULL);
+
+   // parse address string
+   if ((rc = netcalc_init(&net, addr, cnf->flags)) != NETCALC_SUCCESS)
+   {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), addr, netcalc_strerror(rc));
+      return(1);
+   };
+   if (!(cnf->net_prefix))
+   {  *netp = net;
+      return(0);
+   };
+
+   // determines address family and if prefix should be used when converting
+   netcalc_get_field(net, NETCALC_FLD_FAMILY, &family);
+   if (cnf->net_prefix_family == family)
+   {  *netp = net;
+      return(0);
+   };
+   prefix = (cnf->net_prefix_family == NETCALC_AF_INET6)
+            ? cnf->net_prefix
+            : NULL;
+
+   // convert address
+   if ((rc = netcalc_convert(net, cnf->net_prefix_family, prefix)) != 0)
+   {  netcalc_free(net);
+      fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), addr, netcalc_strerror(rc));
+      return(1);
+   };
+
+   *netp = net;
+
+   return(0);
+}
+
+
 void
 my_nets_free(
          netcalc_net_t **              nets )

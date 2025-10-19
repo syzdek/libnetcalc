@@ -112,7 +112,7 @@ my_widget_sort(
 
    // process network arguments
    for(idx = 0; (idx < cnf->argc); idx++)
-   {  if ((rc = netcalc_init(&net, cnf->argv[idx], cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = my_netcalc_init(cnf, &net, cnf->argv[idx])) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
          netcalc_set_free(ns);
          return(1);

@@ -181,6 +181,13 @@ struct _my_widget
 //////////////////
 // MARK: - Prototypes
 
+extern int
+my_netcalc_init(
+         my_config_t *                 cnf,
+         netcalc_net_t **              netp,
+         const char *                  addr );
+
+
 extern void
 my_nets_free(
          netcalc_net_t **              nets );
