@@ -334,7 +334,7 @@ netcalc_convert_inet6(
                      ? prefix->net_cidr
                      : net->net_cidr;
    };
-   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET;
+   net->net_flags = (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6;
    return(0);
 }
 
