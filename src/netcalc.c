@@ -61,7 +61,7 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FAMILY
-#define  NETCALC_SHORT_FAMILY "46Eep:"
+#define  NETCALC_SHORT_FAMILY "46c:Eep:"
 
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
@@ -523,6 +523,27 @@ my_arguments(
             cnf->flags |= NETCALC_AF_INET6;
             break;
 
+         case 'c':
+            if ((cnf->net_prefix_str))
+            {  fprintf(stderr, "%s: incompatible options `-c' and `-p'\n", my_prog_name(cnf));
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
+               return(1);
+            };
+            if (!(strcasecmp(optarg, "eui48")))
+               cnf->net_prefix_family = NETCALC_AF_EUI48;
+            else if (!(strcasecmp(optarg, "eui64")))
+               cnf->net_prefix_family = NETCALC_AF_EUI64;
+            else if (!(strcasecmp(optarg, "ipv4")))
+               cnf->net_prefix_family = NETCALC_AF_INET;
+            else if (!(strcasecmp(optarg, "ipv6")))
+               cnf->net_prefix_family = NETCALC_AF_INET6;
+            else
+            {  fprintf(stderr, "%s: unknown address family `%s'\n", my_prog_name(cnf), optarg);
+               fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
+               return(1);
+            };
+            break;
+
          case 'E':
             switch(cnf->flags & NETCALC_AF)
             {  case 0:                 str = NULL; break;
@@ -670,7 +691,7 @@ my_netcalc_init(
    {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), addr, netcalc_strerror(rc));
       return(1);
    };
-   if (!(cnf->net_prefix))
+   if ( (!(cnf->net_prefix)) && (!(cnf->net_prefix_family)) )
    {  *netp = net;
       return(0);
    };
@@ -770,6 +791,7 @@ my_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
+   if ((strchr(short_opt, 'c'))) printf("  -c family                 convert input to address family (eui48, eui64, ipv4, or ipv6)\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'f'))) printf("  -f file                   input file\n");
