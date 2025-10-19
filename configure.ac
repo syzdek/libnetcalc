@@ -153,7 +153,7 @@ AC_BINDLE(contrib/bindletools)
 AC_BINDLE_GIT_PACKAGE_VERSION([contrib/bindletools/build-aux/git-package-version.sh])
 
 # custom configure options
-AC_BINDLE_ENABLE_WARNINGS([-Wno-unknown-pragmas -Wno-missing-format-attribute -Wno-poison-system-directories], [], [c11])
+AC_BINDLE_ENABLE_WARNINGS([-Wno-unknown-pragmas -Wno-missing-format-attribute -Wno-poison-system-directories -Wno-implicit-fallthrough], [], [c11])
 AC_NETCALC_UTILITY
 AC_NETCALC_LIBRARY
 AC_NETCALC_DOCS
