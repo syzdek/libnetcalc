@@ -480,6 +480,7 @@ netcalc_ip_parse(
    char *          ptr;
    char *          endptr;
    char *          tmp;
+   size_t          len;
 
    assert(cnf != NULL);
 
@@ -490,12 +491,14 @@ netcalc_ip_parse(
       return(1);
    };
    ip->cidr = -1;
-   if ((tmp = strdup(str)) == NULL)
+   len      = strlen(str) + 1;
+   if ((tmp = malloc(len)) == NULL)
    {
       netcalc_ip_free(ip);
       fprintf(stderr, "%s: out of virtual memory\n", PROGRAM_NAME);
       return(1);
    };
+   strncpy(tmp, str, len);
 
    // parses CIDR
    if ((ptr = strrchr(tmp, '/')) != NULL)
@@ -1018,7 +1021,7 @@ netcalc_print_ip(
    netcalc_ip   broadcast;
    netcalc_ip   network;
    netcalc_ip   wildmask;
-   char         str_address[56];
+   char         str_address[256];
    char         str_netmask[56];
    char         str_broadcast[56];
    char         str_network[56];
