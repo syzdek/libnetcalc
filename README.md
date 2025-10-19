@@ -6,9 +6,9 @@ Network Calculations Library
 Copyright
 =========
 
-Network Calculations Library
-Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.
-All rights reserved.
+Network Calculations Library  
+Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
+All rights reserved.  
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
