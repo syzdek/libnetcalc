@@ -235,6 +235,7 @@ Example usages comparing if an address is contained within a subnet:
     else 
         echo "is not in subnet";
     fi
+    is within subnet
 
 Example usages testing if two addresses are the same:
 
@@ -251,6 +252,7 @@ Example usages testing if two addresses are the same:
     else 
         echo "addresses are not the same";
     fi
+    addresses are the same
 
 
 tree widget
