@@ -137,7 +137,7 @@ my_widget_tree(
       netcalc_free(net);
    };
 
-   netcalc_set_maxdepth(ns, &maxdepth);
+   netcalc_set_stats(ns, NULL, &maxdepth, NULL);
 
    // initialize cursor
    if ((rc = netcalc_cur_init(ns, &cur)) != 0)

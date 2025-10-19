@@ -375,9 +375,11 @@ netcalc_set_init(
 
 
 _NETCALC_F int
-netcalc_set_maxdepth(
+netcalc_set_stats(
          netcalc_set_t *               ns,
-         int *                         maxdepthp );
+         size_t *                      numelep,
+         int *                         maxdepthp,
+         int *                         familiesp );
 
 
 _NETCALC_F const char *

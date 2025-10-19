@@ -45,7 +45,7 @@ netcalc_set_add_str
 netcalc_set_debug
 netcalc_set_free
 netcalc_set_init
-netcalc_set_maxdepth
+netcalc_set_stats
 netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat

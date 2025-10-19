@@ -597,7 +597,7 @@ netcalc_set_debug(
    count = 0;
 
    // determine max depth
-   if ((rc = netcalc_set_maxdepth(ns, &maxdepth)) != 0)
+   if ((rc = netcalc_set_stats(ns, NULL, &maxdepth, NULL)) != 0)
    {  fprintf(stderr, "netcalc_set_maxdepth(): %s\n", netcalc_strerror(rc));
       return;
    };
@@ -707,34 +707,58 @@ netcalc_set_init(
 
 
 int
-netcalc_set_maxdepth(
+netcalc_set_stats(
          netcalc_set_t *               ns,
-         int *                         maxdepthp )
+         size_t *                      numelep,
+         int *                         maxdepthp,
+         int *                         familiesp )
 {
    int               rc;
    int               depth;
    int               maxdepth;
+   int               families;
+   int               flags;
+   size_t            numele;
    netcalc_cur_t *   cur;
    netcalc_cur_t     cbuff;
 
-   assert(ns         != NULL);
-   assert(maxdepthp  != NULL);
+   assert(ns != NULL);
 
-   cur = &cbuff;
-   memset(cur, 0, sizeof(netcalc_cur_t));
+   memset(&cbuff, 0, sizeof(netcalc_cur_t));
+   cur               = &cbuff;
    cur->cur_serial   = ns->set_serial;
    cur->cur_set      = ns;
 
-   // determine max depth
-   if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, NULL, &depth)) != 0)
+   // loops through set and gathers stats
+   if ((rc = netcalc_cur_first(cur, NULL, NULL, NULL, &flags, &depth)) != 0)
+   {  if (rc == NETCALC_ENOREC)
+      {  if ((numelep))
+            *numelep = 0;
+         if ((maxdepthp))
+            *maxdepthp = 0;
+         if ((familiesp))
+            *familiesp = 0;
+         return(0);
+      };
       return(rc);
+   };
+   numele   = 1;
+   families = flags & NETCALC_AF;
    maxdepth = depth;
-   while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, NULL, &depth)) == 0)
-      maxdepth = (depth > maxdepth) ? depth : maxdepth;
+   while((rc = netcalc_cur_next(cur, NULL, NULL, NULL, &flags, &depth)) == 0)
+   {  numele++;
+      families |= flags & NETCALC_AF;
+      maxdepth  = (depth > maxdepth) ? depth : maxdepth;
+   };
    if (rc != NETCALC_ENOREC)
       return(rc);
 
-   *maxdepthp = maxdepth;
+   if ((numelep))
+      *numelep = numele;
+   if ((maxdepthp))
+      *maxdepthp = maxdepth;
+   if ((familiesp))
+      *familiesp = families;
 
    return(0);
 }
