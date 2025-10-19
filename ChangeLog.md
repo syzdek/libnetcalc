@@ -4,16 +4,23 @@ Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.
 All rights reserved.  
 
 0.2
+   * docs:
+     - adding TODO
+     - adding examples to README
    * libnetcalc
      - changed default CIDR to 128 for IPv6 converted from EUI48 and EUI64.
      - replaced calls to strncpy() with internal function which
        mimics the behavior of BSD strlcpy().
      - refactored network conversion functions
      - refactored network set functions
-   * libnetcalc
-     - adding 'sort' widget
-     - adding 'tree' widget
-     - adding the prefix 'net' for linked widgets
+     - fixing functions for converting between families
+   * netcalc
+     - general: adding the prefix 'net' for linked widgets
+     - general: fixing handling of -p argument
+     - general: adding -c option for converting families without prefix
+     - sort widget: adding widget
+     - test widget: cleaning up usage output
+     - tree widget: adding widget
 
 0.1 2025-08-06
    - initial alpha release
