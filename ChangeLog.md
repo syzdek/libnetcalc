@@ -3,7 +3,7 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
-0.2
+0.2 2025-10-20
    * docs:
      - adding TODO
      - adding examples to README
