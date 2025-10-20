@@ -8,6 +8,7 @@ All rights reserved.
      - adding netcalc_set_query()
      - adding netcalc_set_query_str()
    * netcalc
+     - general: adding ability to suppress errors when importing network sets
      - match: adding widget
 
 0.3 2025-10-20
