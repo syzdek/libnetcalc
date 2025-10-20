@@ -143,6 +143,11 @@ my_usage(
          my_config_t *                 cnf );
 
 
+static int
+my_usage_import(
+         my_config_t *                 cnf );
+
+
 static my_widget_t *
 my_widget_lookup(
          const char *                  wname,
@@ -290,7 +295,7 @@ static my_widget_t my_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_sort,
-      .func_usage = &my_widget_null,
+      .func_usage = &my_usage_import,
    },
 
    // syntaxes widget
@@ -330,7 +335,7 @@ static my_widget_t my_widget_map[] =
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_tree,
-      .func_usage = &my_widget_null,
+      .func_usage = &my_usage_import,
    },
 
    // version widget
@@ -925,6 +930,28 @@ my_usage(
       if ((cnf->widget->func_usage))
          cnf->widget->func_usage(cnf);
 
+   return(0);
+}
+
+
+int
+my_usage_import(
+         my_config_t *                 cnf )
+{
+   assert(cnf != NULL);
+   printf("FILE FORMAT:\n");
+   printf("  address\n");
+   printf("  address comment\n");
+   printf("FILE EXAMPLE:\n");
+   printf("  2001:db8:d::/56\n");
+   printf("  203.0.113.0/24 documentation subnet per RFC5737\n");
+   printf("  2001:db8::/32         documentation subnet per RFC3849");
+   printf("  203.0.113.196/30\n");
+   printf("  203.0.113.192/29\n");
+   printf("  203.0.113.198/31  example point to point\n");
+   printf("  2001:db8:d:a::/64\n");
+   printf("  2001:db8:d::/48\n");
+   printf("\n");
    return(0);
 }
 
