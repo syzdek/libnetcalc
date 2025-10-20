@@ -688,9 +688,7 @@ my_netcalc_init(
 
    // parse address string
    if ((rc = netcalc_init(&net, addr, cnf->flags)) != NETCALC_SUCCESS)
-   {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), addr, netcalc_strerror(rc));
-      return(1);
-   };
+      return(rc);
    if ( (!(cnf->net_prefix)) && (!(cnf->net_prefix_family)) )
    {  *netp = net;
       return(0);
@@ -709,8 +707,7 @@ my_netcalc_init(
    // convert address
    if ((rc = netcalc_convert(net, cnf->net_prefix_family, prefix)) != 0)
    {  netcalc_free(net);
-      fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), addr, netcalc_strerror(rc));
-      return(1);
+      return(rc);
    };
 
    *netp = net;
