@@ -842,7 +842,7 @@ my_set_import(
          netcalc_free(net);
       };
       if (rc != 0)
-      {  fprintf(stderr, "%s: %s: %zu: %s\n", my_prog_name(cnf), cnf->in_filename, line, netcalc_strerror(rc));
+      {  fprintf(stderr, "%s: %s: %zu: %s: %s\n", my_prog_name(cnf), cnf->in_filename, line, address, netcalc_strerror(rc));
          if (!(cnf->cont))
             return(1);
       };
