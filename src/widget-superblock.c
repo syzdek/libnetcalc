@@ -129,17 +129,6 @@ my_widget_superblock(
       };
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
 
-      // convert address to prefix address family
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
-      if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
-      {  if ((rc = netcalc_convert(nets[idx], cnf->net_prefix_family, cnf->net_prefix)) != 0)
-         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-            my_nets_free(nets);
-            return(1);
-         };
-         family = cnf->net_prefix_family;
-      };
-
       if (family == NETCALC_AF_INET6)
          af_ipv6 = family;
       else if (family != NETCALC_AF_INET)

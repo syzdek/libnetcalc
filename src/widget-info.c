@@ -120,7 +120,6 @@ my_widget_info(
    int                  idx;
    int                  rc;
    int                  net_family;
-   int                  ival;
    int                  family_any;
    my_rec_t **          recs;
 
@@ -143,15 +142,6 @@ my_widget_info(
          return(1);
       };
 
-      // convert address to prefix address family
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY, &ival);
-      if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != ival) )
-      {  if ((rc = netcalc_convert(recs[idx]->net, cnf->net_prefix_family, cnf->net_prefix)) != 0)
-         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-            my_recs_free(recs);
-            return(1);
-         };
-      };
       my_rec_process(cnf, recs[idx]);
 
       if (!(net_family))
