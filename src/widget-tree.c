@@ -118,7 +118,7 @@ my_widget_tree(
    netcalc_cur_t *      cur;
 
    if ( (!(cnf->argc)) && (!(cnf->in_filename)) )
-   {  cnf->in_filename  = "<STDIN>";
+   {  cnf->in_filename  = "-";
       cnf->in_fd        = STDIN_FILENO;
    };
 
