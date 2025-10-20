@@ -825,6 +825,28 @@ netcalc_set_query(
 
 
 int
+netcalc_set_query_str(
+         netcalc_set_t *               ns,
+         const char *                  address,
+         netcalc_net_t **              resp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp )
+{
+   int                  rc;
+   netcalc_buff_t       b;
+
+   assert(ns      != NULL);
+   assert(address != NULL);
+
+   if ((rc = netcalc_parse(&b, address, ns->set_flags)) != 0)
+      return(rc);
+
+   return(netcalc_set_query(ns, &b.buff_net, resp, commentp, datap, flagsp));
+}
+
+
+int
 netcalc_set_stats(
          netcalc_set_t *               ns,
          size_t *                      numelep,
