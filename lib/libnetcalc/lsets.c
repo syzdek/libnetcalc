@@ -795,13 +795,14 @@ netcalc_set_query(
    comment = NULL;
    res     = NULL;
 
-   if ((rec->rec_comment))
+   if ( ((commentp)) && ((rec->rec_comment)) )
       if ((comment = strdup(rec->rec_comment)) == NULL)
          return(NETCALC_ENOMEM);
 
    if ((resp))
    {  if ((res = malloc(sizeof(netcalc_net_t))) == NULL)
-      {  free(comment);
+      {  if ((comment))
+            free(comment);
          return(NETCALC_ENOMEM);
       };
       memset(res, 0, sizeof(netcalc_net_t));
