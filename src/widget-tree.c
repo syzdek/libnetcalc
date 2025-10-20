@@ -116,6 +116,11 @@ my_widget_tree(
    netcalc_net_t *      net;
    netcalc_cur_t *      cur;
 
+   if ( (!(cnf->argc)) && (!(cnf->in_filename)) )
+   {  cnf->in_filename  = "<STDIN>";
+      cnf->in_fd        = STDIN_FILENO;
+   };
+
    // initializes set
    if ((rc = netcalc_set_init(&ns, 0)) != 0)
    {  printf("%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
@@ -135,6 +140,12 @@ my_widget_tree(
          return(1);
       };
       netcalc_free(net);
+   };
+
+   // import set from file
+   if ((my_set_import(cnf, ns)))
+   {  netcalc_set_free(ns);
+      return(1);
    };
 
    netcalc_set_stats(ns, NULL, &maxdepth, NULL);

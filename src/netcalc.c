@@ -43,6 +43,8 @@
 #include "netcalc-utility.h"
 
 #include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -63,6 +65,9 @@
 #undef   NETCALC_SHORT_FAMILY
 #define  NETCALC_SHORT_FAMILY "46C:Eep:"
 
+#undef   NETCALC_SHORT_FILE
+#define  NETCALC_SHORT_FILE "cf:"
+
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
 
@@ -82,6 +87,10 @@
    { "eui48",           no_argument,         NULL, 'e' }, \
    { "eui64",           no_argument,         NULL, 'E' }, \
    { "mac",             no_argument,         NULL, 'e' },
+
+#undef   NETCALC_LONG_FILE
+#define  NETCALC_LONG_FILE \
+   { "continue",        no_argument,         NULL, 'c' },
 
 #undef   NETCALC_LONG_FORMAT
 #define  NETCALC_LONG_FORMAT \
@@ -273,10 +282,10 @@ static my_widget_t my_widget_map[] =
    // sort widget
    {  .name       = "sort",
       .desc       = "sorts networks",
-      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
-      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
-      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
-      .arg_min    = 1,
+      .usage      = "[OPTIONS] [ <address> [ <address> [ ... <address> ] ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FILE NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FILE NETCALC_LONG_FORMAT ),
+      .arg_min    = 0,
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_sort,
@@ -313,10 +322,10 @@ static my_widget_t my_widget_map[] =
    // tree widget
    {  .name       = "tree",
       .desc       = "sorts networks and display is a tree structure",
-      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
-      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
-      .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
-      .arg_min    = 1,
+      .usage      = "[OPTIONS] [ <address> [ <address> [ ... <address> ] ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FILE NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FILE NETCALC_LONG_FORMAT ),
+      .arg_min    = 0,
       .arg_max    = -1,
       .aliases    = NULL,
       .func_exec  = &my_widget_tree,
@@ -383,6 +392,8 @@ main(
    cnf->argv         = argv;
    cnf->prog_name    = prog_name;
    cnf->flags        = NETCALC_DFLTS;
+   cnf->in_fd        = -1;
+   cnf->in_filename  = NULL;
 
    // check for symlink alias
    if ((cnf->widget = my_widget_lookup(cnf->prog_name, 1)) != NULL)
@@ -425,6 +436,18 @@ main(
 
    // adjust flags
    cnf->flags &= ~cnf->flags_negate;
+
+   // opens input file
+   if ((cnf->in_filename))
+   {  cnf->in_fd = STDIN_FILENO;
+      if ((strcmp("-", cnf->in_filename)))
+      {  if ((cnf->in_fd = open(cnf->in_filename, O_RDONLY)) == -1)
+         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->in_filename, strerror(errno));
+            my_free(cnf);
+            return(1);
+         };
+      };
+   };
 
    // process network prefix
    if ((cnf->net_prefix_str))
@@ -544,6 +567,10 @@ my_arguments(
             };
             break;
 
+         case 'c':
+            cnf->cont = 1;
+            break;
+
          case 'E':
             switch(cnf->flags & NETCALC_AF)
             {  case 0:                 str = NULL; break;
@@ -576,6 +603,10 @@ my_arguments(
                return(1);
             };
             cnf->flags |= NETCALC_AF_EUI48;
+            break;
+
+         case 'f':
+            cnf->in_filename = optarg;
             break;
 
          case 'h':
@@ -750,6 +781,81 @@ my_prog_name(
    snprintf(buff, sizeof(buff), "%s %s", prog_name, cnf->widget->name);
 
    return(buff);
+}
+
+
+int
+my_set_import(
+         my_config_t *                 cnf,
+         netcalc_set_t *               ns )
+{
+   int                  rc;
+   static char          buff[256];
+   ssize_t              len;
+   size_t               buff_len;
+   size_t               bol;        // beginning of line
+   size_t               eoa;        // end of address
+   size_t               boc;        // beginning of comment
+   size_t               eol;        // end of line
+   size_t               pos;
+   size_t               line;
+   const char *         address;
+   const char *         comment;
+   netcalc_net_t *      net;
+
+   assert(cnf != NULL);
+   assert(ns  != NULL);
+
+   line = 0;
+
+   if (cnf->in_fd == -1)
+      return(0);
+
+   if ((len = read(cnf->in_fd, buff, (sizeof(buff)-1))) == -1)
+   {  fprintf(stderr, "%s: read(): %s\n", my_prog_name(cnf), strerror(errno));
+      return(1);
+   };
+   buff[len]   = '\0';
+   buff_len    = (size_t)len;
+
+   while(buff_len > 0)
+   {  line++;
+      for(bol = 0;   ((buff[bol] == ' ')  || (buff[bol] == '\t')); bol++);
+      for(eoa = bol; ((buff[eoa] != '\n') && (buff[eoa] != '\0') && (buff[eoa] != ' ') && (buff[eoa] != '\t')); eoa++);
+      for(boc = eoa; ((buff[boc] == ' ')  || (buff[boc] == '\t')); boc++);
+      for(eol = boc; ((buff[eol] != '\n') && (buff[eol] != '\0')); eol++);
+      buff[eoa]   = '\0';
+      buff[eol]   = '\0';
+      address     = &buff[bol];
+      comment     = ((buff[boc])) ? &buff[boc] : NULL;
+
+      // add address to set
+      net = NULL;
+      if ((rc = my_netcalc_init(cnf, &net, address)) == NETCALC_SUCCESS)
+      {  rc = netcalc_set_add(ns, net, comment, NULL, 0);
+         netcalc_free(net);
+      };
+      if (rc != 0)
+      {  fprintf(stderr, "%s: %s: %zu: %s\n", my_prog_name(cnf), cnf->in_filename, line, netcalc_strerror(rc));
+         if (!(cnf->cont))
+            return(1);
+      };
+
+      // shift buffer
+      for(pos = 0; ((pos+eol+1) < buff_len); pos++)
+         buff[pos] = buff[pos+eol+1];
+      buff_len -= (eol+1);
+
+      // fill buffer
+      if ((len = read(cnf->in_fd, &buff[buff_len], (sizeof(buff)-1-buff_len))) == -1)
+      {  fprintf(stderr, "%s: read(): %s\n", my_prog_name(cnf), strerror(errno));
+         return(1);
+      };
+      buff_len += (size_t)len;
+      buff[buff_len] = '\0';
+   };
+
+   return(0);
 }
 
 

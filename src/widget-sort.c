@@ -104,6 +104,11 @@ my_widget_sort(
    netcalc_net_t *      net;
    netcalc_cur_t *      cur;
 
+   if ( (!(cnf->argc)) && (!(cnf->in_filename)) )
+   {  cnf->in_filename  = "<STDIN>";
+      cnf->in_fd        = STDIN_FILENO;
+   };
+
    // initializes set
    if ((rc = netcalc_set_init(&ns, 0)) != 0)
    {  printf("%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
@@ -123,6 +128,12 @@ my_widget_sort(
          return(1);
       };
       netcalc_free(net);
+   };
+
+   // import set from file
+   if ((my_set_import(cnf, ns)))
+   {  netcalc_set_free(ns);
+      return(1);
    };
 
    // initialize cursor
@@ -161,7 +172,7 @@ my_widget_sort(
    };
    addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
    if ((comment))
-      printf("%4i: %-*s %s\n", idx, (int)maxlen, addr, comment);
+      printf("%4i: %-*s  %s\n", idx, (int)maxlen, addr, comment);
    else
       printf("%4i: %s\n", idx, addr);
    if ((net))
@@ -172,7 +183,7 @@ my_widget_sort(
    {  idx++;
       addr = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       if ((comment))
-         printf("%4i: %-*s %s\n", idx, (int)maxlen, addr, comment);
+         printf("%4i: %-*s  %s\n", idx, (int)maxlen, addr, comment);
       else
          printf("%4i: %s\n", idx, addr);
       if ((net))

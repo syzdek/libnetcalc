@@ -114,12 +114,15 @@ struct _my_config
    int                        flags;
    int                        flags_negate;
    int                        net_prefix_family;
+   int                        in_fd;
+   int                        cont;
    int                        __pad_int;
    int                        argc;
    char * const *             argv;
    const char *               prog_name;
    netcalc_net_t *            net_prefix;
    const char *               net_prefix_str;
+   const char *               in_filename;
    const my_widget_t *        widget;
 };
 
@@ -196,6 +199,12 @@ my_nets_free(
 extern char *
 my_prog_name(
          my_config_t *                 cnf );
+
+
+extern int
+my_set_import(
+         my_config_t *                 cnf,
+         netcalc_set_t *               ns );
 
 
 // function in is in libnetcalc.a
