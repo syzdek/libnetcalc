@@ -7,6 +7,8 @@ All rights reserved.
    * libnetcalc:
      - adding netcalc_set_query()
      - adding netcalc_set_query_str()
+   * netcalc
+     - match: adding widget
 
 0.3 2025-10-20
    * autotools

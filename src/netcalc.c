@@ -259,6 +259,19 @@ static my_widget_t my_widget_map[] =
       .func_usage = &my_widget_null,
    },
 
+   // match widget
+   {  .name       = "match",
+      .desc       = "finds matching record within sorted networks",
+      .usage      = "[OPTIONS] <address> [ <address> [ ... <address> ] ]",
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FILE NETCALC_SHORT_FORMAT,
+      .long_opt   = NETCALC_LONG( NETCALC_LONG_FILE NETCALC_LONG_FORMAT ),
+      .arg_min    = 1,
+      .arg_max    = -1,
+      .aliases    = NULL,
+      .func_exec  = &my_widget_match,
+      .func_usage = &my_usage_import,
+   },
+
    // printf widget
    {  .name       = "printf",
       .desc       = "display formatted IP address information",

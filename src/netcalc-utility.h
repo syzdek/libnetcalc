@@ -297,6 +297,11 @@ my_widget_info(
 
 
 extern int
+my_widget_match(
+         my_config_t *                 cnf );
+
+
+extern int
 my_widget_printf(
          my_config_t *                 cnf );
 
