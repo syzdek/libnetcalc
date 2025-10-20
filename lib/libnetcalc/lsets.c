@@ -734,6 +734,97 @@ netcalc_set_init(
 
 
 int
+netcalc_set_query(
+         netcalc_set_t *               ns,
+         netcalc_net_t *               net,
+         netcalc_net_t **              resp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp )
+{
+   int                  rc;
+   netcalc_buff_t       nbuff;
+   netcalc_recs_t *     base;
+   netcalc_rec_t *      rec;
+   netcalc_net_t *      res;
+   char *               comment;
+   uint32_t             wouldbe;
+
+   assert(ns  != NULL);
+   assert(net != NULL);
+
+   // adjust nbuff
+   memcpy(&nbuff.buff_net.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
+   nbuff.buff_net.net_cidr       = net->net_cidr;
+   nbuff.buff_net.net_port       = net->net_port;
+   nbuff.buff_net.net_flags      = net->net_flags;
+   nbuff.buff_net.net_scope_name = NULL;
+   net                           = &nbuff.buff_net;
+   netcalc_addr_convert_inet6(&nbuff.buff_net.net_addr, (nbuff.buff_net.net_flags & NETCALC_AF));
+
+   base = &ns->set_recs;
+   rc = netcalc_set_bindex(ns, net, &base, &wouldbe, &rec);
+   switch(rc)
+   {  case NETCALC_IDX_AFTER:
+         if (!(rec))
+            return(NETCALC_ENOREC);
+         break;
+
+      case NETCALC_IDX_BEFORE:
+         if (!(rec))
+            return(NETCALC_ENOREC);
+         break;
+
+      case NETCALC_IDX_SAME:
+         rec = base->list[wouldbe];
+         break;
+
+      case NETCALC_IDX_SUBNET:
+         rec = base->list[wouldbe];
+         break;
+
+      case NETCALC_IDX_SUPERNET:
+         if (!(rec))
+            return(NETCALC_ENOREC);
+         break;
+
+      default:
+         return(NETCALC_EUNKNOWN);
+   };
+
+   comment = NULL;
+   res     = NULL;
+
+   if ((rec->rec_comment))
+      if ((comment = strdup(rec->rec_comment)) == NULL)
+         return(NETCALC_ENOMEM);
+
+   if ((resp))
+   {  if ((res = malloc(sizeof(netcalc_net_t))) == NULL)
+      {  free(comment);
+         return(NETCALC_ENOMEM);
+      };
+      memset(res, 0, sizeof(netcalc_net_t));
+      memcpy(&res->net_addr, &rec->rec_addr, sizeof(netcalc_addr_t));
+      res->net_cidr     = rec->rec_cidr;
+      res->net_flags    = rec->rec_flags;
+      netcalc_addr_convert(&res->net_addr, (res->net_flags & NETCALC_AF), NETCALC_AF_INET6);
+   };
+
+   if ((resp))
+      *resp = res;
+   if ((commentp))
+      *commentp = comment;
+   if ((datap))
+      *datap = rec->rec_data;
+   if ((flagsp))
+      *flagsp = rec->rec_flags;
+
+   return(0);
+}
+
+
+int
 netcalc_set_stats(
          netcalc_set_t *               ns,
          size_t *                      numelep,

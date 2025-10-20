@@ -375,6 +375,16 @@ netcalc_set_init(
 
 
 _NETCALC_F int
+netcalc_set_query(
+         netcalc_set_t *               ns,
+         netcalc_net_t *               net,
+         netcalc_net_t **              resp,
+         char **                       commentp,
+         void **                       datap,
+         int *                         flagsp );
+
+
+_NETCALC_F int
 netcalc_set_stats(
          netcalc_set_t *               ns,
          size_t *                      numelep,
