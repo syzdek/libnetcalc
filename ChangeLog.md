@@ -3,7 +3,7 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
-0.4
+0.4 2025-10-20
    * libnetcalc:
      - adding netcalc_set_query()
      - adding netcalc_set_query_str()

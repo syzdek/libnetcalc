@@ -35,7 +35,7 @@ AC_PREREQ([2.65])
 
 AC_COPYRIGHT([Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.])
 AC_REVISION(0.1)
-AC_INIT([Network Calculations Library],[0.3],[david@syzdek.net],[libnetcalc],[https://github.com/syzdek/libnetcalc/])
+AC_INIT([Network Calculations Library],[0.4],[david@syzdek.net],[libnetcalc],[https://github.com/syzdek/libnetcalc/])
 
 AC_SUBST([RELEASE_MONTH],["October 2025"])
 
