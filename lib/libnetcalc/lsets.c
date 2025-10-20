@@ -96,7 +96,8 @@ netcalc_set_bindex(
          netcalc_set_t *               ns,
          const netcalc_net_t *         key,
          netcalc_recs_t **             basep,
-         uint32_t *                    wouldbep );
+         uint32_t *                    wouldbep,
+         netcalc_rec_t **              parentp );
 
 
 static void
@@ -351,7 +352,8 @@ netcalc_set_bindex(
          netcalc_set_t *               ns,
          const netcalc_net_t *         key,
          netcalc_recs_t **             basep,
-         uint32_t *                    wouldbep )
+         uint32_t *                    wouldbep,
+         netcalc_rec_t **              parentp )
 {
    int                  rc;
    int32_t              low;
@@ -365,6 +367,9 @@ netcalc_set_bindex(
    assert(basep      != NULL);
    assert(*basep     != NULL);
    assert(wouldbep   != NULL);
+
+   if ((parentp))
+      *parentp = NULL;
 
    base = *basep;
    if (base->len == 0)
@@ -403,6 +408,8 @@ netcalc_set_bindex(
             return(NETCALC_IDX_SAME);
 
          case NETCALC_CMP_SUBNET:
+            if ((parentp))
+               *parentp = rec;
             if (!(rec->rec_children.len))
             {  *wouldbep = (uint32_t)mid;
                return(NETCALC_IDX_SUBNET);
@@ -486,7 +493,7 @@ netcalc_set_add(
    };
 
    base = &ns->set_recs;
-   rc = netcalc_set_bindex(ns, net, &base, &wouldbe);
+   rc = netcalc_set_bindex(ns, net, &base, &wouldbe, NULL);
    switch(rc)
    {  case NETCALC_IDX_AFTER:
          wouldbe++;
