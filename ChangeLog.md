@@ -17,7 +17,7 @@ All rights reserved.
    * netcalc
      - general: adding the prefix 'net' for linked widgets
      - general: fixing handling of -p argument
-     - general: adding -c option for converting families without prefix
+     - general: adding -C option for converting families without prefix
      - sort widget: adding widget
      - test widget: cleaning up usage output
      - tree widget: adding widget

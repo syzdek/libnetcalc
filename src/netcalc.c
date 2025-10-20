@@ -61,7 +61,7 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FAMILY
-#define  NETCALC_SHORT_FAMILY "46c:Eep:"
+#define  NETCALC_SHORT_FAMILY "46C:Eep:"
 
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
@@ -523,7 +523,7 @@ my_arguments(
             cnf->flags |= NETCALC_AF_INET6;
             break;
 
-         case 'c':
+         case 'C':
             if ((cnf->net_prefix_str))
             {  fprintf(stderr, "%s: incompatible options `-c' and `-p'\n", my_prog_name(cnf));
                fprintf(stderr, "Try `%s --help' for more information.\n",  my_prog_name(cnf));
@@ -788,7 +788,7 @@ my_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
-   if ((strchr(short_opt, 'c'))) printf("  -c family                 convert input to address family\n");
+   if ((strchr(short_opt, 'C'))) printf("  -C family                 convert input to address family\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'f'))) printf("  -f file                   input file\n");
