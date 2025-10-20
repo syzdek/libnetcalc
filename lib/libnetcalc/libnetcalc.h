@@ -171,6 +171,13 @@ netcalc_addr_cmp(
 
 
 extern int
+netcalc_addr_convert(
+         netcalc_addr_t *              addr,
+         int                           family,
+         int                           addr_family );
+
+
+extern int
 netcalc_addr_convert_eui48(
          netcalc_addr_t *              addr,
          int                           family  );

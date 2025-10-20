@@ -122,6 +122,37 @@ netcalc_addr_cmp(
 
 
 int
+netcalc_addr_convert(
+         netcalc_addr_t *              addr,
+         int                           family,
+         int                           addr_family )
+{
+   int rc;
+   switch(family)
+   {  case NETCALC_AF_EUI48:
+      rc = netcalc_addr_convert_eui48(addr, addr_family);
+      break;
+
+      case NETCALC_AF_EUI64:
+      rc = netcalc_addr_convert_eui64(addr, addr_family);
+      break;
+
+      case NETCALC_AF_INET:
+      rc = netcalc_addr_convert_inet(addr, addr_family);
+      break;
+
+      case NETCALC_AF_INET6:
+      rc = netcalc_addr_convert_inet6(addr, addr_family);
+      break;
+
+      default:
+         return(NETCALC_ENOTSUP);
+   };
+   return(rc);
+}
+
+
+int
 netcalc_addr_convert_eui48(
          netcalc_addr_t *              addr,
          int                           family  )
