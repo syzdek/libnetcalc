@@ -3,7 +3,7 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
-0.3
+0.3 2025-10-20
    * autotools
      - adding missing autoconf checks
    * netcalc
