@@ -1613,6 +1613,7 @@ netcalc_strfnet(
 {
    int         mflgs;
    int         modifiers;
+   int         ival;
    size_t      pos;
    size_t      off;
    size_t      padding;
@@ -1718,12 +1719,24 @@ netcalc_strfnet(
          case 'c':
             if (net->net_cidr == 128)
                continue;
-            snprintf(buff, sizeof(buff), "/%i", (int)net->net_cidr);
+            switch(net->net_flags & NETCALC_AF)
+            {  case NETCALC_AF_EUI48:  ival = (int)(net->net_cidr - 80); break;
+               case NETCALC_AF_EUI64:  ival = (int)(net->net_cidr - 64); break;
+               case NETCALC_AF_INET:   ival = (int)(net->net_cidr - 96); break;
+               default:                ival = (int)net->net_cidr;
+            };
+            snprintf(buff, sizeof(buff), "/%i", ival);
             break;
 
          // copy CIDR without delimiter
          case 'C':
-            snprintf(buff, sizeof(buff), "%i", (int)net->net_cidr);
+            switch(net->net_flags & NETCALC_AF)
+            {  case NETCALC_AF_EUI48:  ival = (int)(net->net_cidr - 80); break;
+               case NETCALC_AF_EUI64:  ival = (int)(net->net_cidr - 64); break;
+               case NETCALC_AF_INET:   ival = (int)(net->net_cidr - 96); break;
+               default:                ival = (int)net->net_cidr;
+            };
+            snprintf(buff, sizeof(buff), "%i", ival);
             break;
 
          // copy DNS arpa zone
