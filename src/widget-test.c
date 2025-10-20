@@ -106,8 +106,6 @@ my_widget_test(
 {
    int                  idx;
    int                  rc;
-   int                  flags;
-   int                  family;
    int                  cmp_op;
    int                  cmp_flags;
    int                  families[3];
@@ -116,9 +114,6 @@ my_widget_test(
    netcalc_net_t **     nets;
    const char *         op_str;
    const char *         strs[3];
-
-   flags  = cnf->flags;
-   flags &= ~cnf->flags_negate;
 
    strs[0]  = cnf->argv[0];
    strs[1]  = cnf->argv[2];
@@ -162,19 +157,10 @@ my_widget_test(
    // process network arguments
    for(idx = 0; (idx < 2); idx++)
    {  // parse address
-      if ((rc = netcalc_init(&nets[idx], strs[idx], flags)) != NETCALC_SUCCESS)
+      if ((rc = my_netcalc_init(cnf, &nets[idx], strs[idx])) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), strs[idx], netcalc_strerror(rc));
          my_nets_free(nets);
          return(1);
-      };
-      // convert address to prefix address family
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
-      if ( ((cnf->net_prefix)) && (cnf->net_prefix_family != family) )
-      {  if ((rc = netcalc_convert(nets[idx], cnf->net_prefix_family, cnf->net_prefix)) != 0)
-         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), strs[idx], netcalc_strerror(rc));
-            my_nets_free(nets);
-            return(1);
-         };
       };
       // obtain family
       netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &families[idx]);
