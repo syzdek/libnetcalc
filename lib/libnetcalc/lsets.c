@@ -631,7 +631,6 @@ netcalc_set_debug(
    // print records
    if ((rc = netcalc_cur_first(cur, &net, &comment, NULL, &flags, &depth)) != 0)
    {  fprintf(stderr, "netcalc_cur_first(): %s\n", netcalc_strerror(rc));
-      netcalc_cur_free(cur);
       return;
    };
    netcalc_set_debug_print(prefix, count++, depth, maxdepth, net, comment, flags);
