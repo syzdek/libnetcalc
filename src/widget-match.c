@@ -103,7 +103,7 @@ my_widget_match(
    netcalc_net_t *      res;
    const char *         addr;
 
-   if ( (!(cnf->argc)) && (!(cnf->in_filename)) )
+   if ( (cnf->argc < 2) && (!(cnf->in_filename)) )
    {  cnf->in_filename  = "-";
       cnf->in_fd        = STDIN_FILENO;
    };
