@@ -214,6 +214,15 @@ netcalc_parse(
          int                           flags );
 
 
+extern const char *
+netcalc_rtop(
+         const netcalc_rec_t *         rec,
+         char *                        dst,
+         size_t                        size,
+         int                           type,
+         int                           flags );
+
+
 extern size_t
 netcalc_strlcat(
          char * restrict               dst,
