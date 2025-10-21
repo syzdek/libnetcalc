@@ -7,6 +7,7 @@ All rights reserved.
    * libnetcalc:
      - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
    * netcalc
+     - general: adding man page
      - match: defaulting to STDIN if no networks or import file is specified
 
 0.4 2025-10-20

@@ -125,6 +125,7 @@ XFAIL_TESTS				=
 EXTRA_MANS				=
 EXTRA_DIST				= $(doc_DATA) \
 					  $(noinst_HEADERS) \
+					  doc/man/netcalc.1.in \
 					  lib/libnetcalc/libnetcalc.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -159,6 +160,7 @@ if ENABLE_LIBRARY_LA
 endif
 if ENABLE_UTILITY
    bin_PROGRAMS				+= src/netcalc
+   man_MANS				+= doc/man/netcalc.1
 endif
 
 
@@ -359,6 +361,10 @@ $(win64_builddir)/Makefile: Makefile
 		--enable-static \
 		CFLAGS="-Wno-implicit-fallthrough"
 	@touch "$(@)"
+
+
+doc/man/netcalc.1: Makefile $(srcdir)/doc/man/netcalc.1.in
+	@$(do_subst_dt)
 
 
 # local targets
