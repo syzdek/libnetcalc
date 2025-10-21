@@ -821,6 +821,7 @@ my_set_import(
    const char *         address;
    const char *         comment;
    netcalc_net_t *      net;
+   char                 filename[1024];
 
    assert(cnf != NULL);
    assert(ns  != NULL);
@@ -830,8 +831,12 @@ my_set_import(
    if (cnf->in_fd == -1)
       return(0);
 
+   filename[0] = '\0';
+   if ( (cnf->in_fd != STDIN_FILENO) && ((cnf->in_filename)) )
+      snprintf(filename, sizeof(filename), "%s: ", cnf->in_filename);
+
    if ((len = read(cnf->in_fd, buff, (sizeof(buff)-1))) == -1)
-   {  fprintf(stderr, "%s: read(): %s\n", my_prog_name(cnf), strerror(errno));
+   {  fprintf(stderr, "%s: %sread(): %s\n", my_prog_name(cnf), filename, strerror(errno));
       return(1);
    };
    buff[len]   = '\0';
@@ -856,7 +861,7 @@ my_set_import(
       };
       if (rc != 0)
       {  if ( (!(cnf->cont)) || (!(cnf->quiet)) )
-            fprintf(stderr, "%s: %s: %zu: %s: %s\n", my_prog_name(cnf), cnf->in_filename, line, address, netcalc_strerror(rc));
+            fprintf(stderr, "%s: %s%zu: %s: %s\n", my_prog_name(cnf), filename, line, address, netcalc_strerror(rc));
          if (!(cnf->cont))
             return(1);
       };
@@ -868,7 +873,7 @@ my_set_import(
 
       // fill buffer
       if ((len = read(cnf->in_fd, &buff[buff_len], (sizeof(buff)-1-buff_len))) == -1)
-      {  fprintf(stderr, "%s: read(): %s\n", my_prog_name(cnf), strerror(errno));
+      {  fprintf(stderr, "%s: %sread(): %s\n", my_prog_name(cnf), filename, strerror(errno));
          return(1);
       };
       buff_len += (size_t)len;
