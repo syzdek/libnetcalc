@@ -3,6 +3,12 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
+0.5
+   * libnetcalc:
+     - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
+   * netcalc
+     - match: defaulting to STDIN if no networks or import file is specified
+
 0.4 2025-10-20
    * libnetcalc:
      - adding netcalc_set_query()
