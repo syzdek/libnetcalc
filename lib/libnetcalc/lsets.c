@@ -811,6 +811,11 @@ netcalc_set_query(
             return(NETCALC_ENOREC);
          break;
 
+      case NETCALC_IDX_INSERT:
+         if (!(rec))
+            return(NETCALC_ENOREC);
+         break;
+
       default:
          return(NETCALC_EUNKNOWN);
    };
