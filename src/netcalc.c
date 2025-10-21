@@ -67,7 +67,7 @@
 #define  NETCALC_SHORT_FAMILY "46C:Eep:"
 
 #undef   NETCALC_SHORT_FILE
-#define  NETCALC_SHORT_FILE "cf:"
+#define  NETCALC_SHORT_FILE "cf:O"
 
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
@@ -632,6 +632,10 @@ my_arguments(
             my_usage(cnf);
             return(-1);
 
+         case 'O':
+            cnf->flags |= MY_FLG_WARN_ORDER;
+            break;
+
          case 'p':
             cnf->net_prefix_str = optarg;
             break;
@@ -812,6 +816,7 @@ my_set_import(
    static char          buff[256];
    ssize_t              len;
    size_t               buff_len;
+   int                  idx;
    size_t               bol;        // beginning of line
    size_t               eoa;        // end of address
    size_t               boc;        // beginning of comment
@@ -821,16 +826,68 @@ my_set_import(
    const char *         address;
    const char *         comment;
    netcalc_net_t *      net;
+   netcalc_net_t *      prev;
    char                 filename[1024];
+   char                 addr_str1[NETCALC_ADDRESS_LENGTH];
+   char                 addr_str2[NETCALC_ADDRESS_LENGTH];
 
    assert(cnf != NULL);
    assert(ns  != NULL);
 
    line = 0;
+   net  = NULL;
+   prev = NULL;
+
+   // process network arguments
+   for(idx = 0; (idx < cnf->argc); idx++)
+   {  if ((rc = my_netcalc_init(cnf, &net, cnf->argv[idx])) != NETCALC_SUCCESS)
+      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+         netcalc_set_free(ns);
+         if ((prev))
+            netcalc_free(prev);
+         if ((net))
+            netcalc_free(net);
+         return(1);
+      };
+      if ((rc = netcalc_set_add(ns, net, NULL, NULL, 0)) != 0)
+      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
+         netcalc_set_free(ns);
+         if ((prev))
+            netcalc_free(prev);
+         if ((net))
+            netcalc_free(net);
+         return(1);
+      };
+      if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
+      {  switch(netcalc_cmp(prev, net, 0))
+         {  case NETCALC_CMP_BEFORE:
+            case NETCALC_CMP_SUPERNET:
+            case NETCALC_CMP_SAME:
+               break;
+
+            default:
+               netcalc_ntop(prev, addr_str1, sizeof(addr_str1), NETCALC_TYPE_ADDRESS, cnf->flags);
+               netcalc_ntop(net,  addr_str2, sizeof(addr_str2), NETCALC_TYPE_ADDRESS, cnf->flags);
+               fprintf(stderr, "%s: %s and %s are out of order\n", my_prog_name(cnf), addr_str1, addr_str2);
+               break;
+         };
+      };
+      if ((prev))
+         netcalc_free(prev);
+      prev = net;
+      net  = NULL;
+   };
+
+   // reset state
+   if ((prev))
+      netcalc_free(prev);
+   prev = NULL;
+   net  = NULL;
 
    if (cnf->in_fd == -1)
       return(0);
 
+   // generate filename for warnings and errors
    filename[0] = '\0';
    if ( (cnf->in_fd != STDIN_FILENO) && ((cnf->in_filename)) )
       snprintf(filename, sizeof(filename), "%s: ", cnf->in_filename);
@@ -842,6 +899,7 @@ my_set_import(
    buff[len]   = '\0';
    buff_len    = (size_t)len;
 
+   // process input file
    while(buff_len > 0)
    {  line++;
       for(bol = 0;   ((buff[bol] == ' ')  || (buff[bol] == '\t')); bol++);
@@ -854,16 +912,38 @@ my_set_import(
       comment     = ((buff[boc])) ? &buff[boc] : NULL;
 
       // add address to set
-      net = NULL;
       if ((rc = my_netcalc_init(cnf, &net, address)) == NETCALC_SUCCESS)
-      {  rc = netcalc_set_add(ns, net, comment, NULL, 0);
-         netcalc_free(net);
-      };
+         rc = netcalc_set_add(ns, net, comment, NULL, 0);
       if (rc != 0)
       {  if ( (!(cnf->cont)) || (!(cnf->quiet)) )
             fprintf(stderr, "%s: %s%zu: %s: %s\n", my_prog_name(cnf), filename, line, address, netcalc_strerror(rc));
          if (!(cnf->cont))
+         {  if ((prev))
+               netcalc_free(prev);
+            if ((net))
+               netcalc_free(net);
             return(1);
+         };
+      };
+      if (rc == 0)
+      {  if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
+         {  switch(netcalc_cmp(prev, net, 0))
+            {  case NETCALC_CMP_BEFORE:
+               case NETCALC_CMP_SUPERNET:
+               case NETCALC_CMP_SAME:
+                  break;
+
+               default:
+                  netcalc_ntop(prev, addr_str1, sizeof(addr_str1), NETCALC_TYPE_ADDRESS, cnf->flags);
+                  netcalc_ntop(net,  addr_str2, sizeof(addr_str2), NETCALC_TYPE_ADDRESS, cnf->flags);
+                  fprintf(stderr, "%s: %s%zu: %s and %s are out of order\n", my_prog_name(cnf), filename, line, addr_str1, addr_str2);
+                  break;
+            };
+         };
+         if ((prev))
+            netcalc_free(prev);
+         prev = net;
+         net  = NULL;
       };
 
       // shift buffer
@@ -874,11 +954,16 @@ my_set_import(
       // fill buffer
       if ((len = read(cnf->in_fd, &buff[buff_len], (sizeof(buff)-1-buff_len))) == -1)
       {  fprintf(stderr, "%s: %sread(): %s\n", my_prog_name(cnf), filename, strerror(errno));
+         if ((prev))
+            netcalc_free(prev);
          return(1);
       };
       buff_len += (size_t)len;
       buff[buff_len] = '\0';
    };
+
+   if ((prev))
+      netcalc_free(prev);
 
    return(0);
 }
@@ -926,6 +1011,7 @@ my_usage(
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
    if ((strchr(short_opt, 'p'))) printf("  -p net, --prefix=net      use prefix when converting families\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
+   if ((strchr(short_opt, 'O'))) printf("  -O                        report out of order networks in input list\n");
    if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
    if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
    if ((strchr(short_opt, 'V'))) printf("  -V, --version             print version number and exit\n");

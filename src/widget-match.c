@@ -95,11 +95,9 @@ int
 my_widget_match(
          my_config_t *                 cnf )
 {
-   int                  idx;
    int                  rc;
    char *               comment;
    netcalc_set_t *      ns;
-   netcalc_net_t *      net;
    netcalc_net_t *      res;
    const char *         addr;
 
@@ -114,22 +112,7 @@ my_widget_match(
       return(1);
    };
 
-   // process network arguments
-   for(idx = 1; (idx < cnf->argc); idx++)
-   {  if ((rc = my_netcalc_init(cnf, &net, cnf->argv[idx])) != NETCALC_SUCCESS)
-      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_set_free(ns);
-         return(1);
-      };
-      if ((rc = netcalc_set_add(ns, net, NULL, NULL, 0)) != 0)
-      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_set_free(ns);
-         return(1);
-      };
-      netcalc_free(net);
-   };
-
-   // import set from file
+   // import set from file and cli arguments
    if ((my_set_import(cnf, ns)))
    {  netcalc_set_free(ns);
       return(1);

@@ -92,6 +92,8 @@
 
 #undef  MY_FLG_SHOW_ADDR
 #define MY_FLG_SHOW_ADDR      NETCALC_FLG_USR1
+#undef  MY_FLG_WARN_ORDER
+#define MY_FLG_WARN_ORDER     NETCALC_FLG_USR2
 
 
 //////////////////
