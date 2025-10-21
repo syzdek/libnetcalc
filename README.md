@@ -323,8 +323,8 @@ Preparing Source:
     $ ./autogen.sh
 
 
-Package Maintence Notes
-=======================
+Package Maintenance Notes
+=========================
 
 This is a collection of notes for developers to use when maintaining this
 package.
