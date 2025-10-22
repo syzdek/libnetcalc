@@ -156,7 +156,7 @@ my_widget_printf_usage(
    printf("  %%f    is replaced by first usable address.\n");
    printf("  %%I    is conditionally replaced by interface without delimiter.\n");
    printf("  %%i    is conditionally replaced by interface with delimiter.\n");
-   printf("  %%l    is replaced by first usable address.\n");
+   printf("  %%l    is replaced by last usable address.\n");
    printf("  %%N    is replaced by netmask.\n");
    printf("  %%n    is replaced by network address.\n");
    printf("  %%P    is replaced by port number without delimiter.\n");
