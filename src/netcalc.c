@@ -1009,10 +1009,10 @@ my_usage(
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");
    if ((strchr(short_opt, 'f'))) printf("  -f file                   input file\n");
    if ((strchr(short_opt, 'h'))) printf("  -h, --help                print this help and exit\n");
+   if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
+   if ((strchr(short_opt, 'O'))) printf("  -O                        report out of order networks in input list\n");
    if ((strchr(short_opt, 'p'))) printf("  -p net, --prefix=net      use prefix when converting families\n");
    if ((strchr(short_opt, 'q'))) printf("  -q, --quiet, --silent     do not print messages\n");
-   if ((strchr(short_opt, 'O'))) printf("  -O                        report out of order networks in input list\n");
-   if ((strchr(short_opt, 'M'))) printf("  -M                        display with IPv4-mapped IPv6 address\n");
    if ((strchr(short_opt, 'S'))) printf("  -S                        display without zero suppression\n");
    if ((strchr(short_opt, 'V'))) printf("  -V, --version             print version number and exit\n");
    if ((strchr(short_opt, 'v'))) printf("  -v, --verbose             print verbose messages\n");
