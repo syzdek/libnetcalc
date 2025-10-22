@@ -289,9 +289,7 @@ use zero compression for IPv6 addresses.
 The following example will display the specified EUI-48 address using four
 different specifier modfiers.
 .sp
-.RS 4
 Command:
-.sp
 .RS 4
 .nf
 netcalc printf "%Ba  %Ha  %La  %Oa" 00:16:3e:9b:54:54
@@ -300,38 +298,33 @@ netcalc printf "%Ba  %Ha  %La  %Oa" 00:16:3e:9b:54:54
 .sp
 .PP
 Result:
-.sp
 .RS 4
 .nf
 00163e9b5454  00-16-3e-9b-54-54  00:16:3e:9b:54:54  0016.3e9b.5454
 .fi
 .RE
-.RE
 .sp
 The following example will display the specified IP addresses and their
 network addresses, broadcast addresses, netmasks, and CIDR.
 .sp
-.RS 4
 Command:
-.sp
 .RS 4
 .nf
-netcalc printf "%-15a  %-15b  %-15n  %SN  %2C"  \\
+netcalc printf "%-15a %-15b %-15n %SN  %2C"  \\
     10.0.0.0/8 \\
     172.16.0.0/12 \\
-    192.168.0.0/16.fi
+    192.168.0.0/16
+.fi
 .RE
 .sp
 .PP
 Result:
-.sp
 .RS 4
 .nf
-10.0.0.0         10.255.255.255   10.0.0.0         255.000.000.000   8
-172.16.0.0       172.31.255.255   172.16.0.0       255.240.000.000  12
-192.168.0.0      192.168.255.255  192.168.0.0      255.255.000.000  16
+10.0.0.0        10.255.255.255  10.0.0.0        255.000.000.000   8
+172.16.0.0      172.31.255.255  172.16.0.0      255.240.000.000  12
+192.168.0.0     192.168.255.255 192.168.0.0     255.255.000.000  16
 .fi
-.RE
 .RE
 
 .SH SEE ALSO
