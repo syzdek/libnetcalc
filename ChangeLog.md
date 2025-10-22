@@ -13,6 +13,7 @@ All rights reserved.
      - info: adding man page
      - match: defaulting to STDIN if no networks or import file is specified
      - printf: adding man page
+     - test: adding man page
 
 0.4 2025-10-20
    * libnetcalc:

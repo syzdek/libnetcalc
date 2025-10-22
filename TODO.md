@@ -50,7 +50,6 @@ netcalc utility
      - write man page
 
    * test widget
-     - write man page
 
    * tree widget
      - write man page

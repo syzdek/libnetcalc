@@ -128,6 +128,7 @@ EXTRA_DIST				= $(doc_DATA) \
 					  doc/man/netcalc.1.in \
 					  doc/man/netcalc-info.1.in \
 					  doc/man/netcalc-printf.1.in \
+					  doc/man/netcalc-test.1.in \
 					  lib/libnetcalc/libnetcalc.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -165,6 +166,7 @@ if ENABLE_UTILITY
    man_MANS				+= doc/man/netcalc.1
    man_MANS				+= doc/man/netcalc-info.1
    man_MANS				+= doc/man/netcalc-printf.1
+   man_MANS				+= doc/man/netcalc-test.1
 endif
 
 
@@ -376,6 +378,10 @@ doc/man/netcalc-info.1: Makefile $(srcdir)/doc/man/netcalc-info.1.in
 
 
 doc/man/netcalc-printf.1: Makefile $(srcdir)/doc/man/netcalc-printf.1.in
+	@$(do_subst_dt)
+
+
+doc/man/netcalc-test.1: Makefile $(srcdir)/doc/man/netcalc-test.1.in
 	@$(do_subst_dt)
 
 

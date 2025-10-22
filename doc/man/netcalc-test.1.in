@@ -1,0 +1,246 @@
+.\"
+.\" Network Calculations Library
+.\" Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions are
+.\" met:
+.\"
+.\"    * Redistributions of source code must retain the above copyright
+.\"      notice, this list of conditions and the following disclaimer.
+.\"    * Redistributions in binary form must reproduce the above copyright
+.\"      notice, this list of conditions and the following disclaimer in the
+.\"      documentation and/or other materials provided with the distribution.
+.\"    * Neither the name of David M. Syzdek nor the
+.\"      names of its contributors may be used to endorse or promote products
+.\"      derived from this software without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+.\" IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+.\" THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+.\" PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL DAVID M. SYZDEK BE LIABLE FOR
+.\" ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+.\" CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.TH "NETCALC" "1" "@RELEASE_MONTH@" "@PACKAGE_NAME@" "User Commands"
+.SH NAME
+netcalc-test - evaluate two addresses
+
+.SH SYNOPSIS
+.nf
+\fBnetcalc\fR test [OPTIONS] <address> <operator> <address>
+.sp
+\fBnetcalc-test\fR [OPTIONS] <address> <operator> <address>
+.sp
+\fBnetcalctest\fR [OPTIONS] <address> <operator> <address>
+.sp
+\fBnetest\fR [OPTIONS] <address> <operator> <address>
+
+.SH DESCRIPTION
+The netcalc test widget evaluates two addresses according to the specified
+operator.
+
+.SH OPTIONS
+
+.TP 25
+\fB-4\fR, \fB--ipv4\fR
+The input address uses the format for the IPv4 address family. This option can
+be combined with \fB--ipv6\fR, \fB--eui48\fR, and \fB--eui64\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-6\fR, \fB--ipv6\fR
+The input address uses the format for the IPv6 address family. This option can
+be combined with \fB--ipv4\fR, \fB--eui48\fR, and \fB--eui64\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-C\fR \fIfamily\fR
+Convert input addresses to specified address \fIfamily\fR. Where \fIfamily\fR
+may be ipv4, ipv6, eui48, or eui64.  The prefix \fI::ffff:0:0\fR will be
+used when converting from IPv4 addresses to IPv6 addresses.  The prefix
+\fIfe80::\fR will be used when converting from EUI-48 and EUI-64 addresses to
+IPv6 addresses.
+
+.TP 25
+\fB-E\fR, \fB--eui64\fR
+The input address uses the format for the EUI-64 address family. This option
+can be combined with \fB--ipv4\fR, \fB--ipv6\fR, and \fB--eui48\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-e\fR, \fB--eui48\fR, \fB--mac\fR
+The input address uses the format for MAC addresses or EUI-48 address family.
+This option can be combined with \fB--ipv4\fR, \fB--ipv6\fR, and
+\fB--eui64\fR.  Addresses of other address families will generate an error.
+
+.TP 25
+\fB-h\fR, \fB--help\fR
+Print usage information and exit
+
+.TP 25
+\fB-p\fR \fInet\fR, \fB--prefix\fR \fInet\fR
+Similar to the \fB-C\fR option, but the address family is determined by the
+address \fInet\fR
+
+When converting to an IPv6 address from an IPv4 address, the first 96 bits of
+\fInet\fR will be used as the prefix for the resulting IPv6 address and the
+CIDR will be set to the CIDR which is the larger of the source and \fInet\fR
+addresses.
+
+When converting to an IPv6 address from an EUI-48 address, the source address
+is converted to a modified EUI-64 address and treated as an EUI-64 address.
+
+When converting to an IPv6 address from an EUI-64 address, the first 64 bits
+of \fInet\fR will be used as the prefix for the resulting IPv6 address and the
+CIDR from the \fInet\fR address will be used as the CIDR of the resulting
+address.
+
+.TP 25
+\fB-q\fR, \fB--quiet\fR, \fB--silent\fR
+Suppress warnings and excess messages
+
+.TP 25
+\fB-V\fR, \fB--version\fR
+Print version number and exit
+
+.TP 25
+\fB-v\fR, \fB--verbose\fR
+Print additional information about the addresses and the supernet of all the
+provided addresses.
+
+.SH OPERATORS
+.PP
+.RS 0
+.PD 0
+.TP 6
+\<
+is less than
+.TP 6
+\<=
+is less than or equal
+.TP 6
+=
+equals
+.TP 6
+\>=
+is greater than or equal
+.TP 6
+\>
+is greater than
+.TP 6
+\<\>
+is not equal
+.TP 6
+\<\<
+is contained within
+.TP 6
+\<\<=
+is contained within or equals
+.TP 6
+=\>\>
+contains or equals
+.TP 6
+\>\>
+contains
+.TP 6
+-lt
+is less than
+.TP 6
+-le
+is less than or equal
+.TP 6
+-eq
+equals
+.TP 6
+-ge
+is greater than or equal
+.TP 6
+-gt
+is greater than
+.TP 6
+-ne
+is not equal
+.TP 6
+-llt
+is contained within
+.TP 6
+-lle
+is contained within or equals
+.TP 6
+-gge
+contains or equals
+.TP 6
+-ggt
+contains
+.RE
+
+.SH EXAMPLES
+The following example tests if the first network is contained within the
+second network:
+.sp
+.RS 4
+.nf
+netcalc test -- 209.193.4.7 '<<' 209.193.4.0/30; echo $?
+2
+
+netcalc test -- 209.193.4.7 -llt 209.193.4.0/30; echo $?
+2
+
+netcalc test -- 209.193.4.7 '<<' 209.193.4.4/30; echo $?
+0
+
+netcalc test -- 209.193.4.7 -llt 209.193.4.4/30; echo $?
+0
+.fi
+.RE
+.sp
+The following example tests if the first network is the same as the second
+network:
+.sp
+.RS 4
+.nf
+netcalc test -- \\
+   2001:db8:f:300::cb00:712a = 2001:db8:f:300::203.0.113.42; \\
+   echo $?;
+0
+
+netcalc test -- \\
+   2001:db8:f:300::cb00:712a -eq 2001:db8:f:300::203.0.113.42; \\
+   echo $?;
+0
+
+netcalc test -- \\
+   2001:db8:f:300::cb00:712a = 2001:db8:f:300::203.0.113.43; \\
+   echo $?;
+2
+
+netcalc test -- \\
+   2001:db8:f:300::cb00:712a -eq 2001:db8:f:300::203.0.113.43; \\
+   echo $?;
+2
+.fi
+.RE
+
+.SH SEE ALSO
+.BR netcalc (1),
+.BR netcalc-info(1),
+.BR netcalc-syntaxes (1),
+.BR netcalc (3),
+.BR netcalc_cmp (3)
+
+.SH AUTHOR
+David M. Syzdek <david@syzdek.net>
+
+.SH ACKNOWLEDGEMENTS
+\fB@PACKAGE_NAME@\fR is developed and maintained by David M. Syzdek
+<david@syzdek.net>.
+
+.\" end of man page
+
