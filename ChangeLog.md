@@ -9,6 +9,7 @@ All rights reserved.
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports
+     - info: adding man page
      - match: defaulting to STDIN if no networks or import file is specified
 
 0.4 2025-10-20

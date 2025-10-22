@@ -126,6 +126,7 @@ EXTRA_MANS				=
 EXTRA_DIST				= $(doc_DATA) \
 					  $(noinst_HEADERS) \
 					  doc/man/netcalc.1.in \
+					  doc/man/netcalc-info.1.in \
 					  lib/libnetcalc/libnetcalc.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -161,6 +162,7 @@ endif
 if ENABLE_UTILITY
    bin_PROGRAMS				+= src/netcalc
    man_MANS				+= doc/man/netcalc.1
+   man_MANS				+= doc/man/netcalc-info.1
 endif
 
 
@@ -364,6 +366,10 @@ $(win64_builddir)/Makefile: Makefile
 
 
 doc/man/netcalc.1: Makefile $(srcdir)/doc/man/netcalc.1.in
+	@$(do_subst_dt)
+
+
+doc/man/netcalc-info.1: Makefile $(srcdir)/doc/man/netcalc-info.1.in
 	@$(do_subst_dt)
 
 
