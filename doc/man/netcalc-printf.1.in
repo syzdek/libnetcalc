@@ -285,6 +285,44 @@ z
 use zero compression for IPv6 addresses.
 .RE
 
+.SH ESCAPE SEQUENCES
+.PP
+.RS 0
+.PD 0
+.TP 4
+\\a
+Alert (Beep, Bell)
+.TP 4
+\\b
+Backspace
+.TP 4
+\\f
+Formfeed Page Break
+.TP 4
+\\n
+Newline
+.TP 4
+\\r
+Carriage Return
+.TP 4
+\\t
+Horizontal Tab
+.TP 4
+\\v
+Vertical Tab
+.TP 4
+\\\\
+Backslash
+.TP 4
+\\'
+Apostrophe or single quotation mark
+.TP 4
+\\"
+Double quotation mark
+.TP 4
+\\?
+Question mark
+
 .SH EXAMPLES
 The following example will display the specified EUI-48 address using four
 different specifier modfiers.

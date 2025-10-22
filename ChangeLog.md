@@ -6,6 +6,7 @@ All rights reserved.
 0.5
    * libnetcalc:
      - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
+     - adding support for escape characters in netcalc_strfnet()
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports

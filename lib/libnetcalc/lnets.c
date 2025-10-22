@@ -1629,7 +1629,27 @@ netcalc_strfnet(
       s[0] = '\0';
 
    for(pos = 0, off = 0; ((fmt[pos])); pos++)
-   {  // copy non-keywords
+   {  // process escape characters
+      if (fmt[pos] == '\\')
+      {  switch(fmt[++pos])
+         {  case 'a':  s[off] = '\a'; break;
+            case 'b':  s[off] = '\b'; break;
+            case 'f':  s[off] = '\f'; break;
+            case 'n':  s[off] = '\n'; break;
+            case 'r':  s[off] = '\r'; break;
+            case 't':  s[off] = '\t'; break;
+            case 'v':  s[off] = '\v'; break;
+            case '\\': s[off] = '\\'; break;
+            case '\'': s[off] = '\''; break;
+            case '\"': s[off] = '\"'; break;
+            case '\?': s[off] = '\?'; break;
+            default: return(0);
+         };
+         s[++off] = '\0';
+         continue;
+      };
+
+      // copy non-keywords
       if (fmt[pos] != '%')
       {  if ((off+1) < maxsize)
          {  s[off+0] = fmt[pos];
