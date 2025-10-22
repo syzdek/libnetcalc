@@ -1,0 +1,353 @@
+.\"
+.\" Network Calculations Library
+.\" Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions are
+.\" met:
+.\"
+.\"    * Redistributions of source code must retain the above copyright
+.\"      notice, this list of conditions and the following disclaimer.
+.\"    * Redistributions in binary form must reproduce the above copyright
+.\"      notice, this list of conditions and the following disclaimer in the
+.\"      documentation and/or other materials provided with the distribution.
+.\"    * Neither the name of David M. Syzdek nor the
+.\"      names of its contributors may be used to endorse or promote products
+.\"      derived from this software without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+.\" IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+.\" THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+.\" PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL DAVID M. SYZDEK BE LIABLE FOR
+.\" ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+.\" SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+.\" CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.TH "NETCALC" "1" "@RELEASE_MONTH@" "@PACKAGE_NAME@" "User Commands"
+.SH NAME
+netcalc-printf - display IP address information
+
+.SH SYNOPSIS
+.nf
+\fBnetcalc\fR printf [OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]
+.sp
+\fBnetcalc-printf\fR [OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]
+.sp
+\fBnetcalcprintf\fR [OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]
+.sp
+\fBneprintf\fR [OPTIONS] <fmt> <address> [ <address> [ ... <address> ] ]
+
+.SH DESCRIPTION
+The netcalc printf widget processes one or more addresses and prints them
+according to the format provided on the command line.
+
+The \fIfmt\fR string may include format specifiers (substrings beginning
+with \fI%\fR) and format specifier modifers.  A format specifier follows the
+syntqx:
+.sp
+.RS 4
+.nf
+\fI%[flags][width]specifier\fR
+.fi
+.RE
+.PP
+where:
+.RS 4
+.PD 0
+.TP 11
+\fIflags\fR
+is one or more specifier modiers (see \fBSPECIFIER MODIFIERS\fR).
+.TP 11
+\fIwidth\fR
+is the minumum number of characters to be printed by the specifier.  If the
+specified value is shorter than the \fIwidth\fR, the result is padded with
+spaces.  The value is not truncated if it is longer than \fIwidth\fR.
+.TP 11
+\fIspecifier\fR
+is character use to denote which value to insert into the string (see
+\fBFORMAT SPECIFIERS\fR).
+.RE
+
+.SH OPTIONS
+
+.TP 25
+\fB-4\fR, \fB--ipv4\fR
+The input address uses the format for the IPv4 address family. This option can
+be combined with \fB--ipv6\fR, \fB--eui48\fR, and \fB--eui64\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-6\fR, \fB--ipv6\fR
+The input address uses the format for the IPv6 address family. This option can
+be combined with \fB--ipv4\fR, \fB--eui48\fR, and \fB--eui64\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-C\fR \fIfamily\fR
+Convert input addresses to specified address \fIfamily\fR. Where \fIfamily\fR
+may be ipv4, ipv6, eui48, or eui64.  The prefix \fI::ffff:0:0\fR will be
+used when converting from IPv4 addresses to IPv6 addresses.  The prefix
+\fIfe80::\fR will be used when converting from EUI-48 and EUI-64 addresses to
+IPv6 addresses.
+
+.TP 25
+\fB-E\fR, \fB--eui64\fR
+The input address uses the format for the EUI-64 address family. This option
+can be combined with \fB--ipv4\fR, \fB--ipv6\fR, and \fB--eui48\fR.  Addresses
+of other address families will generate an error.
+
+.TP 25
+\fB-e\fR, \fB--eui48\fR, \fB--mac\fR
+The input address uses the format for MAC addresses or EUI-48 address family.
+This option can be combined with \fB--ipv4\fR, \fB--ipv6\fR, and
+\fB--eui64\fR.  Addresses of other address families will generate an error.
+
+.TP 25
+\fB-h\fR, \fB--help\fR
+Print usage information and exit
+
+.TP 25
+\fB-M\fR
+Display IPv6 addresses as IPv4-mapped IPv6 addresses.
+
+.TP 25
+\fB-p\fR \fInet\fR, \fB--prefix\fR \fInet\fR
+Similar to the \fB-C\fR option, but the address family is determined by the
+address \fInet\fR
+
+When converting to an IPv6 address from an IPv4 address, the first 96 bits of
+\fInet\fR will be used as the prefix for the resulting IPv6 address and the
+CIDR will be set to the CIDR which is the larger of the source and \fInet\fR
+addresses.
+
+When converting to an IPv6 address from an EUI-48 address, the source address
+is converted to a modified EUI-64 address and treated as an EUI-64 address.
+
+When converting to an IPv6 address from an EUI-64 address, the first 64 bits
+of \fInet\fR will be used as the prefix for the resulting IPv6 address and the
+CIDR from the \fInet\fR address will be used as the CIDR of the resulting
+address.
+
+.TP 25
+\fB-q\fR, \fB--quiet\fR, \fB--silent\fR
+Suppress warnings and excess messages
+
+.TP 25
+\fB-S\fR
+Display IPv4 and IPv6 addresses without zero suppression.  For
+example the address \fI203.0.113.0\fR will be displayed as
+\fI203.000.113.000\fR and the address \fI2001:db8::1\fR will be displayed as
+\fI2001:0db8:0000:0000:0000:0000:0000:0001\fR.
+
+.TP 25
+\fB-V\fR, \fB--version\fR
+Print version number and exit
+
+.TP 25
+\fB-v\fR, \fB--verbose\fR
+Print additional information about the addresses and the supernet of all the
+provided addresses.
+
+.TP 25
+\fB-Z\fR
+Display IPv6 addresses without zero compression.  For example the address
+\fI2001:db8::1\fR will be displayed as \fI2001:db8:0:0:0:0:0:1\fR.
+
+.TP 25
+\fB--colon\fR
+Display EUI-48 and EUI-64 addresses in blocks of two digits with colons as
+delimiters. \fI00:16:3e:9b:54:54\fR is an example with an EUI-48 address and
+\fI00:16:3e:71:9c:52:f0:d9\fR is an example with an EUI-64 address.  This is
+the default format for EUI-48 addresses.
+
+.TP 25
+\fB--dash\fR
+Display EUI-48 and EUI-64 addresses in blocks of two digits with dashes as
+delimiters. \fI00-16-3e-9b-54-54\fR is an example with an EUI-48 address and
+\fI00-16-3e-71-9c-52-f0-d9\fR is an example with an EUI-64 address.
+
+.TP 25
+\fB--colon\fR
+Display EUI-48 and EUI-64 addresses in blocks of four digits with dots as
+delimiters. \fI0016.3e9b.5454\fR is an example with an EUI-48 address and
+\fI0016.3e71.9c52.f0d9\fR is an example with an EUI-64 address.  This is the
+default format for EUI-64 addresses.
+
+.SH FORMAT SPECIFIERS
+.PP
+.RS 0
+.PD 0
+.TP 4
+%
+is replaced by '%'.
+.TP 4
+A
+is replaced by the input address using the address family's default notation.
+.TP 4
+a
+is replaced by the input address.
+.TP 4
+b
+is replaced by the input address's broadcast address.
+.TP 4
+C
+is replaced by the input address's CIDR without the delimiter.
+.TP 4
+c
+is replaced by the input address's CIDR with the delimiter if the CIDR is
+greater than a single address, otherwise is replaced with an empty string.
+.TP 4
+D
+is replaced by the input address's DNS arpa zone.  This is the same as "%d"
+if the address is IPv4 with a CIDR of /32 or the address is IPv6 with a CIDR
+of /128.
+.TP 4
+d
+is replaced by the input address's DNS arpa host.
+.TP 4
+F
+is replaced by the input address's family (i.e. IPv4, IPv6, EUI48, or EUI64).
+.TP 4
+f
+is replaced by the input address network's first usable address.
+.TP 4
+I
+is replaced by the input addresses's interface name without a delimiter if the
+address is IPv6 with an interface scope, otherwise is replaced with an empty
+string.
+.TP 4
+i
+is replaced by the input addresses's interface name with a delimiter if the
+address is IPv6 with an interface scope, otherwise is replaced with an empty
+string.
+.TP 4
+l
+is replaced by the input address network's last usable address.
+.TP 4
+N
+is replaced by the input address's netmask.
+.TP 4
+n
+is replaced by the input address's network address.
+.TP 4
+P
+is replaced by the input port number without a delimiter.
+.TP 4
+p
+is replaced by the input port number with a delimiter if the port number is
+not zero, otherwise is replaced with an empty string.
+.TP 4
+W
+is replaced by the input address's wildcard address.
+.RE
+
+.SH SPECIFIER MODIFIERS
+.PP
+.RS 0
+.PD 0
+.TP 4
+-
+justify padded fields to the left.
+.TP 4
+B
+do not use delimiters (EUI48 and EUI64).
+.TP 4
+H
+use dash delimiters (EUI48 and EUI64).
+.TP 4
+L
+use colon delimiters (EUI48 and EUI64).
+.TP 4
+M
+do not use IPv4-mapped IPv6 address notation with IPv6 addresses.
+.TP 4
+m
+use IPv4-mapped IPv6 address notation with IPv6 addresses.
+.TP 4
+O
+use dot delimiters (EUI48 and EUI64).
+.TP 4
+S
+do not use zero suppression for IPv4 and IPv6 addresses.
+.TP 4
+s
+use zero suppression for IPv4 and IPv6 addresses.
+.TP 4
+Z
+do not use zero compression for IPv6 addresses.
+.TP 4
+z
+use zero compression for IPv6 addresses.
+.RE
+
+.SH EXAMPLES
+The following example will display the specified EUI-48 address using four
+different specifier modfiers.
+.sp
+.RS 4
+Command:
+.sp
+.RS 4
+.nf
+netcalc printf "%Ba  %Ha  %La  %Oa" 00:16:3e:9b:54:54
+.fi
+.RE
+.sp
+.PP
+Result:
+.sp
+.RS 4
+.nf
+00163e9b5454  00-16-3e-9b-54-54  00:16:3e:9b:54:54  0016.3e9b.5454
+.fi
+.RE
+.RE
+.sp
+The following example will display the specified IP addresses and their
+network addresses, broadcast addresses, netmasks, and CIDR.
+.sp
+.RS 4
+Command:
+.sp
+.RS 4
+.nf
+netcalc printf "%-15a  %-15b  %-15n  %SN  %2C"  \\
+    10.0.0.0/8 \\
+    172.16.0.0/12 \\
+    192.168.0.0/16.fi
+.RE
+.sp
+.PP
+Result:
+.sp
+.RS 4
+.nf
+10.0.0.0         10.255.255.255   10.0.0.0         255.000.000.000   8
+172.16.0.0       172.31.255.255   172.16.0.0       255.240.000.000  12
+192.168.0.0      192.168.255.255  192.168.0.0      255.255.000.000  16
+.fi
+.RE
+.RE
+
+.SH SEE ALSO
+.BR netcalc (1),
+.BR netcalc-info(1),
+.BR netcalc-superblock (1),
+.BR netcalc-syntaxes (1),
+.BR netcalc (3),
+.BR netcalc_strfnet (3)
+
+.SH AUTHOR
+David M. Syzdek <david@syzdek.net>
+
+.SH ACKNOWLEDGEMENTS
+\fB@PACKAGE_NAME@\fR is developed and maintained by David M. Syzdek
+<david@syzdek.net>.
+
+.\" end of man page
+

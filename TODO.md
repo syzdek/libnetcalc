@@ -38,7 +38,6 @@ netcalc utility
    * info widget
 
    * printf widget
-     - write man page
 
    * sort widget
      - write man page
