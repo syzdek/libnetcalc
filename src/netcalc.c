@@ -93,6 +93,7 @@
 #undef   NETCALC_LONG_FILE
 #define  NETCALC_LONG_FILE \
    { "continue",        no_argument,         NULL, 'c' }, \
+   { "superblock",      required_argument,   NULL, 'B' }, \
    { "prefix",          required_argument,   NULL, 'p' },
 
 #undef   NETCALC_LONG_FORMAT
@@ -481,6 +482,16 @@ main(
       netcalc_get_field(cnf->net_prefix, NETCALC_FLD_FAMILY, &cnf->net_prefix_family);
    };
 
+   // process superblock
+   if ((cnf->net_super_str))
+   {  if ((rc = netcalc_init(&cnf->net_super, cnf->net_super_str, cnf->flags)) != NETCALC_SUCCESS)
+      {  fprintf(stderr, "%s: superblock: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
+         fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
+         my_free(cnf);
+         return(1);
+      };
+   };
+
    rc = cnf->widget->func_exec(cnf);
 
    my_free(cnf);
@@ -565,6 +576,10 @@ my_arguments(
                return(1);
             };
             cnf->flags |= NETCALC_AF_INET6;
+            break;
+
+         case 'B':
+            cnf->net_super_str = optarg;
             break;
 
          case 'C':
@@ -967,7 +982,7 @@ my_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
-   if ((strchr(short_opt, 'B'))) printf("  -B net, --netblock=net    restrict address set to subnets of net\n");
+   if ((strchr(short_opt, 'B'))) printf("  -B net, --superblock=net  restrict address set to subnets of net\n");
    if ((strchr(short_opt, 'C'))) printf("  -C af, --family=af        convert input to address family\n");
    if ((strchr(short_opt, 'c'))) printf("  -c, --continue            continue processing if errors are detected\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");

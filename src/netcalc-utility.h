@@ -124,6 +124,8 @@ struct _my_config
    const char *               prog_name;
    netcalc_net_t *            net_prefix;
    const char *               net_prefix_str;
+   netcalc_net_t *            net_super;
+   const char *               net_super_str;
    const char *               in_filename;
    const my_widget_t *        widget;
 };
