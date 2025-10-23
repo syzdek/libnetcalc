@@ -342,12 +342,20 @@ my_widget_info_ip_verbose(
          return(rc);
       };
 
-      snprintf(
-         buff, sizeof(buff),
-         "%s (%s)",
-         ((idx < cnf->argc) ? cnf->argv[idx] : "SUPERBLOCK"),
-         ((family == NETCALC_AF_INET) ? "IPv4" : "IPv6")
-      );
+      if ((cnf->net_prefix))
+      {  snprintf(
+            buff, sizeof(buff),
+            "%s",
+            ((idx < cnf->argc) ? cnf->argv[idx] : "SUPERBLOCK")
+         );
+      } else
+      {  snprintf(
+            buff, sizeof(buff),
+            "%s (%s)",
+            ((idx < cnf->argc) ? cnf->argv[idx] : "SUPERBLOCK"),
+            ((family == NETCALC_AF_INET) ? "IPv4" : "IPv6")
+         );
+      };
       printf("%s\n", buff);
       for(pos = 0; (pos < (int)strlen(buff)); pos++)
          printf("-");
