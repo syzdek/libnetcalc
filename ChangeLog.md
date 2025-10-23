@@ -13,7 +13,8 @@ All rights reserved.
      - general: fixing CLI argument processing
      - general: removing ability to specify addresses sets as CLI argumetns
      - general: skipping blank lines when importing address sets
-     - genreal: defaulting to STDIN if import file is not specified
+     - general: defaulting to STDIN if import file is not specified
+     - general: adding missing CLI option definitions and usages
      - info: adding man page
      - match: adding ability to search for more than one address
      - printf: adding man page
