@@ -459,14 +459,14 @@ main(
    cnf->flags &= ~cnf->flags_negate;
 
    // opens input file
-   if ((cnf->in_filename))
-   {  cnf->in_fd = STDIN_FILENO;
-      if ((strcmp("-", cnf->in_filename)))
-      {  if ((cnf->in_fd = open(cnf->in_filename, O_RDONLY)) == -1)
-         {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->in_filename, strerror(errno));
-            my_free(cnf);
-            return(1);
-         };
+   cnf->in_fd = STDIN_FILENO;
+   if (!(cnf->in_filename))
+      cnf->in_filename  = "-";
+   if ((strcmp("-", cnf->in_filename)))
+   {  if ((cnf->in_fd = open(cnf->in_filename, O_RDONLY)) == -1)
+      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->in_filename, strerror(errno));
+         my_free(cnf);
+         return(1);
       };
    };
 

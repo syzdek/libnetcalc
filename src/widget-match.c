@@ -102,11 +102,6 @@ my_widget_match(
    netcalc_net_t *      res;
    const char *         addr;
 
-   if ( (cnf->argc < 2) && (!(cnf->in_filename)) )
-   {  cnf->in_filename  = "-";
-      cnf->in_fd        = STDIN_FILENO;
-   };
-
    // initializes set
    if ((rc = netcalc_set_init(&ns, 0)) != 0)
    {  printf("%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
