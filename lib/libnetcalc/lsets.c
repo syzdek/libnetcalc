@@ -484,7 +484,7 @@ netcalc_set_add(
    assert(net  != NULL);
 
    if (!( (net->net_flags & NETCALC_AF) | (ns->set_flags & NETCALC_AF) ))
-      return(NETCALC_EINVAL);
+      return(NETCALC_EBADFAM);
 
    if ((netcalc_verify(net, NETCALC_TYPE_NETWORK)))
       return(NETCALC_EINVAL);

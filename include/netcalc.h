@@ -98,6 +98,7 @@
 #define NETCALC_ENOREC                 -12
 #define NETCALC_ESETMOD                -13
 #define NETCALC_ERANGE                 -14
+#define NETCALC_EBADFAM                -15
 
 
 #define NETCALC_FLD_FAMILY             0

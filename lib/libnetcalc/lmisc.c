@@ -86,6 +86,7 @@ netcalc_strerror(
    {  case NETCALC_SUCCESS:      return("success");
 
       case NETCALC_EBADADDR:     return("bad address string");
+      case NETCALC_EBADFAM:      return("bad or unsupported family");
       case NETCALC_EBUFFLEN:     return("buffer length exceeeded");
       case NETCALC_EEXISTS:      return("record exists");
       case NETCALC_EFIELD:       return("unknown or unsupported field");
