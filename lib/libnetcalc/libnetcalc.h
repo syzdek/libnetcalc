@@ -121,6 +121,7 @@ struct _libnetcalc_record
 struct _libnetcalc_set
 {  uint32_t                   set_flags;
    uint32_t                   set_serial;
+   netcalc_net_t *            set_superblock;
    netcalc_recs_t             set_recs;
 };
 

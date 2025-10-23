@@ -103,7 +103,7 @@ my_widget_match(
    const char *         addr;
 
    // initializes set
-   if ((rc = netcalc_set_init(&ns, 0)) != 0)
+   if ((rc = netcalc_set_init(&ns, NULL, 0)) != 0)
    {  printf("%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
       return(1);
    };

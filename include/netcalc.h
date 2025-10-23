@@ -97,6 +97,7 @@
 #define NETCALC_ESUBNET                -11
 #define NETCALC_ENOREC                 -12
 #define NETCALC_ESETMOD                -13
+#define NETCALC_ERANGE                 -14
 
 
 #define NETCALC_FLD_FAMILY             0
@@ -371,6 +372,7 @@ netcalc_set_free(
 _NETCALC_F int
 netcalc_set_init(
          netcalc_set_t **              nsp,
+         netcalc_net_t *               superblock,
          int                           flags );
 
 

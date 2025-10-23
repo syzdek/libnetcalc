@@ -489,6 +489,12 @@ netcalc_set_add(
    if ((netcalc_verify(net, NETCALC_TYPE_NETWORK)))
       return(NETCALC_EINVAL);
 
+   if ((ns->set_superblock))
+   {  rc = netcalc_cmp(net, ns->set_superblock, ns->set_flags);
+      if ( (rc != NETCALC_CMP_SAME) && (rc != NETCALC_CMP_SUBNET) )
+         return(NETCALC_ERANGE);
+   };
+
    // adjust nbuff
    memcpy(&nbuff.buff_net.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
    nbuff.buff_net.net_cidr       = net->net_cidr;
@@ -721,6 +727,9 @@ netcalc_set_free(
    if (!(ns))
       return;
 
+   if ((ns->set_superblock))
+      netcalc_free(ns->set_superblock);
+
    for(idx = 0; (idx < ns->set_recs.len); idx++)
       netcalc_rec_free(ns->set_recs.list[idx]);
 
@@ -736,8 +745,10 @@ netcalc_set_free(
 int
 netcalc_set_init(
          netcalc_set_t **              nsp,
+         netcalc_net_t *               superblock,
          int                           flags )
 {
+   int                  rc;
    netcalc_set_t *      ns;
 
    assert(nsp != NULL);
@@ -746,6 +757,13 @@ netcalc_set_init(
    if ((ns = malloc(sizeof(netcalc_set_t))) == NULL)
       return(NETCALC_ENOMEM);
    memset(ns, 0, sizeof(netcalc_set_t));
+
+   if ((superblock))
+   {  if ((rc = netcalc_dup(&ns->set_superblock, superblock)) != 0)
+      {  netcalc_set_free(ns);
+         return(rc);
+      };
+   };
 
    ns->set_flags      = flags;
    ns->set_flags     |= ((flags & NETCALC_AF)) ? 0 : NETCALC_AF;
