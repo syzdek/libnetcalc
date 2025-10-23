@@ -996,7 +996,7 @@ my_usage(
       printf("       net%s %s\n", widget_name, widget_help);
    } else if (cnf->symlinked == 0)
    {  widget_name = (widget->alias_idx == -1) ? widget_name : widget->aliases[widget->alias_idx];
-      printf("Usage: %s [OPTIONS] %s %s\n", PROGRAM_NAME, widget_name, widget_help);
+      printf("Usage: %s %s %s\n", PROGRAM_NAME, widget_name, widget_help);
    }
    else
    {  printf("Usage: %s %s\n", cnf->prog_name, widget_help);
