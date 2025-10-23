@@ -295,6 +295,7 @@ tests_test_set_debug_DEPENDENCIES	= Makefile config.h \
 					  $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_set_debug_LDADD		= $(noinst_LIBRARIES) $(lib_LTLIBRARIES)
 tests_test_set_debug_SOURCES		= tests/libnetcalc-tests.h \
+					  tests/test-set-data.c \
 					  tests/test-set-debug.c
 
 

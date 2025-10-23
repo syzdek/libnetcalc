@@ -102,39 +102,6 @@ main(
    int               rc;
    int               pos;
    netcalc_set_t *   ns;
-   const char *      test_strs[] =
-   {  "2001:db8:e:ffff::/64",
-      "2001:db8:d:f000::/64",
-      "2001:db8:d:ffff::/64",
-      "2001:db8:d:fffe::/64",
-      "2001:db8:d:100::/64",
-      "2001:db8:d:101::/64",
-      "2001:db8:d:100::/56",
-      "2001:db8:d::/48",
-      "2001:db8:d::/56",
-      "2001:db8:d:a::/64",
-      "2001:db8:e:a::/64",
-      "2001:db8:f:ffff::/64",
-      "2001:db8::/64",
-      "2001:db8:d:101::1/128",
-      "::/1",
-      "::/0",
-      "8000::/1",
-      "2001:db8::/32",
-      "203.0.113.198/31",
-      "203.0.113.0/24",
-      "203.0.113.192/29",
-      "203.0.113.196/30",
-      "203.0.113.199/32",
-      "203.0.113.199/32",
-      "203.0.113.198/31",
-      "203.0.113.196/30",
-      "203.0.113.192/29",
-      "203.0.113.0/24",
-//      "00:16:3e:15:70:92",
-//      "00:16:3e:06:e5:9f",
-      NULL
-   };
 
    // getopt options
    static const char *  short_opt = "hqVv";
@@ -193,9 +160,9 @@ main(
       return(1);
    };
 
-   for(pos = 0; ((test_strs[pos])); pos++)
-   {  printf("%4u: adding %s ...\n", (unsigned)pos, test_strs[pos]);
-      if ((rc = netcalc_set_add_str(ns, test_strs[pos], NULL, NULL, 0)) != 0)
+   for(pos = 0; ((test_set_data[pos])); pos++)
+   {  printf("%4u: adding %s ...\n", (unsigned)pos, test_set_data[pos]);
+      if ((rc = netcalc_set_add_str(ns, test_set_data[pos], NULL, NULL, 0)) != 0)
          printf("   %s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
    };
 

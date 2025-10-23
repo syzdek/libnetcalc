@@ -116,6 +116,7 @@ struct _test_data
 /////////////////
 #pragma mark - Variables
 
-extern testdata_t test_data[];
+extern testdata_t       test_data[];
+extern const char *     test_set_data[];
 
 #endif /* end of header */
