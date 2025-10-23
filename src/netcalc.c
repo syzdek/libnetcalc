@@ -501,7 +501,7 @@ my_arguments(
    const my_widget_t *        widget;
 
    widget         = cnf->widget;
-   optind         = 1;
+   optind         = 0;
    opt_index      = 0;
    short_opt      = ( ((widget)) && ((widget->short_opt)) )
                   ? widget->short_opt
