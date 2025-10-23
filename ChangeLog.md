@@ -7,6 +7,7 @@ All rights reserved.
    * libnetcalc:
      - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
      - adding support for escape characters in netcalc_strfnet()
+     - adding ability to restrict address sets to specific superblock
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports
@@ -15,6 +16,7 @@ All rights reserved.
      - general: skipping blank lines when importing address sets
      - general: defaulting to STDIN if import file is not specified
      - general: adding missing CLI option definitions and usages
+     - general: adding ability to restrict address set to specific superblock
      - info: adding man page
      - match: adding ability to search for more than one address
      - printf: adding man page
