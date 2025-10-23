@@ -67,7 +67,7 @@
 #define  NETCALC_SHORT_FAMILY "46C:Eep:"
 
 #undef   NETCALC_SHORT_FILE
-#define  NETCALC_SHORT_FILE "cf:O"
+#define  NETCALC_SHORT_FILE "B:cf:O"
 
 #undef   NETCALC_SHORT_FORMAT
 #define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
@@ -91,7 +91,8 @@
 
 #undef   NETCALC_LONG_FILE
 #define  NETCALC_LONG_FILE \
-   { "continue",        no_argument,         NULL, 'c' },
+   { "continue",        no_argument,         NULL, 'c' }, \
+   { "prefix",          required_argument,   NULL, 'p' },
 
 #undef   NETCALC_LONG_FORMAT
 #define  NETCALC_LONG_FORMAT \
@@ -965,6 +966,7 @@ my_usage(
    printf("OPTIONS:\n");
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
+   if ((strchr(short_opt, 'B'))) printf("  -B net, --netblock=net    restrict address set to subnets of net\n");
    if ((strchr(short_opt, 'C'))) printf("  -C family                 convert input to address family\n");
    if ((strchr(short_opt, 'c'))) printf("  -c, --continue            continue processing if errors are detected\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
