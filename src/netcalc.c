@@ -87,6 +87,7 @@
    { "ipv6",            no_argument,         NULL, '6' }, \
    { "eui48",           no_argument,         NULL, 'e' }, \
    { "eui64",           no_argument,         NULL, 'E' }, \
+   { "family",          required_argument,   NULL, 'f' }, \
    { "mac",             no_argument,         NULL, 'e' },
 
 #undef   NETCALC_LONG_FILE
@@ -967,7 +968,7 @@ my_usage(
    if ((strchr(short_opt, '4'))) printf("  -4, --ipv4                input is IPv4\n");
    if ((strchr(short_opt, '6'))) printf("  -6, --ipv6                input is IPv6\n");
    if ((strchr(short_opt, 'B'))) printf("  -B net, --netblock=net    restrict address set to subnets of net\n");
-   if ((strchr(short_opt, 'C'))) printf("  -C family                 convert input to address family\n");
+   if ((strchr(short_opt, 'C'))) printf("  -C af, --family=af        convert input to address family\n");
    if ((strchr(short_opt, 'c'))) printf("  -c, --continue            continue processing if errors are detected\n");
    if ((strchr(short_opt, 'E'))) printf("  -E, --eui64               input is EUI64\n");
    if ((strchr(short_opt, 'e'))) printf("  -e, --eui48, --mac        input is EUI48\n");

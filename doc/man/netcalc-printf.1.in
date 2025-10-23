@@ -88,8 +88,8 @@ be combined with \fB--ipv4\fR, \fB--eui48\fR, and \fB--eui64\fR.  Addresses
 of other address families will generate an error.
 
 .TP 25
-\fB-C\fR \fIfamily\fR
-Convert input addresses to specified address \fIfamily\fR. Where \fIfamily\fR
+\fB-C\fR \fIaf\fR, \fB--family\fR \fIaf\fR
+Convert input addresses to address family \fIaf\fR. Where \fIaf\fR
 may be ipv4, ipv6, eui48, or eui64.  The prefix \fI::ffff:0:0\fR will be
 used when converting from IPv4 addresses to IPv6 addresses.  The prefix
 \fIfe80::\fR will be used when converting from EUI-48 and EUI-64 addresses to
