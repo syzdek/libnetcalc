@@ -11,8 +11,11 @@ All rights reserved.
      - general: adding man page
      - general: updating warning message format for network set imports
      - general: fixing CLI argument processing
+     - general: removing ability to specify addresses sets as CLI argumetns
+     - general: skipping blank lines when importing address sets
+     - genreal: defaulting to STDIN if import file is not specified
      - info: adding man page
-     - match: defaulting to STDIN if no networks or import file is specified
+     - match: adding ability to search for more than one address
      - printf: adding man page
      - test: adding man page
 
