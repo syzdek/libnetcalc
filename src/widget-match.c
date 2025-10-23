@@ -96,15 +96,11 @@ my_widget_match(
          my_config_t *                 cnf )
 {
    int                  rc;
+   int                  idx;
    char *               comment;
    netcalc_set_t *      ns;
    netcalc_net_t *      res;
    const char *         addr;
-   const char *         key;
-
-   key       = cnf->argv[0];
-   cnf->argv = &cnf->argv[1];
-   cnf->argc--;
 
    if ( (cnf->argc < 2) && (!(cnf->in_filename)) )
    {  cnf->in_filename  = "-";
@@ -124,21 +120,24 @@ my_widget_match(
    };
 
    // search set for matching record
-   if ((rc = netcalc_set_query_str(ns, key, &res, &comment, NULL, NULL)) != 0)
-   {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
-      netcalc_set_free(ns);
-      return(1);
+   for(idx = 0; (idx < cnf->argc); idx++)
+   {  if ((rc = netcalc_set_query_str(ns, cnf->argv[idx], &res, &comment, NULL, NULL)) != 0)
+      {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
+         netcalc_set_free(ns);
+         return(1);
+      };
+
+      addr = netcalc_ntop(res, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
+      if ((comment))
+         printf("%s  %s\n", addr, comment);
+      else
+         printf("%s\n", addr);
+
+      if ((comment))
+         free(comment);
+      netcalc_free(res);
    };
 
-   addr = netcalc_ntop(res, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
-   if ((comment))
-      printf("%s  %s\n", addr, comment);
-   else
-      printf("%s\n", addr);
-
-   if ((comment))
-      free(comment);
-   netcalc_free(res);
    netcalc_set_free(ns);
 
    return(0);
