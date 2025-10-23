@@ -188,7 +188,7 @@ main(
       };
    };
 
-   if ((rc = netcalc_set_init(&ns, 0)) != 0)
+   if ((rc = netcalc_set_init(&ns, NULL, 0)) != 0)
    {  printf("%s: %s\n", PROGRAM_NAME, netcalc_strerror(rc));
       return(1);
    };
