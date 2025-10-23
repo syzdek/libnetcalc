@@ -100,6 +100,11 @@ my_widget_match(
    netcalc_set_t *      ns;
    netcalc_net_t *      res;
    const char *         addr;
+   const char *         key;
+
+   key       = cnf->argv[0];
+   cnf->argv = &cnf->argv[1];
+   cnf->argc--;
 
    if ( (cnf->argc < 2) && (!(cnf->in_filename)) )
    {  cnf->in_filename  = "-";
@@ -119,7 +124,7 @@ my_widget_match(
    };
 
    // search set for matching record
-   if ((rc = netcalc_set_query_str(ns, cnf->argv[0], &res, &comment, NULL, NULL)) != 0)
+   if ((rc = netcalc_set_query_str(ns, key, &res, &comment, NULL, NULL)) != 0)
    {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
       netcalc_set_free(ns);
       return(1);
