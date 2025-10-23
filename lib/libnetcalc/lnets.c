@@ -1326,7 +1326,7 @@ netcalc_parse_inet(
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
       cidr = (int)strtoul(&ptr[1], &ptr, 10);
-      if ( (ptr[0] != '\0') || (cidr > 32) )
+      if ( (ptr[0] != '\0') || ( (cidr < 0) || (cidr > 32)) )
          return(NETCALC_EBADADDR);
       cidr += 96;
    };
@@ -1450,7 +1450,7 @@ netcalc_parse_inet6(
          if (ptr[1] == '\0')
             return(NETCALC_EBADADDR);
          cidr = (int)strtoul(&ptr[1], &ptr, 10);
-         if ( (ptr[0] != '\0') || (cidr > 128) )
+         if ( (ptr[0] != '\0') || ((cidr < 0) || (cidr > 128)) )
             return(NETCALC_EBADADDR);
       };
 
@@ -1496,7 +1496,7 @@ netcalc_parse_inet6(
       if (ptr[1] == '\0')
          return(NETCALC_EBADADDR);
       cidr = (int)strtoul(&ptr[1], &ptr, 10);
-      if ( (ptr[0] != '\0') || (cidr > 128) )
+      if ( (ptr[0] != '\0') || ((cidr < 0) || (cidr > 128)) )
          return(NETCALC_EBADADDR);
    };
 
