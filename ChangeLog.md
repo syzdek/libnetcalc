@@ -10,6 +10,7 @@ All rights reserved.
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports
+     - general: fixing CLI argument processing
      - info: adding man page
      - match: defaulting to STDIN if no networks or import file is specified
      - printf: adding man page
