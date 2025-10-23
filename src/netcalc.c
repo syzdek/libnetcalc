@@ -301,11 +301,11 @@ static my_widget_t my_widget_map[] =
    // sort widget
    {  .name       = "sort",
       .desc       = "sorts networks",
-      .usage      = "[OPTIONS] [ <address> [ <address> [ ... <address> ] ] ]",
+      .usage      = "[OPTIONS]",
       .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FILE NETCALC_SHORT_FORMAT,
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FILE NETCALC_LONG_FORMAT ),
       .arg_min    = 0,
-      .arg_max    = -1,
+      .arg_max    = 0,
       .aliases    = NULL,
       .func_exec  = &my_widget_sort,
       .func_usage = &my_usage_import,
@@ -341,11 +341,11 @@ static my_widget_t my_widget_map[] =
    // tree widget
    {  .name       = "tree",
       .desc       = "sorts networks and display is a tree structure",
-      .usage      = "[OPTIONS] [ <address> [ <address> [ ... <address> ] ] ]",
+      .usage      = "[OPTIONS]",
       .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FILE NETCALC_SHORT_FORMAT,
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FILE NETCALC_LONG_FORMAT ),
       .arg_min    = 0,
-      .arg_max    = -1,
+      .arg_max    = 0,
       .aliases    = NULL,
       .func_exec  = &my_widget_tree,
       .func_usage = &my_usage_import,
@@ -816,7 +816,6 @@ my_set_import(
    static char          buff[256];
    ssize_t              len;
    size_t               buff_len;
-   int                  idx;
    size_t               bol;        // beginning of line
    size_t               eoa;        // end of address
    size_t               boc;        // beginning of comment
@@ -837,46 +836,6 @@ my_set_import(
    line = 0;
    net  = NULL;
    prev = NULL;
-
-   // process network arguments
-   for(idx = 0; (idx < cnf->argc); idx++)
-   {  if ((rc = my_netcalc_init(cnf, &net, cnf->argv[idx])) != NETCALC_SUCCESS)
-      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_set_free(ns);
-         if ((prev))
-            netcalc_free(prev);
-         if ((net))
-            netcalc_free(net);
-         return(1);
-      };
-      if ((rc = netcalc_set_add(ns, net, NULL, NULL, 0)) != 0)
-      {  fprintf(stderr, "%s: %s: %s\n", my_prog_name(cnf), cnf->argv[idx], netcalc_strerror(rc));
-         netcalc_set_free(ns);
-         if ((prev))
-            netcalc_free(prev);
-         if ((net))
-            netcalc_free(net);
-         return(1);
-      };
-      if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
-      {  switch(netcalc_cmp(prev, net, 0))
-         {  case NETCALC_CMP_BEFORE:
-            case NETCALC_CMP_SUPERNET:
-            case NETCALC_CMP_SAME:
-               break;
-
-            default:
-               netcalc_ntop(prev, addr_str1, sizeof(addr_str1), NETCALC_TYPE_ADDRESS, cnf->flags);
-               netcalc_ntop(net,  addr_str2, sizeof(addr_str2), NETCALC_TYPE_ADDRESS, cnf->flags);
-               fprintf(stderr, "%s: %s and %s are out of order\n", my_prog_name(cnf), addr_str1, addr_str2);
-               break;
-         };
-      };
-      if ((prev))
-         netcalc_free(prev);
-      prev = net;
-      net  = NULL;
-   };
 
    // reset state
    if ((prev))
