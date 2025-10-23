@@ -871,38 +871,40 @@ my_set_import(
       comment     = ((buff[boc])) ? &buff[boc] : NULL;
 
       // add address to set
-      if ((rc = my_netcalc_init(cnf, &net, address)) == NETCALC_SUCCESS)
-         rc = netcalc_set_add(ns, net, comment, NULL, 0);
-      if (rc != 0)
-      {  if ( (!(cnf->cont)) || (!(cnf->quiet)) )
-            fprintf(stderr, "%s: %s%zu: %s: %s\n", my_prog_name(cnf), filename, line, address, netcalc_strerror(rc));
-         if (!(cnf->cont))
-         {  if ((prev))
-               netcalc_free(prev);
-            if ((net))
-               netcalc_free(net);
-            return(1);
-         };
-      };
-      if (rc == 0)
-      {  if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
-         {  switch(netcalc_cmp(prev, net, 0))
-            {  case NETCALC_CMP_BEFORE:
-               case NETCALC_CMP_SUPERNET:
-               case NETCALC_CMP_SAME:
-                  break;
-
-               default:
-                  netcalc_ntop(prev, addr_str1, sizeof(addr_str1), NETCALC_TYPE_ADDRESS, cnf->flags);
-                  netcalc_ntop(net,  addr_str2, sizeof(addr_str2), NETCALC_TYPE_ADDRESS, cnf->flags);
-                  fprintf(stderr, "%s: %s%zu: %s and %s are out of order\n", my_prog_name(cnf), filename, line, addr_str1, addr_str2);
-                  break;
+      if (address[0] != '\0')
+      {  if ((rc = my_netcalc_init(cnf, &net, address)) == NETCALC_SUCCESS)
+            rc = netcalc_set_add(ns, net, comment, NULL, 0);
+         if (rc != 0)
+         {  if ( (!(cnf->cont)) || (!(cnf->quiet)) )
+               fprintf(stderr, "%s: %s%zu: %s: %s\n", my_prog_name(cnf), filename, line, address, netcalc_strerror(rc));
+            if (!(cnf->cont))
+            {  if ((prev))
+                  netcalc_free(prev);
+               if ((net))
+                  netcalc_free(net);
+               return(1);
             };
          };
-         if ((prev))
-            netcalc_free(prev);
-         prev = net;
-         net  = NULL;
+         if (rc == 0)
+         {  if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
+            {  switch(netcalc_cmp(prev, net, 0))
+               {  case NETCALC_CMP_BEFORE:
+                  case NETCALC_CMP_SUPERNET:
+                  case NETCALC_CMP_SAME:
+                     break;
+
+                  default:
+                     netcalc_ntop(prev, addr_str1, sizeof(addr_str1), NETCALC_TYPE_ADDRESS, cnf->flags);
+                     netcalc_ntop(net,  addr_str2, sizeof(addr_str2), NETCALC_TYPE_ADDRESS, cnf->flags);
+                     fprintf(stderr, "%s: %s%zu: %s and %s are out of order\n", my_prog_name(cnf), filename, line, addr_str1, addr_str2);
+                     break;
+               };
+            };
+            if ((prev))
+               netcalc_free(prev);
+            prev = net;
+            net  = NULL;
+         };
       };
 
       // shift buffer
