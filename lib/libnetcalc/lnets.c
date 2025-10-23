@@ -682,7 +682,6 @@ netcalc_ntop(
          return(NULL);
 
       case NETCALC_TYPE_BROADCAST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
          for(pos = 0; (pos < 16); pos++)
@@ -690,7 +689,6 @@ netcalc_ntop(
          break;
 
       case NETCALC_TYPE_FIRST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
          for(pos = 0; (pos < 16); pos++)
@@ -700,7 +698,6 @@ netcalc_ntop(
          break;
 
       case NETCALC_TYPE_LAST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_COMPR);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
          flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
          for(pos = 0; (pos < 16); pos++)
