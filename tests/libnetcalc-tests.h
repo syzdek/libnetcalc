@@ -118,5 +118,6 @@ struct _test_data
 
 extern testdata_t       test_data[];
 extern const char *     test_set1[];
+extern const char *     test_set2[];
 
 #endif /* end of header */

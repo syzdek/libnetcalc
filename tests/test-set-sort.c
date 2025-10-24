@@ -171,6 +171,12 @@ main(
       if ((my_pass("set1", test_set1, datalen, pass)))
          errs++;
 
+   // check set 2
+   for(datalen = 0; ((test_set2[datalen])); datalen++);
+   for(pass = 0; (pass < datalen); pass++)
+      if ((my_pass("set2", test_set2, datalen, pass)))
+         errs++;
+
    return( ((errs)) ? 1 : 0 );
 }
 

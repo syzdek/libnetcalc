@@ -82,4 +82,55 @@ const char *      test_set1[] =
 };
 
 
+const char *      test_set2[] =
+{  "::1",            // loopback
+   "127.0.0.1",      // loopback
+
+   // ::ffff:0:0/96 - IPv4-mapped addresses
+
+   // 2001:db8::/32 - IPv6 documentation block
+   "2001:db8:e:ffff::/64",
+   "2001:db8:d:f000::/64",
+   "2001:db8:d:ffff::/64",
+   "2001:db8:d:fffe::/64",
+   "2001:db8:d:100::/64",
+   "2001:db8:d:101::/64",
+   "2001:db8:d:100::/56",
+   "2001:db8:d::/48",
+   "2001:db8:d::/56",
+   "2001:db8:d:a::/64",
+   "2001:db8:e:a::/64",
+   "2001:db8:f:ffff::/64",
+   "2001:db8::/64",
+   "2001:db8:d:101::1/128",
+
+   // 3fff::/20 - IPv6 documentation block
+
+   // 3fff::/20 - IPv6 documentation block
+
+   // fe80::/64 - Link
+
+   // 10.0.0.0/8 - RFC1918
+
+   // 100.64.0.0/10 - CGNAT
+
+   // 172.16.0.0/12 - RFC1918
+
+   // 192.168.0.0/16 - RFC1918
+
+   // 192.0.2.0/24 - Documentation
+
+   // 198.51.100.0/24 - Documentation
+
+   // 203.0.113.0/24 - Documentation
+   "203.0.113.198/31",
+   "203.0.113.0/24",
+   "203.0.113.192/29",
+   "203.0.113.196/30",
+   "203.0.113.199/32",
+
+   NULL
+};
+
+
 /* end of source */
