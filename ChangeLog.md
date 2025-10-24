@@ -3,7 +3,7 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
-0.5
+0.5 2025-10-23
    * libnetcalc:
      - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
      - adding support for escape characters in netcalc_strfnet()
