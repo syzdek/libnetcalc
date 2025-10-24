@@ -76,8 +76,10 @@ main(
 
 int
 my_pass(
-         size_t                        offset,
-         size_t                        datalen );
+         const char *                  name,
+         const char * const *          data,
+         size_t                        datalen,
+         size_t                        offset );
 
 
 /////////////////
@@ -105,12 +107,9 @@ main(
 {
    int               c;
    int               opt_index;
-//   int               rc;
-//   int               pos;
    size_t            datalen;
    size_t            pass;
    size_t            errs;
-//   netcalc_set_t *   ns;
 
    // getopt options
    static const char *  short_opt = "hqVv";
@@ -166,37 +165,22 @@ main(
 
    errs = 0;
 
-   for(datalen = 0; ((test_set_data[datalen])); datalen++);
-
+   // check set 1
+   for(datalen = 0; ((test_set1[datalen])); datalen++);
    for(pass = 0; (pass < datalen); pass++)
-      if ((my_pass(pass, datalen)))
+      if ((my_pass("set1", test_set1, datalen, pass)))
          errs++;
 
-/*
-   if ((rc = netcalc_set_init(&ns, NULL, 0)) != 0)
-   {  printf("%s: %s\n", PROGRAM_NAME, netcalc_strerror(rc));
-      return(1);
-   };
-
-   for(pos = 0; ((test_set_data[pos])); pos++)
-   {  printf("%4u: adding %s ...\n", (unsigned)pos, test_set_data[pos]);
-      if ((rc = netcalc_set_add_str(ns, test_set_data[pos], NULL, NULL, 0)) != 0)
-         printf("   %s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
-   };
-
-   printf("netcalc_set_debug():\n");
-   netcalc_set_debug(ns, NULL);
-
-   netcalc_set_free(ns);
-*/
    return( ((errs)) ? 1 : 0 );
 }
 
 
 int
 my_pass(
-         size_t                        offset,
-         size_t                        datalen )
+         const char *                  name,
+         const char * const *          data,
+         size_t                        datalen,
+         size_t                        offset )
 {
    int               rc;
    int               errs;
@@ -213,7 +197,8 @@ my_pass(
    errs  = 0;
    flags = NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR;
 
-   printf("starting pass %zu ...\n", offset);
+   printf("testing %s ...\n", name);
+   printf("   %s starting pass %zu ...\n", name, offset);
 
    if ((rc = netcalc_set_init(&ns, NULL, 0)) != 0)
    {  printf("%s: %s\n", PROGRAM_NAME, netcalc_strerror(rc));
@@ -222,52 +207,52 @@ my_pass(
 
    // add addresses to sets
    for(idx = offset; (idx < datalen); idx++)
-   {  printf("   adding %s ...\n", test_set_data[idx]);
-      if ((rc = netcalc_set_add_str(ns, test_set_data[idx], NULL, NULL, 0)) != 0)
+   {  printf("      adding %s ...\n", data[idx]);
+      if ((rc = netcalc_set_add_str(ns, data[idx], NULL, NULL, 0)) != 0)
       {  printf("%s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
          errs++;
          continue;
       };
       for(dup = offset; (dup <= idx); dup++)
-      {  if ((rc = netcalc_set_add_str(ns, test_set_data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
-         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+      {  if ((rc = netcalc_set_add_str(ns, data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
+         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
-         if ((rc = netcalc_set_query_str(ns, test_set_data[dup], NULL, NULL, NULL, NULL)) != 0)
-         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+         if ((rc = netcalc_set_query_str(ns, data[dup], NULL, NULL, NULL, NULL)) != 0)
+         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
       };
    };
    for(idx = 0; (idx < offset); idx++)
-   {  printf("   adding %s ...\n", test_set_data[idx]);
-      if ((rc = netcalc_set_add_str(ns, test_set_data[idx], NULL, NULL, 0)) != 0)
+   {  printf("      adding %s ...\n", data[idx]);
+      if ((rc = netcalc_set_add_str(ns, data[idx], NULL, NULL, 0)) != 0)
       {  printf("%s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
          errs++;
          continue;
       };
       for(dup = offset; (dup < datalen); dup++)
-      {  if ((rc = netcalc_set_add_str(ns, test_set_data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
-         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+      {  if ((rc = netcalc_set_add_str(ns, data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
+         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
-         if ((rc = netcalc_set_query_str(ns, test_set_data[dup], NULL, NULL, NULL, NULL)) != 0)
-         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+         if ((rc = netcalc_set_query_str(ns, data[dup], NULL, NULL, NULL, NULL)) != 0)
+         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
       };
       for(dup = 0; (dup <= idx); dup++)
-      {  if ((rc = netcalc_set_add_str(ns, test_set_data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
-         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+      {  if ((rc = netcalc_set_add_str(ns, data[dup], NULL, NULL, 0)) != NETCALC_EEXISTS)
+         {  printf("%s: %s: adding duplicate: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
-         if ((rc = netcalc_set_query_str(ns, test_set_data[dup], NULL, NULL, NULL, NULL)) != 0)
-         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, test_set_data[dup], netcalc_strerror(rc));
+         if ((rc = netcalc_set_query_str(ns, data[dup], NULL, NULL, NULL, NULL)) != 0)
+         {  printf("%s: %s: netcalc_set_query_str: %s\n", PROGRAM_NAME, data[dup], netcalc_strerror(rc));
             errs++;
             continue;
          };
@@ -292,7 +277,7 @@ my_pass(
    while(netcalc_cur_next(cur, &net, NULL, NULL, NULL, NULL) == 0)
    {  netcalc_ntop(prev, prev_str, sizeof(prev_str), NETCALC_TYPE_ADDRESS, flags);
       netcalc_ntop(net,  net_str,  sizeof(net_str),  NETCALC_TYPE_ADDRESS, flags);
-      printf("   checking order of %s and %s ...\n", prev_str, net_str);
+      printf("      checking order of %s and %s ...\n", prev_str, net_str);
       switch(netcalc_cmp(prev, net, NETCALC_FLG_NETWORK))
       {  case NETCALC_CMP_SUPERNET:
          case NETCALC_CMP_BEFORE:

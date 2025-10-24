@@ -52,7 +52,7 @@
 /////////////////
 #pragma mark - Variables
 
-const char *      test_set_data[] =
+const char *      test_set1[] =
 {  "2001:db8:e:ffff::/64",
    "2001:db8:d:f000::/64",
    "2001:db8:d:ffff::/64",

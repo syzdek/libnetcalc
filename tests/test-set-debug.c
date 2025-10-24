@@ -160,9 +160,9 @@ main(
       return(1);
    };
 
-   for(pos = 0; ((test_set_data[pos])); pos++)
-   {  printf("%4u: adding %s ...\n", (unsigned)pos, test_set_data[pos]);
-      if ((rc = netcalc_set_add_str(ns, test_set_data[pos], NULL, NULL, 0)) != 0)
+   for(pos = 0; ((test_set1[pos])); pos++)
+   {  printf("%4u: adding %s ...\n", (unsigned)pos, test_set1[pos]);
+      if ((rc = netcalc_set_add_str(ns, test_set1[pos], NULL, NULL, 0)) != 0)
          printf("   %s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
    };
 
