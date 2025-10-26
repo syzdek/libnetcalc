@@ -124,12 +124,24 @@ const char *      test_set2[] =
 
    // 203.0.113.0/24 - Documentation
    "203.0.113.198/31",
-   "203.0.113.0/24",
    "203.0.113.192/29",
    "203.0.113.196/30",
    "203.0.113.199/32",
 
    NULL
+};
+
+const testquery_t       test_query2[] =
+{  {  .query_addr =     "203.0.113.1",
+      .query_res  =     NULL
+   },
+   {  .query_addr =     "203.0.113.198",
+      .query_res  =     "203.0.113.198/31"
+   },
+   {  .query_addr =      "203.0.113.197",
+      .query_res  =     "203.0.113.198/31"
+   },
+   { NULL, NULL }
 };
 
 

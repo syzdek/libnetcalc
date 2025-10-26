@@ -85,6 +85,13 @@
 /////////////////
 #pragma mark - Datatypes
 
+typedef struct _test_query testquery_t;
+struct _test_query
+{  const char *      query_addr;
+   const char *      query_res;
+};
+
+
 typedef struct _test_data testdata_t;
 struct _test_data
 {  const char *      addr_str;            // test string
@@ -116,8 +123,11 @@ struct _test_data
 /////////////////
 #pragma mark - Variables
 
-extern testdata_t       test_data[];
-extern const char *     test_set1[];
-extern const char *     test_set2[];
+extern testdata_t             test_data[];
+
+extern const char *           test_set1[];
+
+extern const char *           test_set2[];
+extern const testquery_t      test_query2[];
 
 #endif /* end of header */
