@@ -46,6 +46,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #include <netcalc.h>
 
@@ -181,7 +182,13 @@ my_pass(
    int               flags;
    size_t            idx;
    netcalc_set_t *   ns;
+   netcalc_net_t *   net;
    netcalc_net_t *   res;
+   netcalc_cur_t *   cur;
+   char *            comment;
+   char              str[NETCALC_ADDRESS_LENGTH+64];
+   char              net_str[NETCALC_ADDRESS_LENGTH];
+   char              res_str[NETCALC_ADDRESS_LENGTH];
 
    errs  = 0;
    flags = NETCALC_FLG_SUPR | NETCALC_FLG_COMPR | NETCALC_FLG_CIDR;
@@ -198,14 +205,62 @@ my_pass(
    for(idx = 0; ((data[idx])); idx++)
    {  if ((verbose))
          printf("      adding %s ...\n", data[idx]);
-      if ((rc = netcalc_set_add_str(ns, data[idx], NULL, NULL, 0)) != 0)
+      snprintf(str, sizeof(str), "test data %s (%zu)", data[idx], idx);
+      if ((rc = netcalc_set_add_str(ns, data[idx], str, NULL, 0)) != 0)
       {  printf("%s: netcalc_set_add_str(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
          errs++;
          continue;
       };
    };
 
+   // print set data
+   if ((verbose))
+   {  idx = 0;
+      printf("   set data ...\n");
+      if ((rc = netcalc_cur_init(ns, &cur)) != 0)
+      {  netcalc_set_free(ns);
+         fprintf(stderr, "%s: netcalc_cur_init(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
+         errs++;
+         return(errs);
+      };
+      if ((rc = netcalc_cur_first(cur, &net, &comment, NULL, NULL, NULL)) != 0)
+      {  netcalc_set_free(ns);
+         netcalc_cur_free(cur);
+         fprintf(stderr, "%s: netcalc_cur_first(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
+         errs++;
+         return(errs);
+      };
+      printf(  "      %3zu: %-25s comment: %s\n",
+               idx,
+               netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags),
+               ( ((comment)) ? comment : "n/a")
+            );
+      netcalc_free(net);
+      if ((comment))
+         free(comment);
+      while((rc = netcalc_cur_next(cur, &net, &comment, NULL, NULL, NULL)) == 0)
+      {  idx++;
+         printf(  "      %3zu: %-25s comment: %s\n",
+                  idx,
+                  netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags),
+                  ( ((comment)) ? comment : "n/a")
+               );
+         netcalc_free(net);
+         if ((comment))
+            free(comment);
+      };
+      if (rc != NETCALC_ENOREC)
+      {  netcalc_set_free(ns);
+         netcalc_cur_free(cur);
+         fprintf(stderr, "%s: netcalc_cur_next(): %s\n", PROGRAM_NAME, netcalc_strerror(rc));
+         errs++;
+         return(errs);
+      };
+      netcalc_cur_free(cur);
+   };
+
    // test queries
+   printf("   testing queries ...\n");
    for(idx = 0; ((queries[idx].query_addr)); idx++)
    {  printf(  "      test %s (should %s) ...\n",
                queries[idx].query_addr,
