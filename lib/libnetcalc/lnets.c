@@ -1160,11 +1160,20 @@ netcalc_parse(
    if ((rc))
       return(rc);
    switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:  break;
-      case NETCALC_AF_EUI64:  break;
-      case NETCALC_AF_INET:   break;
-      case NETCALC_AF_INET6:  break;
-      default:                return(NETCALC_EBADADDR);
+   {  case NETCALC_AF_EUI48:
+      case NETCALC_AF_EUI64:
+         memcpy(&net->net_addr.addr8, &_netcalc_slaac_in6.net_addr.addr8, 8);
+         break;
+
+      case NETCALC_AF_INET:
+         memcpy(&net->net_addr.addr8, &_netcalc_ipv4_mapped_ipv6.net_addr.addr8, 12);
+         break;
+
+      case NETCALC_AF_INET6:
+         break;
+
+      default:
+         return(NETCALC_EBADADDR);
    };
 
    return(0);

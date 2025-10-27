@@ -9,6 +9,7 @@ All rights reserved.
      - adding support for escape characters in netcalc_strfnet()
      - adding ability to restrict address sets to specific superblock
      - fixing error checks for out of bounds CIDR
+     - adding IPv6 prefix to EUI-48, EUI-64, and IPv4 addresses
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports
