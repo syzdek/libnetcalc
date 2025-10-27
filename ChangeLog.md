@@ -6,6 +6,8 @@ All rights reserved.
 0.6
    * libnetcalc:
      - adding IPv6 prefix to EUI-48, EUI-64, and IPv4 addresses
+   * netcalc
+     - superblock: adding man page
 
 0.5 2025-10-23
    * libnetcalc:
