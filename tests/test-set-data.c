@@ -133,13 +133,37 @@ const char *      test_set2[] =
 
 const testquery_t       test_query2[] =
 {  {  .query_addr =     "203.0.113.1",
-      .query_res  =     NULL
+      .query_exp  =     NULL
+   },
+   {  .query_addr =     "203.0.113.191",
+      .query_exp  =     NULL
+   },
+   {  .query_addr =     "203.0.113.192",
+      .query_exp  =     "203.0.113.192/29"
+   },
+   {  .query_addr =     "203.0.113.193",
+      .query_exp  =     "203.0.113.192/29"
+   },
+   {  .query_addr =     "203.0.113.194",
+      .query_exp  =     "203.0.113.192/29"
+   },
+   {  .query_addr =     "203.0.113.195",
+      .query_exp  =     "203.0.113.192/29"
+   },
+   {  .query_addr =     "203.0.113.196",
+      .query_exp  =     "203.0.113.196/30"
+   },
+   {  .query_addr =     "203.0.113.197",
+      .query_exp  =     "203.0.113.196/30"
    },
    {  .query_addr =     "203.0.113.198",
-      .query_res  =     "203.0.113.198/31"
+      .query_exp  =     "203.0.113.198/31"
    },
-   {  .query_addr =      "203.0.113.197",
-      .query_res  =     "203.0.113.198/31"
+   {  .query_addr =     "203.0.113.199",
+      .query_exp  =     "203.0.113.199/32"
+   },
+   {  .query_addr =     "203.0.113.200",
+      .query_exp  =     NULL
    },
    { NULL, NULL }
 };

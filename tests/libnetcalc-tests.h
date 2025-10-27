@@ -88,7 +88,7 @@
 typedef struct _test_query testquery_t;
 struct _test_query
 {  const char *      query_addr;
-   const char *      query_res;
+   const char *      query_exp;
 };
 
 

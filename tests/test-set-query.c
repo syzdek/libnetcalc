@@ -183,11 +183,12 @@ my_pass(
    size_t            idx;
    netcalc_set_t *   ns;
    netcalc_net_t *   net;
+   netcalc_net_t *   exp;
    netcalc_net_t *   res;
    netcalc_cur_t *   cur;
    char *            comment;
    char              str[NETCALC_ADDRESS_LENGTH+64];
-   char              net_str[NETCALC_ADDRESS_LENGTH];
+   char              exp_str[NETCALC_ADDRESS_LENGTH];
    char              res_str[NETCALC_ADDRESS_LENGTH];
 
    errs  = 0;
@@ -264,29 +265,94 @@ my_pass(
    for(idx = 0; ((queries[idx].query_addr)); idx++)
    {  printf(  "      test %s (should %s) ...\n",
                queries[idx].query_addr,
-               ( ((queries[idx].query_res)) ? "pass" : "fail")
+               ( ((queries[idx].query_exp)) ? "pass" : "fail")
             );
+
+      // generate netcalc_net_t for expected response
+      exp         = NULL;
+      exp_str[0]  = '\0';
+      if ((queries[idx].query_exp))
+      {  if ((rc = netcalc_init(&exp, queries[idx].query_exp, flags)) != 0)
+         {  fprintf(stderr, "%s: %s: %s\n", PROGRAM_NAME, queries[idx].query_addr, netcalc_strerror(rc));
+            errs++;
+            return(errs);
+         };
+         netcalc_ntop(exp, exp_str, sizeof(exp_str), NETCALC_TYPE_ADDRESS, flags);
+      };
+
+      // query for matching network
       res = NULL;
-      rc  = netcalc_set_query_str(ns, queries[idx].query_addr, &res, NULL, NULL, NULL);
-      if ( ((queries[idx].query_res)) && ((rc)) )
+      rc  = netcalc_set_query_str(ns, queries[idx].query_addr, &res, &comment, NULL, NULL);
+      res_str[0] = '\0';
+      if ((res))
+         netcalc_ntop(res, res_str, sizeof(res_str), NETCALC_TYPE_ADDRESS, flags);
+
+      // verify query which should pass had result
+      if ( ((exp)) && ((rc)) )
       {  printf(  "%s: %s: expected %s: netcalc_set_add_str(): %s\n",
                   PROGRAM_NAME,
                   queries[idx].query_addr,
-                  queries[idx].query_res,
+                  exp_str,
                   netcalc_strerror(rc)
                );
+         netcalc_free(exp);
          errs++;
          continue;
       };
-      if ( (!(queries[idx].query_res)) && (!(rc)) )
+
+      // verify query which should fail did not have a result
+      if ( (!(exp)) && (!(rc)) )
       {  printf(  "%s: %s: should fail but matched %s\n",
                   PROGRAM_NAME,
                   queries[idx].query_addr,
                   netcalc_ntop(res, 0, 0, NETCALC_TYPE_ADDRESS, flags)
                );
          errs++;
+         netcalc_free(res);
          continue;
       };
+
+      // continue if no result was returned
+      if (!(res))
+      {  if ((exp))
+            netcalc_free(exp);
+         continue;
+      };
+
+      // verify that expected result and result networks match
+      rc = netcalc_cmp(exp, res, NETCALC_FLG_NETWORK);
+      if (rc != NETCALC_CMP_SAME)
+      {  printf(  "%s: %s: expected network %s and matched %s\n",
+                  PROGRAM_NAME,
+                  queries[idx].query_addr,
+                  exp_str,
+                  res_str
+               );
+         errs++;
+         netcalc_free(res);
+         netcalc_free(exp);
+         continue;
+      };
+
+      // verify that expected result and result addresses match
+      rc = netcalc_cmp(exp, res, 0);
+      if (rc != NETCALC_CMP_SAME)
+      {  printf(  "%s: %s: expected address %s and matched %s\n",
+                  PROGRAM_NAME,
+                  queries[idx].query_addr,
+                  exp_str,
+                  res_str
+               );
+         printf("%s: compare result: %s\n", PROGRAM_NAME, netcalc_cmp_str(rc));
+         errs++;
+         netcalc_free(res);
+         netcalc_free(exp);
+         continue;
+      };
+
+      // free resources
+      netcalc_free(res);
+      netcalc_free(exp);
    };
 
    netcalc_set_free(ns);
