@@ -262,6 +262,11 @@ netcalc_cmp(
          int                           flags );
 
 
+_NETCALC_F const char *
+netcalc_cmp_str(
+         int                           code );
+
+
 _NETCALC_F int
 netcalc_convert(
          netcalc_net_t *               net,

@@ -203,6 +203,24 @@ netcalc_cmp(
 }
 
 
+const char *
+netcalc_cmp_str(
+         int                           code )
+{
+   switch(code)
+   {  case NETCALC_CMP_BEFORE:   return("before");    break;
+      case NETCALC_CMP_SUPERNET: return("supernet");  break;
+      case NETCALC_CMP_SAME:     return("same");      break;
+      case NETCALC_CMP_SUBNET:   return("subnet");    break;
+      case NETCALC_CMP_AFTER:    return("after");     break;
+      case NETCALC_IDX_INSERT:   return("insert");    break;
+      case NETCALC_IDX_ERROR:    return("error");     break;
+      default: break;
+   };
+   return("unknown");
+}
+
+
 int
 netcalc_copy(
          netcalc_net_t *               dst,

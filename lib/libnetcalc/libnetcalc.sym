@@ -29,6 +29,7 @@
 #   SUCH DAMAGE.
 #
 netcalc_cmp
+netcalc_cmp_str
 netcalc_convert
 netcalc_cur_first
 netcalc_cur_free
