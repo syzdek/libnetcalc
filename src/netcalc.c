@@ -64,13 +64,16 @@
 #define  NETCALC_SHORT_OPT "hqVv"
 
 #undef   NETCALC_SHORT_FAMILY
-#define  NETCALC_SHORT_FAMILY "46C:Eep:"
+#define  NETCALC_SHORT_FAMILY "46Ee"
+
+#undef   NETCALC_SHORT_CONV
+#define  NETCALC_SHORT_CONV "C:p:"
 
 #undef   NETCALC_SHORT_FILE
 #define  NETCALC_SHORT_FILE "B:cf:O"
 
 #undef   NETCALC_SHORT_FORMAT
-#define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_FAMILY
+#define  NETCALC_SHORT_FORMAT "0123MSZ" NETCALC_SHORT_CONV NETCALC_SHORT_FAMILY
 
 #undef   NETCALC_LONG_OPT
 #define  NETCALC_LONG_OPT \
@@ -87,18 +90,22 @@
    { "ipv6",            no_argument,         NULL, '6' }, \
    { "eui48",           no_argument,         NULL, 'e' }, \
    { "eui64",           no_argument,         NULL, 'E' }, \
-   { "family",          required_argument,   NULL, 'f' }, \
    { "mac",             no_argument,         NULL, 'e' },
+
+#undef   NETCALC_LONG_CONV
+#define  NETCALC_LONG_CONV \
+   { "family",          required_argument,   NULL, 'f' }, \
+   { "prefix",          required_argument,   NULL, 'p' },
 
 #undef   NETCALC_LONG_FILE
 #define  NETCALC_LONG_FILE \
    { "continue",        no_argument,         NULL, 'c' }, \
-   { "superblock",      required_argument,   NULL, 'B' }, \
-   { "prefix",          required_argument,   NULL, 'p' },
+   { "superblock",      required_argument,   NULL, 'B' },
 
 #undef   NETCALC_LONG_FORMAT
 #define  NETCALC_LONG_FORMAT \
    NETCALC_LONG_FAMILY \
+   NETCALC_LONG_CONV \
    { "colon",           no_argument,         NULL, '0' }, \
    { "dash",            no_argument,         NULL, '1' }, \
    { "dot",             no_argument,         NULL, '2' }, \
@@ -331,7 +338,7 @@ static my_widget_t my_widget_map[] =
    {  .name       = "test",
       .desc       = "compares two IP addresses or networks",
       .usage      = "[OPTIONS] <address> <operator> <address>",
-      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FAMILY,
+      .short_opt  = NETCALC_SHORT_OPT NETCALC_SHORT_FORMAT,
       .long_opt   = NETCALC_LONG( NETCALC_LONG_FORMAT ),
       .arg_min    = 3,
       .arg_max    = 3,
