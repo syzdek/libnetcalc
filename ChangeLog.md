@@ -3,13 +3,16 @@ Network Calculations Library
 Copyright (C) 2025 David M. Syzdek <david@syzdek.net>.  
 All rights reserved.  
 
+0.6
+   * libnetcalc:
+     - adding IPv6 prefix to EUI-48, EUI-64, and IPv4 addresses
+
 0.5 2025-10-23
    * libnetcalc:
      - fixing netcalc_set_query() handling of NETCALC_IDX_INSERT
      - adding support for escape characters in netcalc_strfnet()
      - adding ability to restrict address sets to specific superblock
      - fixing error checks for out of bounds CIDR
-     - adding IPv6 prefix to EUI-48, EUI-64, and IPv4 addresses
    * netcalc
      - general: adding man page
      - general: updating warning message format for network set imports
