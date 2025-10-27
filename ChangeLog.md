@@ -6,6 +6,7 @@ All rights reserved.
 0.6
    * libnetcalc:
      - adding IPv6 prefix to EUI-48, EUI-64, and IPv4 addresses
+     - fixing CIDR calculations in netcalc_network_mask()
    * netcalc
      - superblock: adding man page
 

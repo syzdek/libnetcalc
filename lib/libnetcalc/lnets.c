@@ -554,7 +554,7 @@ netcalc_network_mask(
       return(NETCALC_ENOTSUP);
 
    // normalizes CIDR
-   if ( ((cidr)) && (family == NETCALC_AF_INET) )
+   if ( (cidr >= 0) && (family == NETCALC_AF_INET) )
       cidr += 96;
    if (cidr > 128)
       return(NETCALC_EINVAL);
@@ -563,9 +563,11 @@ netcalc_network_mask(
    if (!(prefix))
    {  if (cidr >= 0)
          net->net_cidr = cidr;
+      if (cidr < 0)
+         return(NETCALC_EINVAL);
       return(0);
    };
-   net->net_cidr = ((cidr > 0) && (cidr < 129)) ? cidr : prefix->net_cidr;
+   net->net_cidr = ((cidr >= 0) && (cidr < 129)) ? cidr : prefix->net_cidr;
 
    net_addr    = &net->net_addr;
    pre_addr    = &prefix->net_addr;
