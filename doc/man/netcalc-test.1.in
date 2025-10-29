@@ -232,8 +232,9 @@ netcalc test -- \\
 .BR netcalc (1),
 .BR netcalc-info(1),
 .BR netcalc-syntaxes (1),
-.BR netcalc (3),
-.BR netcalc_cmp (3)
+.BR libnetcalc (3),
+.BR netcalc_cmp (3),
+.BR netcalc-syntaxes (5)
 
 .SH AUTHOR
 David M. Syzdek <david@syzdek.net>

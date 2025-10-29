@@ -28,93 +28,29 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.TH "NETCALC" "1" "@RELEASE_MONTH@" "@PACKAGE_NAME@" "User Commands"
-.SH NAME
-netcalc - netork calculations command line utility
+.TH "LIBNETCALC" "3" "@RELEASE_MONTH@" "@PACKAGE_NAME@" "User Commands"
+.SH LIBRARY
+Network Calculations Library (libnetcalc, -lnetcalc)
 
 .SH SYNOPSIS
-.nf
-\fBnetcalc\fR [OPTIONS] <address> [ <address> [ ... <address> ] ]
-.sp
-\fBnetcalc\fR [OPTIONS] <widget> [OPTIONS] [<args>]
-.sp
-\fBnetcalc-widget\fR [OPTIONS]
-.sp
-\fBnetcalcwidget\fR [OPTIONS]
-.sp
-\fBnetwidget\fR [OPTIONS]
+\fB#include <netcalc.h>\fR
 
 .SH DESCRIPTION
-The netcalc utility is a command line wrapper for select functions in the the
-Network Calculations Library.
 
-If a widget is not specified, then the bavior of netcalc is similar to the
-info widget.
-
-.SH OPTIONS
+.SH INDEX
 
 .TP 25
-\fB-h\fR, \fB--help\fR
-print usage information and exit
-
+\fBnetcalc_init\fR(3)
+initialize an address using the netcalc library
 .TP 25
-\fB-q\fR, \fB--quiet\fR, \fB--silent\fR
-suppress warnings and excess messages
-
+\fBnetcalc_set_init\fR(3)
+initialize a set or list of addresses using the netcalc library
 .TP 25
-\fB-V\fR, \fB--version\fR
-print version number and exit
-
-.TP 25
-\fB-v\fR, \fB--verbose\fR
-print verbose messages
-
-.SH WIDGETS
-
-.TP 20
-info
-displays information inferred from a given address or network and calculates
-the inclusive supernet if more than one address or network is specified.
-
-.TP 20
-match
-processes a list of networks and find the smallest subnet within the list
-which contains the specified address.
-
-.TP 20
-printf
-formats an address according to the format specified on the command line.
-
-.TP 20
-superblock
-calculates the smallest supernets which contain all of the addresses provided.
-
-.TP 20
-sort
-processes a list of networks and displays the sorted networks.
-
-.TP 20
-syntaxes
-displays address formats accepted by the utility.
-
-.TP 20
-test
-evaluates two addresses or networks using the specified expression.
-
-.TP 20
-tree
-processes a list of networks and displays the sorted networks with subnets
-indented.
+\fBnetcalc_strerror\fR(3)
+convert netcalc library error code to a string
 
 .SH SEE ALSO
-.BR netcalc-info (1),
-.BR netcalc-match (1),
-.BR netcalc-printf (1),
-.BR netcalc-superblock (1),
-.BR netcalc-sort (1),
-.BR netcalc-test (1),
-.BR netcalc-tree (1),
-.BR libnetcalc (3),
+.BR netcalc (1),
 .BR netcalc-syntaxes (5)
 
 .SH AUTHOR
