@@ -224,7 +224,7 @@ my_test(
 
    my_info("checking: \"%s\" (should %s) ...\n", dat->addr_str, ( ((dat->addr_fail)) ? "fail" : "pass" ) );
 
-   rc = netcalc_init(&net, dat->addr_str, dat->addr_flgs);
+   rc = netcalc_net_init(&net, dat->addr_str, dat->addr_flgs);
    if ( ((rc)) && (dat->addr_fail == MY_PASS) )
    {  my_info("   failure code:  %i (%s)\n", rc, netcalc_strerror(rc));
       my_verbose("\n");

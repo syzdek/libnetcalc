@@ -435,7 +435,7 @@ main(
          return((rc == -1) ? 0 : 1);
       };
       if ((cnf->widget = my_widget_lookup(cnf->argv[0], 0)) == NULL)
-      {  if (netcalc_init(&net, cnf->argv[0], cnf->flags) != NETCALC_SUCCESS)
+      {  if (netcalc_net_init(&net, cnf->argv[0], cnf->flags) != NETCALC_SUCCESS)
          {  fprintf(stderr, "%s: unknown or ambiguous widget -- \"%s\"\n", cnf->prog_name, cnf->argv[0]);
             fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
             my_free(cnf);
@@ -480,7 +480,7 @@ main(
 
    // process network prefix
    if ((cnf->net_prefix_str))
-   {  if ((rc = netcalc_init(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_net_init(&cnf->net_prefix, cnf->net_prefix_str, cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: network prefix: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
          my_free(cnf);
@@ -491,7 +491,7 @@ main(
 
    // process superblock
    if ((cnf->net_super_str))
-   {  if ((rc = netcalc_init(&cnf->net_super, cnf->net_super_str, cnf->flags)) != NETCALC_SUCCESS)
+   {  if ((rc = netcalc_net_init(&cnf->net_super, cnf->net_super_str, cnf->flags)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: superblock: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
          my_free(cnf);
@@ -765,7 +765,7 @@ my_netcalc_init(
    assert(addr != NULL);
 
    // parse address string
-   if ((rc = netcalc_init(&net, addr, cnf->flags)) != NETCALC_SUCCESS)
+   if ((rc = netcalc_net_init(&net, addr, cnf->flags)) != NETCALC_SUCCESS)
       return(rc);
    if ( (!(cnf->net_prefix)) && (!(cnf->net_prefix_family)) )
    {  *netp = net;

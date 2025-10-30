@@ -272,7 +272,7 @@ my_pass(
       exp         = NULL;
       exp_str[0]  = '\0';
       if ((queries[idx].query_exp))
-      {  if ((rc = netcalc_init(&exp, queries[idx].query_exp, flags)) != 0)
+      {  if ((rc = netcalc_net_init(&exp, queries[idx].query_exp, flags)) != 0)
          {  fprintf(stderr, "%s: %s: %s\n", PROGRAM_NAME, queries[idx].query_addr, netcalc_strerror(rc));
             errs++;
             return(errs);

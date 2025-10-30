@@ -32,12 +32,12 @@ netcalc_cur_first
 netcalc_cur_free
 netcalc_cur_init
 netcalc_cur_next
-netcalc_init
 netcalc_net_cmp
 netcalc_net_convert
 netcalc_net_dup
 netcalc_net_field
 netcalc_net_free
+netcalc_net_init
 netcalc_net_mask
 netcalc_ntop
 netcalc_set_add

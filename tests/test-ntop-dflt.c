@@ -222,7 +222,7 @@ my_test(
 
    my_info("checking: \"%s\" ...\n", dat->addr_str);
 
-   rc = netcalc_init(&net, dat->addr_str, 0);
+   rc = netcalc_net_init(&net, dat->addr_str, 0);
    my_verbose("   status:        %s\n", netcalc_strerror(rc));
    my_verbose("   return code:   %i\n", rc);
    if ((rc))

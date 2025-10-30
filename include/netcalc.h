@@ -287,13 +287,6 @@ netcalc_cur_next(
 
 
 _NETCALC_F int
-netcalc_init(
-         netcalc_net_t **              netp,
-         const char *                  address,
-         int                           flags );
-
-
-_NETCALC_F int
 netcalc_net_cmp(
          const netcalc_net_t *         n1,
          const netcalc_net_t *         n2,
@@ -323,6 +316,13 @@ netcalc_net_field(
 _NETCALC_F void
 netcalc_net_free(
          netcalc_net_t *               net );
+
+
+_NETCALC_F int
+netcalc_net_init(
+         netcalc_net_t **              netp,
+         const char *                  address,
+         int                           flags );
 
 
 _NETCALC_F int

@@ -216,7 +216,7 @@ my_test(
 
    if ((dat->addr_ip_network))
    {  my_verbose("   network:       %s\n", dat->addr_ip_network);
-      if ((rc = netcalc_init(&net, dat->addr_ip_network, 0)) != 0)
+      if ((rc = netcalc_net_init(&net, dat->addr_ip_network, 0)) != 0)
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
@@ -230,7 +230,7 @@ my_test(
 
    if ((dat->addr_ip_first))
    {  my_verbose("   first ussable: %s\n", dat->addr_ip_first);
-      if ((rc = netcalc_init(&net, dat->addr_ip_first, 0)) != 0)
+      if ((rc = netcalc_net_init(&net, dat->addr_ip_first, 0)) != 0)
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
@@ -244,7 +244,7 @@ my_test(
 
    if ((dat->addr_ip_last))
    {  my_verbose("   last ussable:  %s\n", dat->addr_ip_last);
-      if ((rc = netcalc_init(&net, dat->addr_ip_last, 0)) != 0)
+      if ((rc = netcalc_net_init(&net, dat->addr_ip_last, 0)) != 0)
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
@@ -258,7 +258,7 @@ my_test(
 
    if ((dat->addr_ip_broadcast))
    {  my_verbose("   broadcast:     %s\n", dat->addr_ip_broadcast);
-      if ((rc = netcalc_init(&net, dat->addr_ip_broadcast, 0)) != 0)
+      if ((rc = netcalc_net_init(&net, dat->addr_ip_broadcast, 0)) != 0)
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };

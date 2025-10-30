@@ -497,7 +497,7 @@ netcalc_net_free(
 
 
 int
-netcalc_init(
+netcalc_net_init(
          netcalc_net_t **              netp,
          const char *                  address,
          int                           flags )
