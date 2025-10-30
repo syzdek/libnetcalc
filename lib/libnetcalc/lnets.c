@@ -124,7 +124,7 @@ netcalc_parse_eui(
 
 
 static int
-netcalc_parse_inet(
+netcalc_net_parse_inet(
          netcalc_buff_t *              b,
          char *                        address );
 
@@ -1132,7 +1132,7 @@ netcalc_parse(
                         : (net->net_flags & ~NETCALC_AF_EUI64);
    };
    if ((net->net_flags & NETCALC_AF_INET))
-   {  net->net_flags    = ((rc = netcalc_parse_inet(b, str)) == NETCALC_SUCCESS)
+   {  net->net_flags    = ((rc = netcalc_net_parse_inet(b, str)) == NETCALC_SUCCESS)
                         ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET
                         : (net->net_flags & ~NETCALC_AF_INET);
    };
@@ -1297,7 +1297,7 @@ netcalc_parse_eui(
 
 
 int
-netcalc_parse_inet(
+netcalc_net_parse_inet(
          netcalc_buff_t *              b,
          char *                        address )
 {
@@ -1416,7 +1416,7 @@ netcalc_net_parse_inet6(
       return(NETCALC_EBADADDR);
 
    // attempt to process as IPv4-mapped IPv6 address
-   if (netcalc_parse_inet(b, address) == NETCALC_SUCCESS)
+   if (netcalc_net_parse_inet(b, address) == NETCALC_SUCCESS)
    {  b->buff_net.net_flags |= NETCALC_FLG_V4MAPPED;
       b->buff_net.net_addr.addr8[10] = 0xff;
       b->buff_net.net_addr.addr8[11] = 0xff;
@@ -1580,7 +1580,7 @@ netcalc_net_parse_inet6(
 
       // check for IPv4 mapped address
       if (wyde == 6)
-      {  if (!(netcalc_parse_inet(b, &str[pos])))
+      {  if (!(netcalc_net_parse_inet(b, &str[pos])))
          {  b->buff_net.net_cidr    =  (uint8_t)((cidr != -1)  ? cidr : b->buff_net.net_cidr);
             b->buff_net.net_port    =  (uint16_t)((port != -1) ? port : b->buff_net.net_port);
             b->buff_net.net_flags   |= NETCALC_FLG_V4MAPPED;
