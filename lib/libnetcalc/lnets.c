@@ -533,485 +533,6 @@ netcalc_net_mask(
 }
 
 
-const char *
-netcalc_ntop(
-         const netcalc_net_t *         net,
-         char *                        dst,
-         size_t                        size,
-         int                           type,
-         int                           flags )
-{
-   int                     pos;
-   netcalc_net_t           nbuff;
-   const uint8_t *         addr8;
-   char                    tmp[32];
-   static char             dst_buffer[NETCALC_ADDRESS_LENGTH];
-
-   assert(net != NULL);
-   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
-
-   size  = ((dst)) ? size : sizeof(dst_buffer);
-   dst   = ((dst)) ? dst  : dst_buffer;
-
-   nbuff.net_cidr       = net->net_cidr;
-   nbuff.net_flags      = net->net_flags;
-   nbuff.net_port       = net->net_port;
-   nbuff.net_scope_name = net->net_scope_name;
-   addr8                = (const uint8_t *)&net->net_addr.addr8;
-
-   switch(type)
-   {
-      case NETCALC_TYPE_ADDRESS:
-         memcpy(&nbuff.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
-         break;
-
-      case NETCALC_TYPE_ARPA_NET:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
-            nbuff.net_cidr = (net->net_cidr / 8) * 8;
-         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
-            nbuff.net_cidr = (net->net_cidr / 4) * 4;
-         else
-            return(NULL);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[nbuff.net_cidr].addr8[pos];
-         break;
-
-      case NETCALC_TYPE_ARPA_HOST:
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
-            snprintf(dst, size, "%i.%i.%i.%i.in-addr.arpa.", addr8[15], addr8[14], addr8[13], addr8[12]);
-         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
-            snprintf(dst, size,
-               "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.ip6.arpa.",
-               (addr8[15] & 0x0f), ((addr8[15] >> 4) & 0x0f), (addr8[14] & 0x0f), ((addr8[14] >> 4) & 0x0f),
-               (addr8[13] & 0x0f), ((addr8[13] >> 4) & 0x0f), (addr8[12] & 0x0f), ((addr8[12] >> 4) & 0x0f),
-               (addr8[11] & 0x0f), ((addr8[11] >> 4) & 0x0f), (addr8[10] & 0x0f), ((addr8[10] >> 4) & 0x0f),
-               (addr8[9]  & 0x0f), ((addr8[9]  >> 4) & 0x0f), (addr8[8]  & 0x0f), ((addr8[8]  >> 4) & 0x0f),
-               (addr8[7]  & 0x0f), ((addr8[7]  >> 4) & 0x0f), (addr8[6]  & 0x0f), ((addr8[6]  >> 4) & 0x0f),
-               (addr8[5]  & 0x0f), ((addr8[5]  >> 4) & 0x0f), (addr8[4]  & 0x0f), ((addr8[4]  >> 4) & 0x0f),
-               (addr8[3]  & 0x0f), ((addr8[3]  >> 4) & 0x0f), (addr8[2]  & 0x0f), ((addr8[2]  >> 4) & 0x0f),
-               (addr8[1]  & 0x0f), ((addr8[1]  >> 4) & 0x0f), (addr8[0]  & 0x0f), ((addr8[0]  >> 4) & 0x0f)
-            );
-         else
-            return(NULL);
-         return(dst);
-
-      case NETCALC_TYPE_ARPA_REC:
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
-         {  dst[0]         = '\0';
-            nbuff.net_cidr = (net->net_cidr / 8) * 8;
-            for(pos = 15; (pos > (nbuff.net_cidr/8)); pos--)
-            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
-               netcalc_strlcat(dst, tmp, size);
-            };
-            snprintf(tmp, sizeof(tmp), "%i", addr8[pos]);
-            netcalc_strlcat(dst, tmp, size);
-            return(dst);
-         };
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
-         {  dst[0]         = '\0';
-            nbuff.net_cidr = (net->net_cidr / 4) * 4;
-            for(pos = 31; (pos > (nbuff.net_cidr/4)); pos--)
-            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
-               netcalc_strlcat(dst, tmp, size);
-            };
-            snprintf(tmp, sizeof(tmp), "%x", ((addr8[pos/2] >> 0) & 0x0f));
-            netcalc_strlcat(dst, tmp, size);
-            return(dst);
-         };
-         return(NULL);
-
-      case NETCALC_TYPE_ARPA_ZONE:
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
-         {  dst[0]         = '\0';
-            nbuff.net_cidr = (net->net_cidr / 8) * 8;
-            for(pos = (nbuff.net_cidr/8)-1; (pos > 12); pos--)
-            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
-               netcalc_strlcat(dst, tmp, size);
-            };
-            snprintf(tmp, sizeof(tmp), "%i.in-addr.arpa.", addr8[pos]);
-            netcalc_strlcat(dst, tmp, size);
-            return(dst);
-         };
-         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
-         {  dst[0]         = '\0';
-            nbuff.net_cidr = (net->net_cidr / 4) * 4;
-            for(pos = ((nbuff.net_cidr/4)-1); (pos > 0); pos--)
-            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
-               netcalc_strlcat(dst, tmp, size);
-            };
-            snprintf(tmp, sizeof(tmp), "%x.ip6.arpa.", ((addr8[pos/2] >> 4) & 0x0f));
-            netcalc_strlcat(dst, tmp, size);
-            return(dst);
-         };
-         return(NULL);
-
-      case NETCALC_TYPE_BROADCAST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
-         break;
-
-      case NETCALC_TYPE_FIRST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
-         if (net->net_cidr < 127)
-            nbuff.net_addr.addr8[15]++;
-         break;
-
-      case NETCALC_TYPE_LAST:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
-         if (net->net_cidr < 127)
-            nbuff.net_addr.addr8[15]--;
-         break;
-
-      case NETCALC_TYPE_NETMASK:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
-         memcpy(&nbuff.net_addr, &_netcalc_netmasks[net->net_cidr], sizeof(netcalc_addr_t));
-         break;
-
-      case NETCALC_TYPE_NETWORK:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
-         break;
-
-      case NETCALC_TYPE_WILDCARD:
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
-         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
-         for(pos = 0; (pos < 16); pos++)
-            nbuff.net_addr.addr8[pos] = ~_netcalc_netmasks[net->net_cidr].addr8[pos];
-         break;
-
-      default:
-         return(NULL);
-   };
-   net = &nbuff;
-
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI48:  return(netcalc_ntop_eui(net, dst, size, flags));
-      case NETCALC_AF_EUI64:  return(netcalc_ntop_eui(net, dst, size, flags));
-      case NETCALC_AF_INET:   return(netcalc_ntop_inet(net, dst, size, flags));
-      case NETCALC_AF_INET6:  return(netcalc_ntop_inet6(net, dst, size, flags));
-
-      default:
-         dst[0] = '\0';
-         break;
-   };
-
-   return(dst);
-}
-
-
-const char *
-netcalc_ntop_eui(
-         const netcalc_net_t *         net,
-         char *                        dst,
-         size_t                        size,
-         int                           flags )
-{
-   size_t   idx;
-   size_t   idx_start;
-   size_t   off;
-   int      delim;
-   char     map[] = "0123456789abcdef";
-
-   assert(net != NULL);
-   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
-
-   delim = (flags & NETCALC_DELIM);
-   switch(net->net_flags & NETCALC_AF)
-   {  case NETCALC_AF_EUI64:
-         idx_start = 8;
-         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI64 & NETCALC_DELIM);
-         break;
-
-      case NETCALC_AF_EUI48:
-      default:
-         idx_start = 10;
-         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI48 & NETCALC_DELIM);
-         break;
-   };
-
-   for(idx = idx_start, off = 0; (idx < 16); idx++)
-   {  if (size < (off + 3))
-         return(NULL);
-      switch(delim)
-      {  case NETCALC_FLG_DELIM_DOT:
-            if ((off % 5) == 4)
-               dst[off++] = '.';
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
-            break;
-
-         case NETCALC_FLG_DELIM_NODELIM:
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
-            break;
-
-         case NETCALC_FLG_DELIM_DASH:
-         case NETCALC_FLG_DELIM_COLON:
-         default:
-            if ((off))
-               dst[off++] = ((delim == NETCALC_FLG_DELIM_DASH) ? '-' : ':');
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
-            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
-            break;
-      };
-   };
-
-   if (size < (off + 1))
-      return(NULL);
-   dst[off] = '\0';
-
-   return(dst);
-}
-
-
-const char *
-netcalc_ntop_inet(
-         const netcalc_net_t *         net,
-         char *                        dst,
-         size_t                        size,
-         int                           flags )
-{
-   size_t   idx;
-   size_t   off;
-   size_t   buff_len;
-   size_t   pos;
-   char     buff[8];
-
-   assert(net != NULL);
-   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
-
-   off = 0;
-
-   // adjusting flags NETCALC_FLG_CIDR
-   if ((flags & NETCALC_FLG_CIDR))
-      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
-
-   // adjusting flags NETCALC_FLG_PORT
-   if (!(net->net_port))
-      flags = flags & ~NETCALC_FLG_PORT;
-
-   for(idx = 12; (idx < 16); idx++)
-   {  if ((flags & NETCALC_FLG_SUPR))
-         buff_len = snprintf(buff, sizeof(buff), "%i", net->net_addr.addr8[idx]);
-      else
-         buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
-      if (size < (off+buff_len+2))
-         return(NULL);
-      if ((off))
-         dst[off++] = '.';
-      for(pos = 0; (pos < buff_len); pos++, off++)
-         dst[off] = buff[pos];
-   };
-
-   // append CIDR
-   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
-   {  buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
-      if (size < (off+buff_len+1))
-         return(NULL);
-      for(pos = 0; (pos < buff_len); pos++, off++)
-         dst[off] = buff[pos];
-   };
-
-   // append port
-   if ((flags & NETCALC_FLG_PORT))
-   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
-      if (size < (off+buff_len+1))
-         return(NULL);
-      for(pos = 0; (pos < buff_len); pos++, off++)
-         dst[off] = buff[pos];
-   };
-
-   dst[off] = '\0';
-
-   return(dst);
-}
-
-
-const char *
-netcalc_ntop_inet6(
-         const netcalc_net_t *         net,
-         char *                        dst,
-         size_t                        size,
-         int                           flags )
-{
-   int               idx;
-   size_t            off;
-   char              buff[8];
-   int               buff_len;
-   int               pos;
-   int               bracketed;
-   int               zero_off;
-   int               zero_len;
-   int               zero_max_off;
-   int               zero_max_len;
-   int               ipv4_flags;
-   int               max_len;
-   const uint8_t *   dat8;
-   char              map[] = "0123456789abcdef";
-   char              ipv4[NETCALC_ADDRESS_LENGTH];
-
-   assert(net != NULL);
-   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
-
-   off            = 0;
-   bracketed      = 0;
-   dat8           = net->net_addr.addr8;
-   zero_max_off   = -1;
-   zero_max_len   = 0;
-
-   if (size <= 3)
-      return(NULL);
-
-   // adjusting flags NETCALC_FLG_CIDR and NETCALC_FLG_CIDR_ALWAYS
-   if ((flags & NETCALC_FLG_CIDR))
-      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
-
-   // adjusting flags NETCALC_FLG_PORT
-   if (!(net->net_port))
-      flags = flags & ~NETCALC_FLG_PORT;
-
-   // adjusting flags NETCALC_FLG_IFACE
-   if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
-      flags = flags & ~NETCALC_FLG_IFACE;
-
-   // determine if brackets are needed
-   if ((flags & NETCALC_FLG_PORT))
-      bracketed = 1;
-   if ( ((flags & NETCALC_FLG_CIDR_ALWAYS)) && ((flags & NETCALC_FLG_IFACE)) )
-      bracketed = 1;
-   if ((bracketed))
-      dst[off++] = '[';
-
-   // calculates zero compression
-   if ((flags & NETCALC_FLG_COMPR))
-   {  zero_off = -1;
-      zero_len = 0;
-      max_len  = (flags & NETCALC_FLG_V4MAPPED) ? 12 : 16;
-      for(idx = 0; (idx < max_len); idx += 2)
-      {  if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
-         {  if (zero_off == -1)
-               continue;
-            if (zero_len > zero_max_len)
-            {  zero_max_off = zero_off;
-               zero_max_len = zero_len;
-            };
-            zero_off = -1;
-            zero_len = 0;
-         } else
-         {  if (zero_off == -1)
-               zero_off = idx;
-            zero_len += 2;
-         };
-      };
-      if ( (zero_off != -1) && (zero_len > zero_max_len) )
-      {  zero_max_off = zero_off;
-         zero_max_len = zero_len;
-      };
-      if (zero_max_len < 4)
-         zero_max_off = -1;
-   };
-
-   for(idx = 0; (idx < 16); idx += 2)
-   {  // apply zero compression
-      if (idx == zero_max_off)
-      {  if (size <= (off+3))
-            return(NULL);
-         idx += zero_max_len;
-         dst[off++] = ':';
-         if (idx >= 16)
-         {  dst[off++] = ':';
-            continue;
-         };
-      };
-
-      // apply delimiter
-      if ( (!(idx % 2)) && ((idx)) )
-      {  if (size <= (off+2))
-            return(NULL);
-         dst[off++] = ':';
-      };
-
-      // save data
-      if ( ((flags & NETCALC_FLG_V4MAPPED)) && (idx == 12) )
-      {  ipv4_flags = flags;
-         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_PORT);
-         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR);
-         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR_ALWAYS);
-         if (!(netcalc_ntop_inet(net, ipv4, sizeof(ipv4), ipv4_flags)))
-            return(NULL);
-         if (size <= (off+strlen(ipv4)+1))
-            return(NULL);
-         dst[off] = '\0';
-         netcalc_strlcat(dst, ipv4, size);
-         off += strlen(dst);
-         continue;
-      };
-      if (size <= (off+5))
-         return(NULL);
-      if ( (((dat8[idx+0] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
-         dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
-      if ( ((dat8[idx+0])) || (!(flags & NETCALC_FLG_SUPR)) )
-         dst[off++] = map[(dat8[idx+0] >> 0) & 0x0f];
-      if ( ((dat8[idx+0])) || (((dat8[idx+1] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
-         dst[off++] = map[(dat8[idx+1] >> 4) & 0x0f];
-      dst[off++] = map[(dat8[idx+1] >> 0) & 0x0f];
-   };
-
-   // append scope name
-   if ( ((flags & NETCALC_FLG_IFACE)) )
-   {  if (size <= (off+2+strlen(net->net_scope_name)))
-         return(NULL);
-      dst[off++] = '%';
-      for(idx = 0; ((net->net_scope_name[idx])); idx++)
-         dst[off++] = net->net_scope_name[idx];
-   };
-
-   if (size <= (off+2))
-      return(NULL);
-   if ((bracketed))
-      dst[off++] = ']';
-
-   // append CIDR
-   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
-   {  buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
-      if (size <= (off+buff_len+1))
-         return(NULL);
-      for(pos = 0; (pos < buff_len); pos++, off++)
-         dst[off] = buff[pos];
-   };
-
-   // append port
-   if ((flags & NETCALC_FLG_PORT))
-   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
-      if (size <= (off+buff_len+1))
-         return(NULL);
-      for(pos = 0; (pos < buff_len); pos++, off++)
-         dst[off] = buff[pos];
-   };
-
-   dst[off] = '\0';
-
-   return(dst);
-}
-
-
 int
 netcalc_net_parse(
          netcalc_buff_t *              b,
@@ -1706,6 +1227,485 @@ netcalc_net_verify(
    };
 
    return(NETCALC_EINVAL);
+}
+
+
+const char *
+netcalc_ntop(
+         const netcalc_net_t *         net,
+         char *                        dst,
+         size_t                        size,
+         int                           type,
+         int                           flags )
+{
+   int                     pos;
+   netcalc_net_t           nbuff;
+   const uint8_t *         addr8;
+   char                    tmp[32];
+   static char             dst_buffer[NETCALC_ADDRESS_LENGTH];
+
+   assert(net != NULL);
+   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
+
+   size  = ((dst)) ? size : sizeof(dst_buffer);
+   dst   = ((dst)) ? dst  : dst_buffer;
+
+   nbuff.net_cidr       = net->net_cidr;
+   nbuff.net_flags      = net->net_flags;
+   nbuff.net_port       = net->net_port;
+   nbuff.net_scope_name = net->net_scope_name;
+   addr8                = (const uint8_t *)&net->net_addr.addr8;
+
+   switch(type)
+   {
+      case NETCALC_TYPE_ADDRESS:
+         memcpy(&nbuff.net_addr, &net->net_addr, sizeof(netcalc_addr_t));
+         break;
+
+      case NETCALC_TYPE_ARPA_NET:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+         else
+            return(NULL);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[nbuff.net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_ARPA_HOST:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+            snprintf(dst, size, "%i.%i.%i.%i.in-addr.arpa.", addr8[15], addr8[14], addr8[13], addr8[12]);
+         else if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+            snprintf(dst, size,
+               "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.ip6.arpa.",
+               (addr8[15] & 0x0f), ((addr8[15] >> 4) & 0x0f), (addr8[14] & 0x0f), ((addr8[14] >> 4) & 0x0f),
+               (addr8[13] & 0x0f), ((addr8[13] >> 4) & 0x0f), (addr8[12] & 0x0f), ((addr8[12] >> 4) & 0x0f),
+               (addr8[11] & 0x0f), ((addr8[11] >> 4) & 0x0f), (addr8[10] & 0x0f), ((addr8[10] >> 4) & 0x0f),
+               (addr8[9]  & 0x0f), ((addr8[9]  >> 4) & 0x0f), (addr8[8]  & 0x0f), ((addr8[8]  >> 4) & 0x0f),
+               (addr8[7]  & 0x0f), ((addr8[7]  >> 4) & 0x0f), (addr8[6]  & 0x0f), ((addr8[6]  >> 4) & 0x0f),
+               (addr8[5]  & 0x0f), ((addr8[5]  >> 4) & 0x0f), (addr8[4]  & 0x0f), ((addr8[4]  >> 4) & 0x0f),
+               (addr8[3]  & 0x0f), ((addr8[3]  >> 4) & 0x0f), (addr8[2]  & 0x0f), ((addr8[2]  >> 4) & 0x0f),
+               (addr8[1]  & 0x0f), ((addr8[1]  >> 4) & 0x0f), (addr8[0]  & 0x0f), ((addr8[0]  >> 4) & 0x0f)
+            );
+         else
+            return(NULL);
+         return(dst);
+
+      case NETCALC_TYPE_ARPA_REC:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+            for(pos = 15; (pos > (nbuff.net_cidr/8)); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%i", addr8[pos]);
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+            for(pos = 31; (pos > (nbuff.net_cidr/4)); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%x", ((addr8[pos/2] >> 0) & 0x0f));
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         return(NULL);
+
+      case NETCALC_TYPE_ARPA_ZONE:
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 8) * 8;
+            for(pos = (nbuff.net_cidr/8)-1; (pos > 12); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%i.", addr8[pos]);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%i.in-addr.arpa.", addr8[pos]);
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         if ((net->net_flags & NETCALC_AF) == NETCALC_AF_INET6)
+         {  dst[0]         = '\0';
+            nbuff.net_cidr = (net->net_cidr / 4) * 4;
+            for(pos = ((nbuff.net_cidr/4)-1); (pos > 0); pos--)
+            {  snprintf(tmp, sizeof(tmp), "%x.", (addr8[pos/2] >> (((pos%2)) ? 0 : 4)) & 0x0f);
+               netcalc_strlcat(dst, tmp, size);
+            };
+            snprintf(tmp, sizeof(tmp), "%x.ip6.arpa.", ((addr8[pos/2] >> 4) & 0x0f));
+            netcalc_strlcat(dst, tmp, size);
+            return(dst);
+         };
+         return(NULL);
+
+      case NETCALC_TYPE_BROADCAST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_FIRST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
+         if (net->net_cidr < 127)
+            nbuff.net_addr.addr8[15]++;
+         break;
+
+      case NETCALC_TYPE_LAST:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] | ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         if (net->net_cidr < 127)
+            nbuff.net_addr.addr8[15]--;
+         break;
+
+      case NETCALC_TYPE_NETMASK:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         memcpy(&nbuff.net_addr, &_netcalc_netmasks[net->net_cidr], sizeof(netcalc_addr_t));
+         break;
+
+      case NETCALC_TYPE_NETWORK:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = net->net_addr.addr8[pos] & _netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      case NETCALC_TYPE_WILDCARD:
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_CIDR);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_IFACE);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_PORT);
+         flags = NETCALC_UNSET(flags, NETCALC_FLG_V4MAPPED);
+         for(pos = 0; (pos < 16); pos++)
+            nbuff.net_addr.addr8[pos] = ~_netcalc_netmasks[net->net_cidr].addr8[pos];
+         break;
+
+      default:
+         return(NULL);
+   };
+   net = &nbuff;
+
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI48:  return(netcalc_ntop_eui(net, dst, size, flags));
+      case NETCALC_AF_EUI64:  return(netcalc_ntop_eui(net, dst, size, flags));
+      case NETCALC_AF_INET:   return(netcalc_ntop_inet(net, dst, size, flags));
+      case NETCALC_AF_INET6:  return(netcalc_ntop_inet6(net, dst, size, flags));
+
+      default:
+         dst[0] = '\0';
+         break;
+   };
+
+   return(dst);
+}
+
+
+const char *
+netcalc_ntop_eui(
+         const netcalc_net_t *         net,
+         char *                        dst,
+         size_t                        size,
+         int                           flags )
+{
+   size_t   idx;
+   size_t   idx_start;
+   size_t   off;
+   int      delim;
+   char     map[] = "0123456789abcdef";
+
+   assert(net != NULL);
+   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
+
+   delim = (flags & NETCALC_DELIM);
+   switch(net->net_flags & NETCALC_AF)
+   {  case NETCALC_AF_EUI64:
+         idx_start = 8;
+         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI64 & NETCALC_DELIM);
+         break;
+
+      case NETCALC_AF_EUI48:
+      default:
+         idx_start = 10;
+         delim       = ((delim)) ? delim : (NETCALC_DFLT_EUI48 & NETCALC_DELIM);
+         break;
+   };
+
+   for(idx = idx_start, off = 0; (idx < 16); idx++)
+   {  if (size < (off + 3))
+         return(NULL);
+      switch(delim)
+      {  case NETCALC_FLG_DELIM_DOT:
+            if ((off % 5) == 4)
+               dst[off++] = '.';
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
+            break;
+
+         case NETCALC_FLG_DELIM_NODELIM:
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
+            break;
+
+         case NETCALC_FLG_DELIM_DASH:
+         case NETCALC_FLG_DELIM_COLON:
+         default:
+            if ((off))
+               dst[off++] = ((delim == NETCALC_FLG_DELIM_DASH) ? '-' : ':');
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 4) & 0x0f];
+            dst[off++] = map[(net->net_addr.addr8[idx] >> 0) & 0x0f];
+            break;
+      };
+   };
+
+   if (size < (off + 1))
+      return(NULL);
+   dst[off] = '\0';
+
+   return(dst);
+}
+
+
+const char *
+netcalc_ntop_inet(
+         const netcalc_net_t *         net,
+         char *                        dst,
+         size_t                        size,
+         int                           flags )
+{
+   size_t   idx;
+   size_t   off;
+   size_t   buff_len;
+   size_t   pos;
+   char     buff[8];
+
+   assert(net != NULL);
+   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
+
+   off = 0;
+
+   // adjusting flags NETCALC_FLG_CIDR
+   if ((flags & NETCALC_FLG_CIDR))
+      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
+
+   // adjusting flags NETCALC_FLG_PORT
+   if (!(net->net_port))
+      flags = flags & ~NETCALC_FLG_PORT;
+
+   for(idx = 12; (idx < 16); idx++)
+   {  if ((flags & NETCALC_FLG_SUPR))
+         buff_len = snprintf(buff, sizeof(buff), "%i", net->net_addr.addr8[idx]);
+      else
+         buff_len = snprintf(buff, sizeof(buff), "%03i", net->net_addr.addr8[idx]);
+      if (size < (off+buff_len+2))
+         return(NULL);
+      if ((off))
+         dst[off++] = '.';
+      for(pos = 0; (pos < buff_len); pos++, off++)
+         dst[off] = buff[pos];
+   };
+
+   // append CIDR
+   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
+   {  buff_len = snprintf(buff, sizeof(buff), "/%i", (net->net_cidr-96));
+      if (size < (off+buff_len+1))
+         return(NULL);
+      for(pos = 0; (pos < buff_len); pos++, off++)
+         dst[off] = buff[pos];
+   };
+
+   // append port
+   if ((flags & NETCALC_FLG_PORT))
+   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+      if (size < (off+buff_len+1))
+         return(NULL);
+      for(pos = 0; (pos < buff_len); pos++, off++)
+         dst[off] = buff[pos];
+   };
+
+   dst[off] = '\0';
+
+   return(dst);
+}
+
+
+const char *
+netcalc_ntop_inet6(
+         const netcalc_net_t *         net,
+         char *                        dst,
+         size_t                        size,
+         int                           flags )
+{
+   int               idx;
+   size_t            off;
+   char              buff[8];
+   int               buff_len;
+   int               pos;
+   int               bracketed;
+   int               zero_off;
+   int               zero_len;
+   int               zero_max_off;
+   int               zero_max_len;
+   int               ipv4_flags;
+   int               max_len;
+   const uint8_t *   dat8;
+   char              map[] = "0123456789abcdef";
+   char              ipv4[NETCALC_ADDRESS_LENGTH];
+
+   assert(net != NULL);
+   assert( ((!(dst)) && (!(size))) || (((dst))  && ((size))) );
+
+   off            = 0;
+   bracketed      = 0;
+   dat8           = net->net_addr.addr8;
+   zero_max_off   = -1;
+   zero_max_len   = 0;
+
+   if (size <= 3)
+      return(NULL);
+
+   // adjusting flags NETCALC_FLG_CIDR and NETCALC_FLG_CIDR_ALWAYS
+   if ((flags & NETCALC_FLG_CIDR))
+      flags |= (net->net_cidr == 128) ? 0 : NETCALC_FLG_CIDR_ALWAYS;
+
+   // adjusting flags NETCALC_FLG_PORT
+   if (!(net->net_port))
+      flags = flags & ~NETCALC_FLG_PORT;
+
+   // adjusting flags NETCALC_FLG_IFACE
+   if ( (!(net->net_scope_name)) || (!(net->net_scope_name[0])) )
+      flags = flags & ~NETCALC_FLG_IFACE;
+
+   // determine if brackets are needed
+   if ((flags & NETCALC_FLG_PORT))
+      bracketed = 1;
+   if ( ((flags & NETCALC_FLG_CIDR_ALWAYS)) && ((flags & NETCALC_FLG_IFACE)) )
+      bracketed = 1;
+   if ((bracketed))
+      dst[off++] = '[';
+
+   // calculates zero compression
+   if ((flags & NETCALC_FLG_COMPR))
+   {  zero_off = -1;
+      zero_len = 0;
+      max_len  = (flags & NETCALC_FLG_V4MAPPED) ? 12 : 16;
+      for(idx = 0; (idx < max_len); idx += 2)
+      {  if ( ((dat8[idx+0])) || ((dat8[idx+1])) )
+         {  if (zero_off == -1)
+               continue;
+            if (zero_len > zero_max_len)
+            {  zero_max_off = zero_off;
+               zero_max_len = zero_len;
+            };
+            zero_off = -1;
+            zero_len = 0;
+         } else
+         {  if (zero_off == -1)
+               zero_off = idx;
+            zero_len += 2;
+         };
+      };
+      if ( (zero_off != -1) && (zero_len > zero_max_len) )
+      {  zero_max_off = zero_off;
+         zero_max_len = zero_len;
+      };
+      if (zero_max_len < 4)
+         zero_max_off = -1;
+   };
+
+   for(idx = 0; (idx < 16); idx += 2)
+   {  // apply zero compression
+      if (idx == zero_max_off)
+      {  if (size <= (off+3))
+            return(NULL);
+         idx += zero_max_len;
+         dst[off++] = ':';
+         if (idx >= 16)
+         {  dst[off++] = ':';
+            continue;
+         };
+      };
+
+      // apply delimiter
+      if ( (!(idx % 2)) && ((idx)) )
+      {  if (size <= (off+2))
+            return(NULL);
+         dst[off++] = ':';
+      };
+
+      // save data
+      if ( ((flags & NETCALC_FLG_V4MAPPED)) && (idx == 12) )
+      {  ipv4_flags = flags;
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_PORT);
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR);
+         ipv4_flags = NETCALC_UNSET(ipv4_flags, NETCALC_FLG_CIDR_ALWAYS);
+         if (!(netcalc_ntop_inet(net, ipv4, sizeof(ipv4), ipv4_flags)))
+            return(NULL);
+         if (size <= (off+strlen(ipv4)+1))
+            return(NULL);
+         dst[off] = '\0';
+         netcalc_strlcat(dst, ipv4, size);
+         off += strlen(dst);
+         continue;
+      };
+      if (size <= (off+5))
+         return(NULL);
+      if ( (((dat8[idx+0] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
+         dst[off++] = map[(dat8[idx+0] >> 4) & 0x0f];
+      if ( ((dat8[idx+0])) || (!(flags & NETCALC_FLG_SUPR)) )
+         dst[off++] = map[(dat8[idx+0] >> 0) & 0x0f];
+      if ( ((dat8[idx+0])) || (((dat8[idx+1] >> 4) & 0x0f)) || (!(flags & NETCALC_FLG_SUPR)) )
+         dst[off++] = map[(dat8[idx+1] >> 4) & 0x0f];
+      dst[off++] = map[(dat8[idx+1] >> 0) & 0x0f];
+   };
+
+   // append scope name
+   if ( ((flags & NETCALC_FLG_IFACE)) )
+   {  if (size <= (off+2+strlen(net->net_scope_name)))
+         return(NULL);
+      dst[off++] = '%';
+      for(idx = 0; ((net->net_scope_name[idx])); idx++)
+         dst[off++] = net->net_scope_name[idx];
+   };
+
+   if (size <= (off+2))
+      return(NULL);
+   if ((bracketed))
+      dst[off++] = ']';
+
+   // append CIDR
+   if ((flags & NETCALC_FLG_CIDR_ALWAYS))
+   {  buff_len = snprintf(buff, sizeof(buff), "/%i", net->net_cidr);
+      if (size <= (off+buff_len+1))
+         return(NULL);
+      for(pos = 0; (pos < buff_len); pos++, off++)
+         dst[off] = buff[pos];
+   };
+
+   // append port
+   if ((flags & NETCALC_FLG_PORT))
+   {  buff_len = snprintf(buff, sizeof(buff), ":%i", net->net_port);
+      if (size <= (off+buff_len+1))
+         return(NULL);
+      for(pos = 0; (pos < buff_len); pos++, off++)
+         dst[off] = buff[pos];
+   };
+
+   dst[off] = '\0';
+
+   return(dst);
 }
 
 
