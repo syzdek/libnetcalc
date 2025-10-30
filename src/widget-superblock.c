@@ -148,13 +148,13 @@ my_widget_superblock(
    };
 
    // calculate superblock and free networks
-   rc = netcalc_superblock(&superblock, (const netcalc_net_t * const *)nets, cnf->argc);
+   rc = netcalc_net_superblock(&superblock, (const netcalc_net_t * const *)nets, cnf->argc);
    for(idx = 0; ((nets[idx])); idx++)
       netcalc_net_free(nets[idx]);
    free(nets);
    nets = NULL;
    if (rc != NETCALC_SUCCESS)
-   {  fprintf(stderr, "%s: netcalc_superblock(): %s\n", my_prog_name(cnf), netcalc_strerror(rc));
+   {  fprintf(stderr, "%s: netcalc_net_superblock(): %s\n", my_prog_name(cnf), netcalc_strerror(rc));
       return(1);
    };
    netcalc_net_field(superblock, NETCALC_FLD_CIDR, &cidr);

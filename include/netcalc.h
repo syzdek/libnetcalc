@@ -332,6 +332,13 @@ netcalc_net_mask(
          int                           cidr );
 
 
+_NETCALC_F int
+netcalc_net_superblock(
+         netcalc_net_t **              netp,
+         const netcalc_net_t * const * nets,
+         size_t                        nel );
+
+
 _NETCALC_F const char *
 netcalc_ntop(
          const netcalc_net_t *         net,
@@ -422,13 +429,6 @@ netcalc_strfnet(
          size_t                        maxsize,
          const char *                  format,
          int                           flags );
-
-
-_NETCALC_F int
-netcalc_superblock(
-         netcalc_net_t **              netp,
-         const netcalc_net_t * const * nets,
-         size_t                        nel );
 
 
 _NETCALC_F int

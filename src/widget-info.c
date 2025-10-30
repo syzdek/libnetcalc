@@ -288,7 +288,7 @@ my_widget_info_ip(
       memset(nets, 0, size);
       for(idx = 0; (idx < cnf->argc); idx++)
          nets[idx] = recs[idx]->net;
-      netcalc_superblock(&recs[cnf->argc]->net, (const netcalc_net_t * const *)nets, cnf->argc);
+      netcalc_net_superblock(&recs[cnf->argc]->net, (const netcalc_net_t * const *)nets, cnf->argc);
       recs[cnf->argc]->ip_superblock = 1;
       my_rec_process(cnf, recs[cnf->argc]);
       free(nets);

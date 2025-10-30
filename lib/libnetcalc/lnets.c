@@ -1878,7 +1878,7 @@ netcalc_strfnet(
 
 
 int
-netcalc_superblock(
+netcalc_net_superblock(
          netcalc_net_t **              netp,
          const netcalc_net_t * const * nets,
          size_t                        nel )
