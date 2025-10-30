@@ -130,7 +130,7 @@ netcalc_parse_inet(
 
 
 static int
-netcalc_parse_inet6(
+netcalc_net_parse_inet6(
          netcalc_buff_t *              b,
          char *                        address );
 
@@ -1137,7 +1137,7 @@ netcalc_parse(
                         : (net->net_flags & ~NETCALC_AF_INET);
    };
    if ((net->net_flags & NETCALC_AF_INET6))
-   {  net->net_flags    = ((rc = netcalc_parse_inet6(b, str)) == NETCALC_SUCCESS)
+   {  net->net_flags    = ((rc = netcalc_net_parse_inet6(b, str)) == NETCALC_SUCCESS)
                         ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_INET6
                         : (net->net_flags & ~NETCALC_AF_INET6 );
    };
@@ -1386,7 +1386,7 @@ netcalc_parse_inet(
 
 
 int
-netcalc_parse_inet6(
+netcalc_net_parse_inet6(
          netcalc_buff_t *              b,
          char *                        address )
 {
