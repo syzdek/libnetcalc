@@ -286,12 +286,6 @@ netcalc_cur_next(
          int *                         depthp );
 
 
-_NETCALC_F int
-netcalc_dup(
-         netcalc_net_t **              netp,
-         const netcalc_net_t *         src );
-
-
 _NETCALC_F void
 netcalc_free(
          netcalc_net_t *               net );
@@ -323,6 +317,12 @@ netcalc_net_convert(
          netcalc_net_t *               net,
          int                           family,
          const netcalc_net_t *         prefix );
+
+
+_NETCALC_F int
+netcalc_net_dup(
+         netcalc_net_t **              netp,
+         const netcalc_net_t *         src );
 
 
 _NETCALC_F int

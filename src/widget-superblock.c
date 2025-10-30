@@ -169,7 +169,7 @@ my_widget_superblock(
    if ((cnf->verbose))
    {  for(idx = 1; (cidr > 0); idx++)
       {  cidr--;
-         if ((rc = netcalc_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
+         if ((rc = netcalc_net_dup(&recs[idx]->net, superblock)) != NETCALC_SUCCESS)
          {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
             my_recs_free(recs);
          };

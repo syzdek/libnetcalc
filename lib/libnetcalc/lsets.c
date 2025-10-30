@@ -312,7 +312,7 @@ netcalc_rec_get(
       memcpy(&net->net_addr, &rec->rec_addr, sizeof(netcalc_addr_t));
       net->net_cidr  = rec->rec_cidr;
       net->net_flags = rec->rec_flags;
-      if ((rc = netcalc_dup(netp, net)) != NETCALC_SUCCESS)
+      if ((rc = netcalc_net_dup(netp, net)) != NETCALC_SUCCESS)
       {  if ((datap))
             *datap = NULL;
          if ((flagsp))
@@ -736,7 +736,7 @@ netcalc_set_init(
    memset(ns, 0, sizeof(netcalc_set_t));
 
    if ((superblock))
-   {  if ((rc = netcalc_dup(&ns->set_superblock, superblock)) != 0)
+   {  if ((rc = netcalc_net_dup(&ns->set_superblock, superblock)) != 0)
       {  netcalc_set_free(ns);
          return(rc);
       };

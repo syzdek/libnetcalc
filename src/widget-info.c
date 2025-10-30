@@ -200,7 +200,7 @@ my_widget_info_eui(
       if ( (family != NETCALC_AF_EUI48) && (family != NETCALC_AF_EUI64) )
          continue;
 
-      if ((rc = netcalc_dup(&dup, recs[idx]->net)) != NETCALC_SUCCESS)
+      if ((rc = netcalc_net_dup(&dup, recs[idx]->net)) != NETCALC_SUCCESS)
       {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          return(rc);
       };
@@ -337,7 +337,7 @@ my_widget_info_ip_verbose(
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
          continue;
 
-      if ((rc = netcalc_dup(&eui, recs[idx]->net)) != 0)
+      if ((rc = netcalc_net_dup(&eui, recs[idx]->net)) != 0)
       {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
          return(rc);
       };

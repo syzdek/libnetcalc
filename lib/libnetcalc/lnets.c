@@ -340,7 +340,7 @@ netcalc_net_convert_inet6(
 
 
 int
-netcalc_dup(
+netcalc_net_dup(
          netcalc_net_t **              netp,
          const netcalc_net_t *         src )
 {
@@ -513,7 +513,7 @@ netcalc_init(
 
    if (netp == NULL)
       return(0);
-   return(netcalc_dup(netp, &nbuff.buff_net));
+   return(netcalc_net_dup(netp, &nbuff.buff_net));
 }
 
 
@@ -1902,7 +1902,7 @@ netcalc_superblock(
    ref      = &nets[0]->net_addr;
 
    if (nel == 1)
-      return(netcalc_dup(netp, nets[0]));
+      return(netcalc_net_dup(netp, nets[0]));
 
    memset(&nbuff, 0, sizeof(netcalc_net_t));
    nbuff.net_flags = nets[0]->net_flags & NETCALC_AF;
@@ -1926,7 +1926,7 @@ netcalc_superblock(
    for(byte = 0; (byte < 16); byte++)
       nbuff.net_addr.addr8[byte] = nets[0]->net_addr.addr8[byte] & _netcalc_netmasks[cidr].addr8[byte];
 
-   return(netcalc_dup(netp, &nbuff));
+   return(netcalc_net_dup(netp, &nbuff));
 }
 
 
