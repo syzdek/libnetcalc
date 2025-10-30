@@ -606,7 +606,7 @@ netcalc_set_add_str(
    assert(ns      != NULL);
    assert(address != NULL);
 
-   if ((rc = netcalc_parse(&b, address, ns->set_flags)) != 0)
+   if ((rc = netcalc_net_parse(&b, address, ns->set_flags)) != 0)
       return(rc);
 
    return(netcalc_set_add(ns, &b.buff_net, comment, data, flags));
@@ -863,7 +863,7 @@ netcalc_set_query_str(
    assert(ns      != NULL);
    assert(address != NULL);
 
-   if ((rc = netcalc_parse(&b, address, ns->set_flags)) != 0)
+   if ((rc = netcalc_net_parse(&b, address, ns->set_flags)) != 0)
       return(rc);
 
    return(netcalc_set_query(ns, &b.buff_net, resp, commentp, datap, flagsp));

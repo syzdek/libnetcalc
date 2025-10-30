@@ -209,7 +209,7 @@ netcalc_copy(
 
 
 extern int
-netcalc_parse(
+netcalc_net_parse(
          netcalc_buff_t *              b,
          const char *                  address,
          int                           flags );

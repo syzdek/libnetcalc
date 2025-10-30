@@ -508,7 +508,7 @@ netcalc_net_init(
    assert(address != NULL);
    assert((flags & ~NETCALC_FLGS_NETWORK) == 0);
 
-   if ((rc = netcalc_parse(&nbuff, address, flags)) != NETCALC_SUCCESS)
+   if ((rc = netcalc_net_parse(&nbuff, address, flags)) != NETCALC_SUCCESS)
       return(rc);
 
    if (netp == NULL)
@@ -1049,7 +1049,7 @@ netcalc_ntop_inet6(
 
 
 int
-netcalc_parse(
+netcalc_net_parse(
          netcalc_buff_t *              b,
          const char *                  address,
          int                           flags )
