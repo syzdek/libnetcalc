@@ -244,7 +244,7 @@ my_test(
    };
 
    // check family
-   netcalc_get_field(net, NETCALC_FLD_FAMILY, &net_family);
+   netcalc_net_field(net, NETCALC_FLD_FAMILY, &net_family);
    if ( ((dat_family)) && (net_family != dat_family) )
    {  printf("   family:        %08x\n", net_family);
       printf("   expected:      %08x\n", dat_family);
@@ -265,7 +265,7 @@ my_test(
    };
 
    // check port
-   netcalc_get_field(net, NETCALC_FLD_PORT, &net_port);
+   netcalc_net_field(net, NETCALC_FLD_PORT, &net_port);
    if (net_port != dat_port)
    {  printf("   port:          %i\n", net_port);
       printf("   expected:      %i\n", dat_port);
@@ -274,7 +274,7 @@ my_test(
    my_verbose("   port:          %i\n", net_port);
 
    // check cidr
-   netcalc_get_field(net, NETCALC_FLD_CIDR, &net_cidr);
+   netcalc_net_field(net, NETCALC_FLD_CIDR, &net_cidr);
    if (net_cidr != dat_cidr)
    {  printf("   cidr:          %i\n", net_cidr);
       printf("   expected:      %i\n", dat_cidr);
@@ -284,7 +284,7 @@ my_test(
 
    // check scope
    net_iface = NULL;
-   netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME, &net_iface);
+   netcalc_net_field(net, NETCALC_FLD_SCOPE_NAME, &net_iface);
    if (  ( ((net_iface)) && (!(dat_iface)) ) || ( (!(net_iface)) && ((dat_iface)) ) )
    {  printf("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
       printf("   expected:      %s\n", (((dat_iface)) ? dat_iface : "(NULL)") );

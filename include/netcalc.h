@@ -287,13 +287,6 @@ netcalc_cur_next(
 
 
 _NETCALC_F int
-netcalc_get_field(
-         const netcalc_net_t  *        net,
-         int                           option,
-         void *                        outvalue );
-
-
-_NETCALC_F int
 netcalc_init(
          netcalc_net_t **              netp,
          const char *                  address,
@@ -318,6 +311,13 @@ _NETCALC_F int
 netcalc_net_dup(
          netcalc_net_t **              netp,
          const netcalc_net_t *         src );
+
+
+_NETCALC_F int
+netcalc_net_field(
+         const netcalc_net_t  *        net,
+         int                           option,
+         void *                        outvalue );
 
 
 _NETCALC_F void

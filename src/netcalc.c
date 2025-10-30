@@ -486,7 +486,7 @@ main(
          my_free(cnf);
          return(1);
       };
-      netcalc_get_field(cnf->net_prefix, NETCALC_FLD_FAMILY, &cnf->net_prefix_family);
+      netcalc_net_field(cnf->net_prefix, NETCALC_FLD_FAMILY, &cnf->net_prefix_family);
    };
 
    // process superblock
@@ -773,7 +773,7 @@ my_netcalc_init(
    };
 
    // determines address family and if prefix should be used when converting
-   netcalc_get_field(net, NETCALC_FLD_FAMILY, &family);
+   netcalc_net_field(net, NETCALC_FLD_FAMILY, &family);
    if (cnf->net_prefix_family == family)
    {  *netp = net;
       return(0);
@@ -1196,7 +1196,7 @@ my_rec_process(
    rec->net             = n;
    rec->ip_superblock   = ip_superblock;
 
-   netcalc_get_field(n, NETCALC_FLD_FAMILY, &rec->family);
+   netcalc_net_field(n, NETCALC_FLD_FAMILY, &rec->family);
    if (!(rec->ip_superblock))
       netcalc_ntop(n, rec->address, sizeof(((my_rec_t *)0)->address), NETCALC_TYPE_ADDRESS, cnf->flags);
    else
@@ -1208,7 +1208,7 @@ my_rec_process(
       netcalc_ntop(n, rec->ip_netmask,    sizeof(((my_rec_t *)0)->ip_netmask),    NETCALC_TYPE_NETMASK,   cnf->flags);
       netcalc_ntop(n, rec->ip_wildcard,   sizeof(((my_rec_t *)0)->ip_wildcard),   NETCALC_TYPE_WILDCARD,  cnf->flags);
 
-      netcalc_get_field(n, NETCALC_FLD_CIDR, &rec->ip_cidr);
+      netcalc_net_field(n, NETCALC_FLD_CIDR, &rec->ip_cidr);
       snprintf(rec->ip_cidr_str, sizeof(((my_rec_t *)0)->ip_cidr_str), "%i", rec->ip_cidr);
 
       // calculate subnets

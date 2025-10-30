@@ -191,7 +191,7 @@ main(
       rc = netcalc_init(&net, addr, 0);
       my_verbose("   status:        %s\n", netcalc_strerror(rc));
       my_verbose("   return code:   %i\n", rc);
-      netcalc_get_field(net, NETCALC_FLD_FAMILY, &ival);
+      netcalc_net_field(net, NETCALC_FLD_FAMILY, &ival);
       switch(ival)
       {  case NETCALC_AF_EUI48: sval = "EUI48";   break;
          case NETCALC_AF_EUI64: sval = "EUI64";   break;

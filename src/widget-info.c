@@ -196,7 +196,7 @@ my_widget_info_eui(
    assert(recs != NULL);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
-   {  netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
+   {  netcalc_net_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
       if ( (family != NETCALC_AF_EUI48) && (family != NETCALC_AF_EUI64) )
          continue;
 
@@ -233,16 +233,16 @@ my_widget_info_eui(
          my_widget_info_print("EUI64",  str);
       };
 
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_UL,       &ival);
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_UL_BIT,   &bit);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_UL,       &ival);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_UL_BIT,   &bit);
       str   = (ival == NETCALC_UL_LOCAL)
             ? "(locally administered)"
             : "(universally administered)";
       snprintf(buff, sizeof(buff), "%i %s", bit, str);
       my_widget_info_print("U/L Bit", buff);
 
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG,       &ival);
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IG_BIT,   &bit);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_IG,       &ival);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_IG_BIT,   &bit);
       str   = (ival == NETCALC_IG_UNICAST)
             ? "(unicast)"
             : "(multicast)";
@@ -331,8 +331,8 @@ my_widget_info_ip_verbose(
    assert(recs != NULL);
 
    for(idx = 0; ((recs[idx]->net)); idx++)
-   {  netcalc_get_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_CIDR,     &cidr);
+   {  netcalc_net_field(recs[idx]->net, NETCALC_FLD_FAMILY,   &family);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_CIDR,     &cidr);
 
       if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
          continue;
@@ -365,7 +365,7 @@ my_widget_info_ip_verbose(
       str = netcalc_ntop(recs[idx]->net, NULL, 0, NETCALC_TYPE_ADDRESS, flags);
       my_widget_info_print("Host Address", str);
 
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_IPV4_MAPPED, &ival);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_IPV4_MAPPED, &ival);
       if ( ((ival)) && (!(cnf->flags & NETCALC_FLG_V4MAPPED)) )
       {  flags  = NETCALC_UNSET(cnf->flags, (NETCALC_FLG_PORT | NETCALC_FLG_CIDR | NETCALC_FLG_IFACE));
          flags |= NETCALC_FLG_V4MAPPED;
@@ -374,7 +374,7 @@ my_widget_info_ip_verbose(
       };
 
       str = NULL;
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_SCOPE_NAME, &str);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_SCOPE_NAME, &str);
       if ((str))
          my_widget_info_print("Scope Name", str);
 
@@ -395,7 +395,7 @@ my_widget_info_ip_verbose(
       snprintf(buff, sizeof(buff), "%i", cidr);
       my_widget_info_print("CIDR", buff);
 
-      netcalc_get_field(recs[idx]->net, NETCALC_FLD_PORT, &ival);
+      netcalc_net_field(recs[idx]->net, NETCALC_FLD_PORT, &ival);
       if ((ival))
       {  snprintf(buff, sizeof(buff), "%i", ival);
          my_widget_info_print("Port", buff);

@@ -369,22 +369,8 @@ netcalc_net_dup(
 }
 
 
-void
-netcalc_net_free(
-         netcalc_net_t *               net )
-{
-   if (!(net))
-      return;
-   if ((net->net_scope_name))
-      free(net->net_scope_name);
-   memset(net, 0, sizeof(netcalc_net_t));
-   free(net);
-   return;
-}
-
-
 int
-netcalc_get_field(
+netcalc_net_field(
          const netcalc_net_t  *        net,
          int                           option,
          void *                        outvalue )
@@ -493,6 +479,20 @@ netcalc_get_field(
    };
 
    return(NETCALC_EFIELD);
+}
+
+
+void
+netcalc_net_free(
+         netcalc_net_t *               net )
+{
+   if (!(net))
+      return;
+   if ((net->net_scope_name))
+      free(net->net_scope_name);
+   memset(net, 0, sizeof(netcalc_net_t));
+   free(net);
+   return;
 }
 
 

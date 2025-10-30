@@ -163,7 +163,7 @@ my_widget_test(
          return(1);
       };
       // obtain family
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &families[idx]);
+      netcalc_net_field(nets[idx], NETCALC_FLD_FAMILY, &families[idx]);
    };
 
    // verify families

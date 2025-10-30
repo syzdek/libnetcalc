@@ -127,7 +127,7 @@ my_widget_superblock(
          my_nets_free(nets);
          return(1);
       };
-      netcalc_get_field(nets[idx], NETCALC_FLD_FAMILY, &family);
+      netcalc_net_field(nets[idx], NETCALC_FLD_FAMILY, &family);
 
       if (family == NETCALC_AF_INET6)
          af_ipv6 = family;
@@ -157,7 +157,7 @@ my_widget_superblock(
    {  fprintf(stderr, "%s: netcalc_superblock(): %s\n", my_prog_name(cnf), netcalc_strerror(rc));
       return(1);
    };
-   netcalc_get_field(superblock, NETCALC_FLD_CIDR, &cidr);
+   netcalc_net_field(superblock, NETCALC_FLD_CIDR, &cidr);
 
    if ((recs = my_recs_alloc(cnf, (size_t)(cidr+4))) == NULL)
    { netcalc_net_free(superblock);

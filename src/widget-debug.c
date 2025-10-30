@@ -134,7 +134,7 @@ my_widget_debug(
       };
 
       // print address family
-      netcalc_get_field(net, NETCALC_FLD_FAMILY, &family);
+      netcalc_net_field(net, NETCALC_FLD_FAMILY, &family);
       switch(family)
       {  case NETCALC_AF_EUI48:  str = "EUI48";    break;
          case NETCALC_AF_EUI64:  str = "EUI64";    break;
@@ -145,7 +145,7 @@ my_widget_debug(
       snprintf(buff, sizeof(buff), "%s (%04x)", str, (unsigned)family );
       my_widget_debug_print( "Family", buff );
 
-      netcalc_get_field(net, NETCALC_FLD_FLAGS,  &ival);
+      netcalc_net_field(net, NETCALC_FLD_FLAGS,  &ival);
       my_widget_debug_print_hex("Flags",    (ival & ~NETCALC_AF));
 
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
@@ -163,19 +163,19 @@ my_widget_debug(
       str = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_BROADCAST, cnf->flags);
       my_widget_debug_print("Broadcast",  str);
 
-      netcalc_get_field(net, NETCALC_FLD_CIDR,        &ival);
+      netcalc_net_field(net, NETCALC_FLD_CIDR,        &ival);
       my_widget_debug_print_int("Prefix length", ival);
 
-      netcalc_get_field(net, NETCALC_FLD_PORT,  &ival);
+      netcalc_net_field(net, NETCALC_FLD_PORT,  &ival);
       my_widget_debug_print_int("Port",    ival);
 
-      netcalc_get_field(net, NETCALC_FLD_ADDRLEN,  &ival);
-      netcalc_get_field(net, NETCALC_FLD_ADDR,     &ptr);
+      netcalc_net_field(net, NETCALC_FLD_ADDRLEN,  &ival);
+      netcalc_net_field(net, NETCALC_FLD_ADDR,     &ptr);
       my_widget_debug_print_bytes("Binary Address", ptr, ival);
       free(ptr);
 
       if (family == NETCALC_AF_INET6)
-      {  netcalc_get_field(net, NETCALC_FLD_SCOPE_NAME,  &ptr);
+      {  netcalc_net_field(net, NETCALC_FLD_SCOPE_NAME,  &ptr);
          my_widget_debug_print("Scope Name", (((ptr)) ? (char *)ptr : ""));
          free(ptr);
       };
