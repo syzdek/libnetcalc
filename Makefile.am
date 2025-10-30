@@ -129,13 +129,13 @@ XFAIL_TESTS				=
 EXTRA_MANS				=
 EXTRA_DIST				= $(doc_DATA) \
 					  $(noinst_HEADERS) \
-					  doc/man/libnetcalc.3.in \
-					  doc/man/netcalc.1.in \
-					  doc/man/netcalc-info.1.in \
-					  doc/man/netcalc-printf.1.in \
-					  doc/man/netcalc-test.1.in \
-					  doc/man/netcalc-superblock.1.in \
-					  doc/man/netcalc-syntaxes.5.in \
+					  doc/man/man1/netcalc.1.in \
+					  doc/man/man1/netcalc-info.1.in \
+					  doc/man/man1/netcalc-printf.1.in \
+					  doc/man/man1/netcalc-test.1.in \
+					  doc/man/man1/netcalc-superblock.1.in \
+					  doc/man/man3/libnetcalc.3.in \
+					  doc/man/man5/netcalc-syntaxes.5.in \
 					  lib/libnetcalc/libnetcalc.sym
 CLEANFILES				= $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -167,17 +167,17 @@ endif
 if ENABLE_LIBRARY_LA
    include_HEADERS 			+= include/netcalc.h
    lib_LTLIBRARIES 			+= lib/libnetcalc.la
-   man_MANS				+= doc/man/libnetcalc.3
+   man_MANS				+= doc/man/man3/libnetcalc.3
 endif
 if ENABLE_UTILITY
    bin_PROGRAMS				+= src/netcalc
-   man_MANS				+= doc/man/netcalc.1
-   man_MANS				+= doc/man/netcalc-info.1
-   man_MANS				+= doc/man/netcalc-printf.1
-   man_MANS				+= doc/man/netcalc-superblock.1
-   man_MANS				+= doc/man/netcalc-test.1
+   man_MANS				+= doc/man/man1/netcalc.1
+   man_MANS				+= doc/man/man1/netcalc-info.1
+   man_MANS				+= doc/man/man1/netcalc-printf.1
+   man_MANS				+= doc/man/man1/netcalc-superblock.1
+   man_MANS				+= doc/man/man1/netcalc-test.1
 endif
-man_MANS				+= doc/man/netcalc-syntaxes.5
+man_MANS				+= doc/man/man5/netcalc-syntaxes.5
 
 
 # macros for lib/libnetcalc.a
@@ -398,31 +398,31 @@ $(win64_builddir)/Makefile: Makefile
 	@touch "$(@)"
 
 
-doc/man/libnetcalc.3: Makefile $(srcdir)/doc/man/libnetcalc.3.in
+doc/man/man3/libnetcalc.3: Makefile $(srcdir)/doc/man/man3/libnetcalc.3.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc.1: Makefile $(srcdir)/doc/man/netcalc.1.in
+doc/man/man1/netcalc.1: Makefile $(srcdir)/doc/man/man1/netcalc.1.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc-info.1: Makefile $(srcdir)/doc/man/netcalc-info.1.in
+doc/man/man1/netcalc-info.1: Makefile $(srcdir)/doc/man/man1/netcalc-info.1.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc-printf.1: Makefile $(srcdir)/doc/man/netcalc-printf.1.in
+doc/man/man1/netcalc-printf.1: Makefile $(srcdir)/doc/man/man1/netcalc-printf.1.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc-superblock.1: Makefile $(srcdir)/doc/man/netcalc-superblock.1.in
+doc/man/man1/netcalc-superblock.1: Makefile $(srcdir)/doc/man/man1/netcalc-superblock.1.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc-syntaxes.5: Makefile $(srcdir)/doc/man/netcalc-syntaxes.5.in
+doc/man/man1/netcalc-test.1: Makefile $(srcdir)/doc/man/man1/netcalc-test.1.in
 	@$(do_subst_dt)
 
 
-doc/man/netcalc-test.1: Makefile $(srcdir)/doc/man/netcalc-test.1.in
+doc/man/man5/netcalc-syntaxes.5: Makefile $(srcdir)/doc/man/man5/netcalc-syntaxes.5.in
 	@$(do_subst_dt)
 
 
