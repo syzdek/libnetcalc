@@ -262,11 +262,6 @@ netcalc_cmp(
          int                           flags );
 
 
-_NETCALC_F const char *
-netcalc_cmp_str(
-         int                           code );
-
-
 _NETCALC_F int
 netcalc_convert(
          netcalc_net_t *               net,
@@ -408,6 +403,11 @@ netcalc_set_stats(
          size_t *                      numelep,
          int *                         maxdepthp,
          int *                         familiesp );
+
+
+_NETCALC_F const char *
+netcalc_strcmp(
+         int                           code );
 
 
 _NETCALC_F const char *

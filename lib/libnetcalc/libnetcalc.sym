@@ -29,7 +29,6 @@
 #   SUCH DAMAGE.
 #
 netcalc_cmp
-netcalc_cmp_str
 netcalc_convert
 netcalc_cur_first
 netcalc_cur_free
@@ -49,6 +48,7 @@ netcalc_set_init
 netcalc_set_query
 netcalc_set_query_str
 netcalc_set_stats
+netcalc_strcmp
 netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat

@@ -343,7 +343,7 @@ my_pass(
                   exp_str,
                   res_str
                );
-         printf("%s: compare result: %s\n", PROGRAM_NAME, netcalc_cmp_str(rc));
+         printf("%s: compare result: %s\n", PROGRAM_NAME, netcalc_strcmp(rc));
          errs++;
          netcalc_free(res);
          netcalc_free(exp);

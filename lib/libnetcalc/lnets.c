@@ -204,7 +204,7 @@ netcalc_cmp(
 
 
 const char *
-netcalc_cmp_str(
+netcalc_strcmp(
          int                           code )
 {
    switch(code)
