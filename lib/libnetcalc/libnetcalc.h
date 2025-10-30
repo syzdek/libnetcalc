@@ -203,12 +203,6 @@ netcalc_addr_convert_inet6(
 
 
 extern int
-netcalc_copy(
-         netcalc_net_t *               dst,
-         const netcalc_net_t *         src );
-
-
-extern int
 netcalc_net_parse(
          netcalc_buff_t *              b,
          const char *                  address,
