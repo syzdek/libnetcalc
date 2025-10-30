@@ -117,7 +117,7 @@ netcalc_ntop_inet6(
 
 
 static int
-netcalc_parse_eui(
+netcalc_net_parse_eui(
          netcalc_buff_t *              b,
          char *                        address,
          int                           family );
@@ -1122,12 +1122,12 @@ netcalc_parse(
 
    rc = NETCALC_SUCCESS;
    if ((net->net_flags & NETCALC_AF_EUI48))
-   {  net->net_flags    = ((rc = netcalc_parse_eui(b, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
+   {  net->net_flags    = ((rc = netcalc_net_parse_eui(b, str, NETCALC_AF_EUI48)) == NETCALC_SUCCESS)
                         ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI48
                         : (net->net_flags & ~NETCALC_AF_EUI48);
    };
    if ((net->net_flags & NETCALC_AF_EUI64))
-   {  net->net_flags    = ((rc = netcalc_parse_eui(b, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
+   {  net->net_flags    = ((rc = netcalc_net_parse_eui(b, str, NETCALC_AF_EUI64)) == NETCALC_SUCCESS)
                         ? (net->net_flags & ~NETCALC_AF) | NETCALC_AF_EUI64
                         : (net->net_flags & ~NETCALC_AF_EUI64);
    };
@@ -1165,7 +1165,7 @@ netcalc_parse(
 
 
 int
-netcalc_parse_eui(
+netcalc_net_parse_eui(
          netcalc_buff_t *              b,
          char *                        address,
          int                           family )
