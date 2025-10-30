@@ -463,7 +463,7 @@ netcalc_set_add(
    if (!( (net->net_flags & NETCALC_AF) | (ns->set_flags & NETCALC_AF) ))
       return(NETCALC_EBADFAM);
 
-   if ((netcalc_verify(net, NETCALC_TYPE_NETWORK)))
+   if ((netcalc_net_verify(net, NETCALC_TYPE_NETWORK)))
       return(NETCALC_EINVAL);
 
    if ((ns->set_superblock))

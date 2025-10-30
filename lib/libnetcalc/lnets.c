@@ -1931,7 +1931,7 @@ netcalc_net_superblock(
 
 
 int
-netcalc_verify(
+netcalc_net_verify(
          netcalc_net_t *               net,
          int                           type )
 {

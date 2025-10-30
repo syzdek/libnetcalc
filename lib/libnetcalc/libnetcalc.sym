@@ -40,6 +40,7 @@ netcalc_net_free
 netcalc_net_init
 netcalc_net_mask
 netcalc_net_superblock
+netcalc_net_verify
 netcalc_ntop
 netcalc_set_add
 netcalc_set_add_str
@@ -54,6 +55,5 @@ netcalc_strerror
 netcalc_strfnet
 netcalc_strlcat
 netcalc_strlcpy
-netcalc_verify
 #
 # end of symbol export file

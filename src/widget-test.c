@@ -179,12 +179,12 @@ my_widget_test(
       case MY_CMP_CONTAINS_EQ:
       case MY_CMP_CONTAINS:
          cmp_flags = NETCALC_FLG_NETWORK;
-         if ((netcalc_verify(nets[0], NETCALC_TYPE_NETWORK)))
+         if ((netcalc_net_verify(nets[0], NETCALC_TYPE_NETWORK)))
          {  fprintf(stderr, "%s: %s: not a network address\n", my_prog_name(cnf), cnf->argv[0]);
             my_nets_free(nets);
             return(1);
          };
-         if ((netcalc_verify(nets[1], NETCALC_TYPE_NETWORK)))
+         if ((netcalc_net_verify(nets[1], NETCALC_TYPE_NETWORK)))
          {  fprintf(stderr, "%s: %s: not a network address\n", my_prog_name(cnf), cnf->argv[2]);
             my_nets_free(nets);
             return(1);

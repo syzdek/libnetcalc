@@ -339,6 +339,12 @@ netcalc_net_superblock(
          size_t                        nel );
 
 
+_NETCALC_F int
+netcalc_net_verify(
+         netcalc_net_t *               net,
+         int                           type );
+
+
 _NETCALC_F const char *
 netcalc_ntop(
          const netcalc_net_t *         net,
@@ -429,12 +435,6 @@ netcalc_strfnet(
          size_t                        maxsize,
          const char *                  format,
          int                           flags );
-
-
-_NETCALC_F int
-netcalc_verify(
-         netcalc_net_t *               net,
-         int                           type );
 
 
 #endif /* end of header */
