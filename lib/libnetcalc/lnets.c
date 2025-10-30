@@ -82,7 +82,7 @@ netcalc_net_convert_eui64(
 
 
 static int
-netcalc_convert_inet(
+netcalc_net_convert_inet(
          netcalc_net_t *               net );
 
 
@@ -251,7 +251,7 @@ netcalc_net_convert(
    switch(family)
    {  case NETCALC_AF_EUI48:  return(netcalc_net_convert_eui48(net));
       case NETCALC_AF_EUI64:  return(netcalc_net_convert_eui64(net));
-      case NETCALC_AF_INET:   return(netcalc_convert_inet(net));
+      case NETCALC_AF_INET:   return(netcalc_net_convert_inet(net));
       case NETCALC_AF_INET6:  return(netcalc_net_convert_inet6(net, prefix));
       default:                break;
    };
@@ -290,7 +290,7 @@ netcalc_net_convert_eui64(
 
 
 int
-netcalc_convert_inet(
+netcalc_net_convert_inet(
          netcalc_net_t *               net )
 {
    int      rc;
