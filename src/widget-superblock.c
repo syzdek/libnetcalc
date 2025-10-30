@@ -173,7 +173,7 @@ my_widget_superblock(
          {  fprintf(stderr, "%s: %s\n", my_prog_name(cnf), netcalc_strerror(rc));
             my_recs_free(recs);
          };
-         netcalc_network_mask(recs[idx]->net, NULL, cidr);
+         netcalc_net_mask(recs[idx]->net, NULL, cidr);
          my_rec_process(cnf, recs[idx]);
       };
    };

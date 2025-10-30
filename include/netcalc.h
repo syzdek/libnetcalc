@@ -326,7 +326,7 @@ netcalc_net_dup(
 
 
 _NETCALC_F int
-netcalc_network_mask(
+netcalc_net_mask(
          netcalc_net_t *               net,
          const netcalc_net_t *         prefix,
          int                           cidr );

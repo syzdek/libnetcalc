@@ -518,7 +518,7 @@ netcalc_init(
 
 
 int
-netcalc_network_mask(
+netcalc_net_mask(
          netcalc_net_t *               net,
          const netcalc_net_t *         prefix,
          int                           cidr )

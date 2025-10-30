@@ -38,7 +38,7 @@ netcalc_init
 netcalc_net_cmp
 netcalc_net_convert
 netcalc_net_dup
-netcalc_network_mask
+netcalc_net_mask
 netcalc_ntop
 netcalc_set_add
 netcalc_set_add_str

@@ -220,7 +220,7 @@ my_test(
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
-      netcalc_network_mask(net, NULL, dat->addr_cidr);
+      netcalc_net_mask(net, NULL, dat->addr_cidr);
       if ((rc = netcalc_verify(net, NETCALC_TYPE_NETWORK)) != 0)
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
@@ -234,7 +234,7 @@ my_test(
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
-      netcalc_network_mask(net, NULL, dat->addr_cidr);
+      netcalc_net_mask(net, NULL, dat->addr_cidr);
       if ((rc = netcalc_verify(net, NETCALC_TYPE_FIRST)) != 0)
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
@@ -248,7 +248,7 @@ my_test(
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
-      netcalc_network_mask(net, NULL, dat->addr_cidr);
+      netcalc_net_mask(net, NULL, dat->addr_cidr);
       if ((rc = netcalc_verify(net, NETCALC_TYPE_LAST)) != 0)
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
@@ -262,7 +262,7 @@ my_test(
       {  my_info("   parse error:   %s\n", netcalc_strerror(rc));
          return(rc);
       };
-      netcalc_network_mask(net, NULL, dat->addr_cidr);
+      netcalc_net_mask(net, NULL, dat->addr_cidr);
       if ((rc = netcalc_verify(net, NETCALC_TYPE_BROADCAST)) != 0)
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
