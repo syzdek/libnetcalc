@@ -320,7 +320,7 @@ my_pass(
       };
 
       // verify that expected result and result networks match
-      rc = netcalc_cmp(exp, res, NETCALC_FLG_NETWORK);
+      rc = netcalc_net_cmp(exp, res, NETCALC_FLG_NETWORK);
       if (rc != NETCALC_CMP_SAME)
       {  printf(  "%s: %s: expected network %s and matched %s\n",
                   PROGRAM_NAME,
@@ -335,7 +335,7 @@ my_pass(
       };
 
       // verify that expected result and result addresses match
-      rc = netcalc_cmp(exp, res, 0);
+      rc = netcalc_net_cmp(exp, res, 0);
       if (rc != NETCALC_CMP_SAME)
       {  printf(  "%s: %s: expected address %s and matched %s\n",
                   PROGRAM_NAME,

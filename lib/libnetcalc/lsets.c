@@ -467,7 +467,7 @@ netcalc_set_add(
       return(NETCALC_EINVAL);
 
    if ((ns->set_superblock))
-   {  rc = netcalc_cmp(net, ns->set_superblock, ns->set_flags);
+   {  rc = netcalc_net_cmp(net, ns->set_superblock, ns->set_flags);
       if ( (rc != NETCALC_CMP_SAME) && (rc != NETCALC_CMP_SUBNET) )
          return(NETCALC_ERANGE);
    };

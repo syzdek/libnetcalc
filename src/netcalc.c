@@ -911,7 +911,7 @@ my_set_import(
          };
          if (rc == 0)
          {  if ( ((cnf->flags & MY_FLG_WARN_ORDER)) && ((net)) && ((prev)) )
-            {  switch(netcalc_cmp(prev, net, 0))
+            {  switch(netcalc_net_cmp(prev, net, 0))
                {  case NETCALC_CMP_BEFORE:
                   case NETCALC_CMP_SUPERNET:
                   case NETCALC_CMP_SAME:

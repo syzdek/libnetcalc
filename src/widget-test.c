@@ -202,7 +202,7 @@ my_widget_test(
          break;
    };
 
-   rc = netcalc_cmp(nets[0], nets[1], cmp_flags);
+   rc = netcalc_net_cmp(nets[0], nets[1], cmp_flags);
 
    my_nets_free(nets);
 

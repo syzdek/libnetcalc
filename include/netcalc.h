@@ -256,13 +256,6 @@ typedef struct _libnetcalc_set         netcalc_set_t;
 // MARK: - Prototypes
 
 _NETCALC_F int
-netcalc_cmp(
-         const netcalc_net_t *         n1,
-         const netcalc_net_t *         n2,
-         int                           flags );
-
-
-_NETCALC_F int
 netcalc_convert(
          netcalc_net_t *               net,
          int                           family,
@@ -322,6 +315,13 @@ _NETCALC_F int
 netcalc_init(
          netcalc_net_t **              netp,
          const char *                  address,
+         int                           flags );
+
+
+_NETCALC_F int
+netcalc_net_cmp(
+         const netcalc_net_t *         n1,
+         const netcalc_net_t *         n2,
          int                           flags );
 
 

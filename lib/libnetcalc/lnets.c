@@ -143,7 +143,7 @@ netcalc_parse_inet6(
 // MARK: - Functions
 
 int
-netcalc_cmp(
+netcalc_net_cmp(
          const netcalc_net_t *         n1,
          const netcalc_net_t *         n2,
          int                           flags )

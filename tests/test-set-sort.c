@@ -284,7 +284,7 @@ my_pass(
    {  netcalc_ntop(prev, prev_str, sizeof(prev_str), NETCALC_TYPE_ADDRESS, flags);
       netcalc_ntop(net,  net_str,  sizeof(net_str),  NETCALC_TYPE_ADDRESS, flags);
       printf("      checking order of %s and %s ...\n", prev_str, net_str);
-      switch(netcalc_cmp(prev, net, NETCALC_FLG_NETWORK))
+      switch(netcalc_net_cmp(prev, net, NETCALC_FLG_NETWORK))
       {  case NETCALC_CMP_SUPERNET:
          case NETCALC_CMP_BEFORE:
             break;
