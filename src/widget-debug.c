@@ -180,7 +180,7 @@ my_widget_debug(
          free(ptr);
       };
 
-      netcalc_free(net);
+      netcalc_net_free(net);
 
       printf("\n");
    };

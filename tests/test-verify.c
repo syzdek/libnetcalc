@@ -225,7 +225,7 @@ my_test(
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
       };
-      netcalc_free(net);
+      netcalc_net_free(net);
    };
 
    if ((dat->addr_ip_first))
@@ -239,7 +239,7 @@ my_test(
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
       };
-      netcalc_free(net);
+      netcalc_net_free(net);
    };
 
    if ((dat->addr_ip_last))
@@ -253,7 +253,7 @@ my_test(
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
       };
-      netcalc_free(net);
+      netcalc_net_free(net);
    };
 
    if ((dat->addr_ip_broadcast))
@@ -267,7 +267,7 @@ my_test(
       {  errs++;
          my_info("   verify error:  %s\n", netcalc_strerror(rc));
       };
-      netcalc_free(net);
+      netcalc_net_free(net);
    };
 
    my_verbose("\n");

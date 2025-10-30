@@ -333,7 +333,7 @@ my_test(
       };
    };
 
-   netcalc_free(net);
+   netcalc_net_free(net);
 
    my_verbose("\n");
 

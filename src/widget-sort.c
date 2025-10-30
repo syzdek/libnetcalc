@@ -134,13 +134,13 @@ my_widget_sort(
    addr   = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
    maxlen = strlen(addr);
    if ((net))
-      netcalc_free(net);;
+      netcalc_net_free(net);;
    while(netcalc_cur_next(cur, &net, NULL, NULL, NULL, NULL) == 0)
    {  addr     = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       len      = strlen(addr);
       maxlen   = (len > maxlen) ? len : maxlen;
       if ((net))
-         netcalc_free(net);
+         netcalc_net_free(net);
    };
 
    // print records
@@ -157,7 +157,7 @@ my_widget_sort(
    else
       printf("%4i: %s\n", idx, addr);
    if ((net))
-      netcalc_free(net);
+      netcalc_net_free(net);
    if ((comment))
       free(comment);
    while(netcalc_cur_next(cur, &net, &comment, NULL, NULL, NULL) == 0)
@@ -168,7 +168,7 @@ my_widget_sort(
       else
          printf("%4i: %s\n", idx, addr);
       if ((net))
-         netcalc_free(net);
+         netcalc_net_free(net);
       if ((comment))
          free(comment);
    };

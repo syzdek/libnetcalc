@@ -130,7 +130,7 @@ my_widget_match(
 
       if ((comment))
          free(comment);
-      netcalc_free(res);
+      netcalc_net_free(res);
    };
 
    netcalc_set_free(ns);

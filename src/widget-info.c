@@ -254,7 +254,7 @@ my_widget_info_eui(
          my_widget_info_print("IPv6 SLAAC Address",  str);
       };
 
-      netcalc_free(dup);
+      netcalc_net_free(dup);
 
       printf("\n\n");
    };
@@ -429,7 +429,7 @@ my_widget_info_ip_verbose(
       netcalc_strlcat(buff, " IN PTR", sizeof(buff));
       my_widget_info_print("DNS ARPA RR", buff);
 
-      netcalc_free(eui);
+      netcalc_net_free(eui);
 
       printf("\n\n");
    };

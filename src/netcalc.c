@@ -441,7 +441,7 @@ main(
             my_free(cnf);
             return(1);
          };
-         netcalc_free(net);
+         netcalc_net_free(net);
          cnf->argv--;
          cnf->argc++;
          cnf->symlinked = 1;
@@ -743,7 +743,7 @@ my_free(
    if (!(cnf))
       return;
    if ((cnf->net_prefix))
-      netcalc_free(cnf->net_prefix);
+      netcalc_net_free(cnf->net_prefix);
    free(cnf);
    return;
 }
@@ -784,7 +784,7 @@ my_netcalc_init(
 
    // convert address
    if ((rc = netcalc_net_convert(net, cnf->net_prefix_family, prefix)) != 0)
-   {  netcalc_free(net);
+   {  netcalc_net_free(net);
       return(rc);
    };
 
@@ -802,7 +802,7 @@ my_nets_free(
    if (!(nets))
       return;
    for(pos = 0; ((nets[pos])); pos++)
-      netcalc_free(nets[pos]);
+      netcalc_net_free(nets[pos]);
    free(nets);
    return;
 }
@@ -863,7 +863,7 @@ my_set_import(
 
    // reset state
    if ((prev))
-      netcalc_free(prev);
+      netcalc_net_free(prev);
    prev = NULL;
    net  = NULL;
 
@@ -903,9 +903,9 @@ my_set_import(
                fprintf(stderr, "%s: %s%zu: %s: %s\n", my_prog_name(cnf), filename, line, address, netcalc_strerror(rc));
             if (!(cnf->cont))
             {  if ((prev))
-                  netcalc_free(prev);
+                  netcalc_net_free(prev);
                if ((net))
-                  netcalc_free(net);
+                  netcalc_net_free(net);
                return(1);
             };
          };
@@ -925,7 +925,7 @@ my_set_import(
                };
             };
             if ((prev))
-               netcalc_free(prev);
+               netcalc_net_free(prev);
             prev = net;
             net  = NULL;
          };
@@ -940,7 +940,7 @@ my_set_import(
       if ((len = read(cnf->in_fd, &buff[buff_len], (sizeof(buff)-1-buff_len))) == -1)
       {  fprintf(stderr, "%s: %sread(): %s\n", my_prog_name(cnf), filename, strerror(errno));
          if ((prev))
-            netcalc_free(prev);
+            netcalc_net_free(prev);
          return(1);
       };
       buff_len += (size_t)len;
@@ -948,7 +948,7 @@ my_set_import(
    };
 
    if ((prev))
-      netcalc_free(prev);
+      netcalc_net_free(prev);
 
    return(0);
 }
@@ -1272,7 +1272,7 @@ my_recs_free(
    assert(recs != NULL);
    for(idx = 0; ((recs[idx])); idx++)
    {  if ((recs[idx]->net))
-         netcalc_free(recs[idx]->net);
+         netcalc_net_free(recs[idx]->net);
       free(recs[idx]);
    };
    free(recs);

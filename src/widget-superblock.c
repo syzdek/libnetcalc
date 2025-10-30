@@ -150,7 +150,7 @@ my_widget_superblock(
    // calculate superblock and free networks
    rc = netcalc_superblock(&superblock, (const netcalc_net_t * const *)nets, cnf->argc);
    for(idx = 0; ((nets[idx])); idx++)
-      netcalc_free(nets[idx]);
+      netcalc_net_free(nets[idx]);
    free(nets);
    nets = NULL;
    if (rc != NETCALC_SUCCESS)
@@ -160,7 +160,7 @@ my_widget_superblock(
    netcalc_get_field(superblock, NETCALC_FLD_CIDR, &cidr);
 
    if ((recs = my_recs_alloc(cnf, (size_t)(cidr+4))) == NULL)
-   { netcalc_free(superblock);
+   { netcalc_net_free(superblock);
       return(1);
    };
    recs[0]->net = superblock;

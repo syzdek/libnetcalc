@@ -309,11 +309,11 @@ my_pass(
             errs++;
             break;
       };
-      netcalc_free(prev);
+      netcalc_net_free(prev);
       prev  = net;
       net   = NULL;
    };
-   netcalc_free(prev);
+   netcalc_net_free(prev);
    prev = NULL;
 
    netcalc_cur_free(cur);

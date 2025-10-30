@@ -358,7 +358,7 @@ netcalc_net_dup(
    // allocate memory and copy net_scope
    if ( ((src->net_scope_name)) && ((src->net_scope_name[0])) )
    {  if ((net->net_scope_name = strdup(src->net_scope_name)) == NULL)
-      {  netcalc_free(net);
+      {  netcalc_net_free(net);
          return(NETCALC_ENOMEM);
       };
    };
@@ -370,7 +370,7 @@ netcalc_net_dup(
 
 
 void
-netcalc_free(
+netcalc_net_free(
          netcalc_net_t *               net )
 {
    if (!(net))

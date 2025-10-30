@@ -236,7 +236,7 @@ my_pass(
                netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags),
                ( ((comment)) ? comment : "n/a")
             );
-      netcalc_free(net);
+      netcalc_net_free(net);
       if ((comment))
          free(comment);
       while((rc = netcalc_cur_next(cur, &net, &comment, NULL, NULL, NULL)) == 0)
@@ -246,7 +246,7 @@ my_pass(
                   netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, flags),
                   ( ((comment)) ? comment : "n/a")
                );
-         netcalc_free(net);
+         netcalc_net_free(net);
          if ((comment))
             free(comment);
       };
@@ -295,7 +295,7 @@ my_pass(
                   exp_str,
                   netcalc_strerror(rc)
                );
-         netcalc_free(exp);
+         netcalc_net_free(exp);
          errs++;
          continue;
       };
@@ -308,14 +308,14 @@ my_pass(
                   netcalc_ntop(res, 0, 0, NETCALC_TYPE_ADDRESS, flags)
                );
          errs++;
-         netcalc_free(res);
+         netcalc_net_free(res);
          continue;
       };
 
       // continue if no result was returned
       if (!(res))
       {  if ((exp))
-            netcalc_free(exp);
+            netcalc_net_free(exp);
          continue;
       };
 
@@ -329,8 +329,8 @@ my_pass(
                   res_str
                );
          errs++;
-         netcalc_free(res);
-         netcalc_free(exp);
+         netcalc_net_free(res);
+         netcalc_net_free(exp);
          continue;
       };
 
@@ -345,14 +345,14 @@ my_pass(
                );
          printf("%s: compare result: %s\n", PROGRAM_NAME, netcalc_strcmp(rc));
          errs++;
-         netcalc_free(res);
-         netcalc_free(exp);
+         netcalc_net_free(res);
+         netcalc_net_free(exp);
          continue;
       };
 
       // free resources
-      netcalc_free(res);
-      netcalc_free(exp);
+      netcalc_net_free(res);
+      netcalc_net_free(exp);
    };
 
    netcalc_set_free(ns);

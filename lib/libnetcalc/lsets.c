@@ -328,7 +328,7 @@ netcalc_rec_get(
          if ((flagsp))
             *flagsp = 0;
          if ((netp))
-         {  netcalc_free(*netp);
+         {  netcalc_net_free(*netp);
             *netp = NULL;
          };
          return(NETCALC_ENOMEM);
@@ -648,13 +648,13 @@ netcalc_set_debug(
    };
    netcalc_set_debug_print(prefix, count++, depth, maxdepth, net, comment, flags);
    if ((net))
-      netcalc_free(net);
+      netcalc_net_free(net);
    if ((comment))
       free(comment);
    while((rc = netcalc_cur_next(cur, &net, &comment, NULL, &flags, &depth)) == 0)
    {  netcalc_set_debug_print(prefix, count++, depth, maxdepth, net, comment, flags);
       if ((net))
-         netcalc_free(net);
+         netcalc_net_free(net);
       if ((comment))
          free(comment);
    };
@@ -705,7 +705,7 @@ netcalc_set_free(
       return;
 
    if ((ns->set_superblock))
-      netcalc_free(ns->set_superblock);
+      netcalc_net_free(ns->set_superblock);
 
    for(idx = 0; (idx < ns->set_recs.len); idx++)
       netcalc_rec_free(ns->set_recs.list[idx]);

@@ -233,7 +233,7 @@ my_test(
    if ( (!(rc)) && (dat->addr_fail != MY_PASS) )
    {  my_info("   success code:  %i (%s)\n", rc, netcalc_strerror(rc));
       my_verbose("\n");
-      netcalc_free(net);
+      netcalc_net_free(net);
       return(1);
    };
    my_verbose("   status:        %s\n", netcalc_strerror(rc));
@@ -297,7 +297,7 @@ my_test(
    };
    my_verbose("   scope:         %s\n", (((net_iface)) ? net_iface : "(NULL)") );
 
-   netcalc_free(net);
+   netcalc_net_free(net);
 
    my_verbose("\n");
 

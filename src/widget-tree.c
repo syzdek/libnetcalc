@@ -148,13 +148,13 @@ my_widget_tree(
    addr   = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
    maxlen = strlen(addr);
    if ((net))
-      netcalc_free(net);;
+      netcalc_net_free(net);;
    while(netcalc_cur_next(cur, &net, NULL, NULL, NULL, NULL) == 0)
    {  addr     = netcalc_ntop(net, NULL, 0, NETCALC_TYPE_ADDRESS, cnf->flags);
       len      = strlen(addr);
       maxlen   = (len > maxlen) ? len : maxlen;
       if ((net))
-         netcalc_free(net);
+         netcalc_net_free(net);
    };
 
    // print records
@@ -167,14 +167,14 @@ my_widget_tree(
    };
    my_widget_tree_print(cnf, net, idx, depth, maxdepth, maxlen, comment);
    if ((net))
-      netcalc_free(net);
+      netcalc_net_free(net);
    if ((comment))
       free(comment);
    while((rc = netcalc_cur_next(cur, &net, &comment, NULL, NULL, &depth)) == 0)
    {  idx++;
       my_widget_tree_print(cnf, net, idx, depth, maxdepth, maxlen, comment);
       if ((net))
-         netcalc_free(net);
+         netcalc_net_free(net);
       if ((comment))
          free(comment);
    };

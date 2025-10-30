@@ -235,7 +235,7 @@ my_test(
       my_verbose("   address:       %s\n", net_addr);
    };
 
-   netcalc_free(net);
+   netcalc_net_free(net);
 
    my_verbose("\n");
 

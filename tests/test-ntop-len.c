@@ -210,7 +210,7 @@ main(
             };
          };
       };
-      netcalc_free(net);
+      netcalc_net_free(net);
    };
 
    return( ((errors)) ? 1 : 0 );
