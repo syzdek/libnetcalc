@@ -783,7 +783,7 @@ my_netcalc_init(
             : NULL;
 
    // convert address
-   if ((rc = netcalc_convert(net, cnf->net_prefix_family, prefix)) != 0)
+   if ((rc = netcalc_net_convert(net, cnf->net_prefix_family, prefix)) != 0)
    {  netcalc_free(net);
       return(rc);
    };

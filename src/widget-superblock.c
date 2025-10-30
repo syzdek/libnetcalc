@@ -139,7 +139,7 @@ my_widget_superblock(
    if ((af_ipv6))
    {  af_other = 0;
       for(idx = 0; (idx < cnf->argc); idx++)
-         netcalc_convert(nets[idx], NETCALC_AF_INET6, NULL);
+         netcalc_net_convert(nets[idx], NETCALC_AF_INET6, NULL);
    };
    if ((af_other))
    {  my_nets_free(nets);

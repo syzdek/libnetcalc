@@ -256,13 +256,6 @@ typedef struct _libnetcalc_set         netcalc_set_t;
 // MARK: - Prototypes
 
 _NETCALC_F int
-netcalc_convert(
-         netcalc_net_t *               net,
-         int                           family,
-         const netcalc_net_t *         prefix );
-
-
-_NETCALC_F int
 netcalc_cur_first(
          netcalc_cur_t *               cur,
          netcalc_net_t **              netp,
@@ -323,6 +316,13 @@ netcalc_net_cmp(
          const netcalc_net_t *         n1,
          const netcalc_net_t *         n2,
          int                           flags );
+
+
+_NETCALC_F int
+netcalc_net_convert(
+         netcalc_net_t *               net,
+         int                           family,
+         const netcalc_net_t *         prefix );
 
 
 _NETCALC_F int

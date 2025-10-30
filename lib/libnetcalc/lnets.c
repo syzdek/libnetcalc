@@ -240,7 +240,7 @@ netcalc_copy(
 
 
 int
-netcalc_convert(
+netcalc_net_convert(
          netcalc_net_t *               net,
          int                           family,
          const netcalc_net_t *         prefix )

@@ -28,7 +28,6 @@
 #   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 #   SUCH DAMAGE.
 #
-netcalc_convert
 netcalc_cur_first
 netcalc_cur_free
 netcalc_cur_init
@@ -38,6 +37,7 @@ netcalc_free
 netcalc_get_field
 netcalc_init
 netcalc_net_cmp
+netcalc_net_convert
 netcalc_network_mask
 netcalc_ntop
 netcalc_set_add
