@@ -1575,6 +1575,140 @@ netcalc_net_parse_inet6(
 }
 
 
+int
+netcalc_net_superblock(
+         netcalc_net_t **              netp,
+         const netcalc_net_t * const * nets,
+         size_t                        nel )
+{
+   int                     byte;
+   int                     cidr;
+   int                     matches;
+   size_t                  idx;
+   netcalc_net_t           nbuff;
+   const netcalc_addr_t *  ref;
+   const uint8_t *         addr8;
+
+   assert(netp != NULL);
+   assert(nets != NULL);
+   assert(nel  != 0);
+
+   for(idx = 0; (idx < nel); idx++)
+      assert(nets[idx] != NULL);
+
+   matches  = 1;
+   ref      = &nets[0]->net_addr;
+
+   if (nel == 1)
+      return(netcalc_net_dup(netp, nets[0]));
+
+   memset(&nbuff, 0, sizeof(netcalc_net_t));
+   nbuff.net_flags = nets[0]->net_flags & NETCALC_AF;
+
+   cidr = 1;
+   while ((cidr < 129) && ((matches)))
+   {  addr8 = (const uint8_t *)&_netcalc_netmasks[cidr].addr8;
+      for(idx = 1; ((idx < nel) && ((matches))); idx++)
+      {  byte = (cidr-1) / 8;
+         if ( (ref->addr8[byte] & addr8[byte]) != (nets[idx]->net_addr.addr8[byte] & addr8[byte]) )
+            matches = 0;
+         else if (cidr > nets[idx]->net_cidr)
+            matches = 0;
+      };
+      if ((matches))
+         cidr++;
+   };
+   cidr--;
+
+   nbuff.net_cidr = cidr;
+   for(byte = 0; (byte < 16); byte++)
+      nbuff.net_addr.addr8[byte] = nets[0]->net_addr.addr8[byte] & _netcalc_netmasks[cidr].addr8[byte];
+
+   return(netcalc_net_dup(netp, &nbuff));
+}
+
+
+int
+netcalc_net_verify(
+         netcalc_net_t *               net,
+         int                           type )
+{
+   int               idx;
+   int               family;
+   const uint8_t *   addr8;
+   const uint8_t *   cidr8;
+   uint8_t           byte;
+
+   assert(net != NULL);
+
+   family   = net->net_flags & NETCALC_AF;
+   addr8    = net->net_addr.addr8;
+   cidr8    = _netcalc_netmasks[net->net_cidr].addr8;
+
+   switch(type)
+   {  case NETCALC_TYPE_ADDRESS:
+         return(0);
+
+      case NETCALC_TYPE_BROADCAST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_FIRST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 15); idx++)
+            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
+               return(NETCALC_ETYPE);
+         byte  = addr8[15] & cidr8[15];
+         byte += (net->net_cidr < 127) ? 1 : 0;
+         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
+
+      case NETCALC_TYPE_LAST:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 15); idx++)
+            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
+               return(NETCALC_ETYPE);
+         byte  = addr8[15] | ~cidr8[15];
+         byte -= (net->net_cidr < 127) ? 1 : 0;
+         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
+
+      case NETCALC_TYPE_NETMASK:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != cidr8[idx])
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_NETWORK:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      case NETCALC_TYPE_WILDCARD:
+         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
+            return(NETCALC_EINVAL);
+         for(idx = 0; (idx < 16); idx++)
+            if (addr8[idx] != ((uint8_t)~cidr8[idx]))
+               return(NETCALC_ETYPE);
+         return(0);
+
+      default:
+         break;
+   };
+
+   return(NETCALC_EINVAL);
+}
+
+
 size_t
 netcalc_strfnet(
          const netcalc_net_t *         net,
@@ -1838,140 +1972,6 @@ netcalc_strfnet(
       s[ (off < maxsize) ? off : (maxsize - 1) ] = '\0';
 
    return(off);
-}
-
-
-int
-netcalc_net_superblock(
-         netcalc_net_t **              netp,
-         const netcalc_net_t * const * nets,
-         size_t                        nel )
-{
-   int                     byte;
-   int                     cidr;
-   int                     matches;
-   size_t                  idx;
-   netcalc_net_t           nbuff;
-   const netcalc_addr_t *  ref;
-   const uint8_t *         addr8;
-
-   assert(netp != NULL);
-   assert(nets != NULL);
-   assert(nel  != 0);
-
-   for(idx = 0; (idx < nel); idx++)
-      assert(nets[idx] != NULL);
-
-   matches  = 1;
-   ref      = &nets[0]->net_addr;
-
-   if (nel == 1)
-      return(netcalc_net_dup(netp, nets[0]));
-
-   memset(&nbuff, 0, sizeof(netcalc_net_t));
-   nbuff.net_flags = nets[0]->net_flags & NETCALC_AF;
-
-   cidr = 1;
-   while ((cidr < 129) && ((matches)))
-   {  addr8 = (const uint8_t *)&_netcalc_netmasks[cidr].addr8;
-      for(idx = 1; ((idx < nel) && ((matches))); idx++)
-      {  byte = (cidr-1) / 8;
-         if ( (ref->addr8[byte] & addr8[byte]) != (nets[idx]->net_addr.addr8[byte] & addr8[byte]) )
-            matches = 0;
-         else if (cidr > nets[idx]->net_cidr)
-            matches = 0;
-      };
-      if ((matches))
-         cidr++;
-   };
-   cidr--;
-
-   nbuff.net_cidr = cidr;
-   for(byte = 0; (byte < 16); byte++)
-      nbuff.net_addr.addr8[byte] = nets[0]->net_addr.addr8[byte] & _netcalc_netmasks[cidr].addr8[byte];
-
-   return(netcalc_net_dup(netp, &nbuff));
-}
-
-
-int
-netcalc_net_verify(
-         netcalc_net_t *               net,
-         int                           type )
-{
-   int               idx;
-   int               family;
-   const uint8_t *   addr8;
-   const uint8_t *   cidr8;
-   uint8_t           byte;
-
-   assert(net != NULL);
-
-   family   = net->net_flags & NETCALC_AF;
-   addr8    = net->net_addr.addr8;
-   cidr8    = _netcalc_netmasks[net->net_cidr].addr8;
-
-   switch(type)
-   {  case NETCALC_TYPE_ADDRESS:
-         return(0);
-
-      case NETCALC_TYPE_BROADCAST:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 16); idx++)
-            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
-               return(NETCALC_ETYPE);
-         return(0);
-
-      case NETCALC_TYPE_FIRST:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 15); idx++)
-            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
-               return(NETCALC_ETYPE);
-         byte  = addr8[15] & cidr8[15];
-         byte += (net->net_cidr < 127) ? 1 : 0;
-         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
-
-      case NETCALC_TYPE_LAST:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 15); idx++)
-            if (addr8[idx] != ((uint8_t)(addr8[idx] | ~cidr8[idx])))
-               return(NETCALC_ETYPE);
-         byte  = addr8[15] | ~cidr8[15];
-         byte -= (net->net_cidr < 127) ? 1 : 0;
-         return((addr8[idx] == byte) ? 0 : NETCALC_ETYPE);
-
-      case NETCALC_TYPE_NETMASK:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 16); idx++)
-            if (addr8[idx] != cidr8[idx])
-               return(NETCALC_ETYPE);
-         return(0);
-
-      case NETCALC_TYPE_NETWORK:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 16); idx++)
-            if (addr8[idx] != (addr8[idx] & cidr8[idx]))
-               return(NETCALC_ETYPE);
-         return(0);
-
-      case NETCALC_TYPE_WILDCARD:
-         if ( (family != NETCALC_AF_INET) && (family != NETCALC_AF_INET6) )
-            return(NETCALC_EINVAL);
-         for(idx = 0; (idx < 16); idx++)
-            if (addr8[idx] != ((uint8_t)~cidr8[idx]))
-               return(NETCALC_ETYPE);
-         return(0);
-
-      default:
-         break;
-   };
-
-   return(NETCALC_EINVAL);
 }
 
 
