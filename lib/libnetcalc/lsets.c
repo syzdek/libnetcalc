@@ -339,29 +339,6 @@ netcalc_rec_get(
 }
 
 
-const char *
-netcalc_rtop(
-         const netcalc_rec_t *         rec,
-         char *                        dst,
-         size_t                        size,
-         int                           type,
-         int                           flags )
-{
-   netcalc_net_t *         net;
-   netcalc_buff_t          nbuff;
-
-   assert(rec != NULL);
-
-   net = &nbuff.buff_net;
-   memset(net, 0, sizeof(netcalc_net_t));
-   memcpy(&net->net_addr, &rec->rec_addr, sizeof(netcalc_addr_t));
-   net->net_cidr  = rec->rec_cidr;
-   net->net_flags = rec->rec_flags;
-
-   return(netcalc_ntop(net, dst, size, type, flags));
-}
-
-
 // returns code which describes the key's relation to the record specified
 // by 'wouldbe'
 //    NETCALC_IDX_BEFORE   - key is before specified record
