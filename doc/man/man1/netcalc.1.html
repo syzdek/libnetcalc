@@ -1,0 +1,273 @@
+<!-- Creator     : groff version 1.23.0 -->
+<!-- CreationDate: Fri Oct 31 08:48:45 2025 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>NETCALC</title>
+
+</head>
+<body>
+
+<h1 align="center">NETCALC</h1>
+
+
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">netcalc - netork
+calculations command line utility</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalc</b>
+[OPTIONS] &lt;address&gt; [ &lt;address&gt; [ ...
+&lt;address&gt; ] ]</p>
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalc</b>
+[OPTIONS] &lt;widget&gt; [OPTIONS] [&lt;args&gt;]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalc-widget</b>
+[OPTIONS]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalcwidget</b>
+[OPTIONS]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netwidget</b>
+[OPTIONS]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The netcalc
+utility is a command line wrapper for select functions in
+the the Network Calculations Library.</p>
+
+<p style="margin-left:9%; margin-top: 1em">If a widget is
+not specified, then the bavior of netcalc is similar to the
+info widget.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p style="margin-top: 1em"><b>-h</b>, <b>--help</b></p></td>
+<td width="5%"></td>
+<td width="47%">
+
+
+<p style="margin-top: 1em">print usage information and
+exit</p> </td>
+<td width="12%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-q</b>, <b>--quiet</b>, <b>--silent</b></p></td>
+<td width="5%"></td>
+<td width="47%">
+
+
+<p>suppress warnings and excess messages</p></td>
+<td width="12%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-V</b>, <b>--version</b></p></td>
+<td width="5%"></td>
+<td width="47%">
+
+
+<p>print version number and exit</p></td>
+<td width="12%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-v</b>, <b>--verbose</b></p></td>
+<td width="5%"></td>
+<td width="47%">
+
+
+<p>print verbose messages</p></td>
+<td width="12%">
+</td></tr>
+</table>
+
+<h2>WIDGETS
+<a name="WIDGETS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p style="margin-top: 1em">info</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p style="margin-top: 1em">displays information inferred
+from a given address or network and calculates the inclusive
+supernet if more than one address or network is
+specified.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>match</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>processes a list of networks and find the smallest
+subnet within the list which contains the specified
+address.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>printf</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>formats an address according to the format specified on
+the command line.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>superblock</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>calculates the smallest supernets which contain all of
+the addresses provided.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>sort</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>processes a list of networks and displays the sorted
+networks.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>syntaxes</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>displays address formats accepted by the utility.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>test</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>evaluates two addresses or networks using the specified
+expression.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="13%">
+
+
+<p>tree</p></td>
+<td width="13%"></td>
+<td width="65%">
+
+
+<p>processes a list of networks and displays the sorted
+networks with subnets indented.</p></td></tr>
+</table>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:9%; margin-top: 1em"><a href="../man1/netcalc-info.1.html"><i>netcalc-info</i>(1)</a>,
+<a href="../man1/netcalc-match.1.html"><i>netcalc-match</i>(1)</a>,
+<a href="../man1/netcalc-printf.1.html"><i>netcalc-printf</i>(1)</a>,
+<a href="../man1/netcalc-superblock.1.html"><i>netcalc-superblock</i>(1)</a>,
+<a href="../man1/netcalc-sort.1.html"><i>netcalc-sort</i>(1)</a>,
+<a href="../man1/netcalc-test.1.html"><i>netcalc-test</i>(1)</a>,
+<a href="../man1/netcalc-tree.1.html"><i>netcalc-tree</i>(1)</a>,
+<a href="../man3/libnetcalc.3.html"><i>libnetcalc</i>(3)</a>,
+<a href="../man5/netcalc-syntaxes.5.html"><i>netcalc-syntaxes</i>(5)</a></p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">David M. Syzdek
+&lt;david@syzdek.net&gt;</p>
+
+<h2>ACKNOWLEDGEMENTS
+<a name="ACKNOWLEDGEMENTS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>Network
+Calculations Library</b> is developed and maintained by
+David M. Syzdek &lt;david@syzdek.net&gt;.</p>
+</body>
+</html>

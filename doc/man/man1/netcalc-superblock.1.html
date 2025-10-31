@@ -1,0 +1,350 @@
+<!-- Creator     : groff version 1.23.0 -->
+<!-- CreationDate: Fri Oct 31 08:48:45 2025 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>NETCALC</title>
+
+</head>
+<body>
+
+<h1 align="center">NETCALC</h1>
+
+
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+
+<p style="margin-left:9%; margin-top: 1em">netcalc-superblock
+- calculate common superblocks for one or more addresses</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalc</b>
+superblock [OPTIONS] &lt;address&gt; [ &lt;address&gt; [ ...
+&lt;address&gt; ] ]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalc-superblock</b>
+[OPTIONS] &lt;address&gt; [ &lt;address&gt; [ ...
+&lt;address&gt; ] ]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>netcalcsuperblock</b>
+[OPTIONS] &lt;address&gt; [ &lt;address&gt; [ ...
+&lt;address&gt; ] ]</p>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>nesuperblock</b>
+[OPTIONS] &lt;address&gt; [ &lt;address&gt; [ ...
+&lt;address&gt; ] ]</p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The netcalc
+superblock widget processes one or more addresses, converts
+the addresses to a different address family, calculates the
+supernet which contains all of the specified addresses, and
+displays the addresses using the format specificiers
+provided as command line arguments.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p style="margin-top: 1em"><b>-4</b>, <b>--ipv4</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p style="margin-top: 1em">The input address uses the
+format for the IPv4 address family. This option can be
+combined with <b>--ipv6</b>, <b>--eui48</b>, and
+<b>--eui64</b>. Addresses of other address families will
+generate an error.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-6</b>, <b>--ipv6</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>The input address uses the format for the IPv6 address
+family. This option can be combined with <b>--ipv4</b>,
+<b>--eui48</b>, and <b>--eui64</b>. Addresses of other
+address families will generate an error.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-C</b> <i>af</i>, <b>--family</b> <i>af</i></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>Convert input addresses to address family <i>af</i>.
+Where <i>af</i> may be ipv4, ipv6, eui48, or eui64. The
+prefix <i>::ffff:0:0</i> will be used when converting from
+IPv4 addresses to IPv6 addresses. The prefix <i>fe80::</i>
+will be used when converting from EUI-48 and EUI-64
+addresses to IPv6 addresses.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-E</b>, <b>--eui64</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>The input address uses the format for the EUI-64 address
+family. This option can be combined with <b>--ipv4</b>,
+<b>--ipv6</b>, and <b>--eui48</b>. Addresses of other
+address families will generate an error.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-e</b>, <b>--eui48</b>, <b>--mac</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>The input address uses the format for MAC addresses or
+EUI-48 address family. This option can be combined with
+<b>--ipv4</b>, <b>--ipv6</b>, and <b>--eui64</b>. Addresses
+of other address families will generate an error.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-h</b>, <b>--help</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>Print usage information and exit</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-M</b></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>Display IPv6 addresses as IPv4-mapped IPv6
+addresses.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="26%">
+
+
+<p><b>-p</b> <i>net</i>, <b>--prefix</b> <i>net</i></p></td>
+<td width="6%"></td>
+<td width="59%">
+
+
+<p>Similar to the <b>-C</b> option, but the address family
+is determined by the address <i>net</i></p></td></tr>
+</table>
+
+<p style="margin-left:41%; margin-top: 1em">When converting
+to an IPv6 address from an IPv4 address, the first 96 bits
+of <i>net</i> will be used as the prefix for the resulting
+IPv6 address and the CIDR will be set to the CIDR which is
+the larger of the source and <i>net</i> addresses.</p>
+
+<p style="margin-left:41%; margin-top: 1em">When converting
+to an IPv6 address from an EUI-48 address, the source
+address is converted to a modified EUI-64 address and
+treated as an EUI-64 address.</p>
+
+<p style="margin-left:41%; margin-top: 1em">When converting
+to an IPv6 address from an EUI-64 address, the first 64 bits
+of <i>net</i> will be used as the prefix for the resulting
+IPv6 address and the CIDR from the <i>net</i> address will
+be used as the CIDR of the resulting address.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p style="margin-top: 1em"><b>-q</b>, <b>--quiet</b>,
+<b>--silent</b></p> </td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p style="margin-top: 1em">Suppress warnings and excess
+messages</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-S</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Display IPv4 and IPv6 addresses without zero
+suppression. For example the address <i>203.0.113.0</i> will
+be displayed as <i>203.000.113.000</i> and the address
+<i>2001:db8::1</i> will be displayed as
+<i>2001:0db8:0000:0000:0000:0000:0000:0001</i>.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-V</b>, <b>--version</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Print version number and exit</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-v</b>, <b>--verbose</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Print all possible superblocks, otherwise print most
+specific superblock.</p></td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>-Z</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Display IPv6 addresses without zero compression. For
+example the address <i>2001:db8::1</i> will be displayed as
+<i>2001:db8:0:0:0:0:0:1</i>.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>--colon</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Display EUI-48 and EUI-64 addresses in blocks of two
+digits with colons as delimiters. <i>00:16:3e:9b:54:54</i>
+is an example with an EUI-48 address and
+<i>00:16:3e:71:9c:52:f0:d9</i> is an example with an EUI-64
+address. This is the default format for EUI-48
+addresses.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>--dash</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Display EUI-48 and EUI-64 addresses in blocks of two
+digits with dashes as delimiters. <i>00-16-3e-9b-54-54</i>
+is an example with an EUI-48 address and
+<i>00-16-3e-71-9c-52-f0-d9</i> is an example with an EUI-64
+address.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="9%"></td>
+<td width="27%">
+
+
+<p><b>--colon</b></p></td>
+<td width="5%"></td>
+<td width="59%">
+
+
+<p>Display EUI-48 and EUI-64 addresses in blocks of four
+digits with dots as delimiters. <i>0016.3e9b.5454</i> is an
+example with an EUI-48 address and
+<i>0016.3e71.9c52.f0d9</i> is an example with an EUI-64
+address. This is the default format for EUI-64
+addresses.</p> </td></tr>
+</table>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:9%; margin-top: 1em"><a href="../man1/netcalc.1.html"><i>netcalc</i>(1)</a>,
+<a href="../man1/netcalc-printf.1.html"><i>netcalc-printf</i>(1)</a>,
+<a href="../man1/netcalc-superblock.1.html"><i>netcalc-superblock</i>(1)</a>,
+<a href="../man3/libnetcalc.3.html"><i>libnetcalc</i>(3)</a>,
+<a href="../man3/netcalc_superblock.3.html"><i>netcalc_superblock</i>(3)</a>,
+<a href="../man5/netcalc-syntaxes.5.html"><i>netcalc-syntaxes</i>(5)</a></p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">David M. Syzdek
+&lt;david@syzdek.net&gt;</p>
+
+<h2>ACKNOWLEDGEMENTS
+<a name="ACKNOWLEDGEMENTS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>Network
+Calculations Library</b> is developed and maintained by
+David M. Syzdek &lt;david@syzdek.net&gt;.</p>
+</body>
+</html>

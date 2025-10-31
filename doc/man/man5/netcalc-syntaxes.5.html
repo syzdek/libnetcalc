@@ -1,0 +1,683 @@
+<!-- Creator     : groff version 1.23.0 -->
+<!-- CreationDate: Fri Oct 31 08:48:45 2025 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>NETCALC-SYNTAXES</title>
+
+</head>
+<body>
+
+<h1 align="center">NETCALC-SYNTAXES</h1>
+
+
+
+
+<h2>LIBRARY
+<a name="LIBRARY"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">Network
+Calculations Library (libnetcalc, -lnetcalc)</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>#include
+&lt;netcalc.h&gt;</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The netcalc
+library supports multiple input formats for IPv4 addresses,
+IPv6 addresses, EUI-48 identifiers, and EUI-64
+identifiers.</p>
+
+<h2>EUI-48 IDENTIFIERS
+<a name="EUI-48 IDENTIFIERS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The following
+ABNF describes the syntax netcalc accepts for EUI-48
+input.</p>
+
+<p style="margin-left:14%; margin-top: 1em">eui48 = 5(
+2HEXDIG &quot;:&quot; ) 2HEXDIG ; colon delimiter <br>
+eui48 =/ 5( 2HEXDIG &quot;-&quot; ) 2HEXDIG ; dash delimiter
+<br>
+eui48 =/ 2( 4HEXDIG &quot;.&quot; ) 4HEXDIG ; dot delimiter
+<br>
+eui48 =/ 12HEXDIG ; no delimiter</p>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the EUI-48 syntaxes supported by
+netcalc:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>colon delimiter</p></td>
+<td width="7%"></td>
+<td width="22%">
+
+
+<p>01:23:45:67:89:ab</p></td>
+<td width="38%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>dash delimiter</p></td>
+<td width="7%"></td>
+<td width="22%">
+
+
+<p>01-23-45-67-89-ab</p></td>
+<td width="38%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>dot delimiter</p></td>
+<td width="7%"></td>
+<td width="22%">
+
+
+<p>0123.4567.89ab</p></td>
+<td width="38%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>no delimiter</p></td>
+<td width="7%"></td>
+<td width="22%">
+
+
+<p>0123456789ab</p></td>
+<td width="38%">
+</td></tr>
+</table>
+
+<h2>EUI-64 IDENTIFIERS
+<a name="EUI-64 IDENTIFIERS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The following
+ABNF describes the syntax netcalc accepts for EUI-64
+input.</p>
+
+<p style="margin-left:14%; margin-top: 1em">eui64 = 7(
+2HEXDIG &quot;:&quot; ) 2HEXDIG ; colon delimiter <br>
+eui64 =/ 7( 2HEXDIG &quot;-&quot; ) 2HEXDIG ; dash delimiter
+<br>
+eui64 =/ 3( 4HEXDIG &quot;.&quot; ) 4HEXDIG ; dot delimiter
+<br>
+eui64 =/ 16HEXDIG ; no delimiter</p>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the EUI-64 syntaxes supported by
+netcalc:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p style="margin-top: 1em">colon delimiter</p></td>
+<td width="7%"></td>
+<td width="29%">
+
+
+<p style="margin-top: 1em">01:23:45:67:89:ab:cd:ef</p></td>
+<td width="31%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>dash delimiter</p></td>
+<td width="7%"></td>
+<td width="29%">
+
+
+<p>01-23-45-67-89-ab-cd-ef</p></td>
+<td width="31%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>dot delimiter</p></td>
+<td width="7%"></td>
+<td width="29%">
+
+
+<p>0123.4567.89ab.cdef</p></td>
+<td width="31%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="19%">
+
+
+<p>no delimiter</p></td>
+<td width="7%"></td>
+<td width="29%">
+
+
+<p>0123456789abcdef</p></td>
+<td width="31%">
+</td></tr>
+</table>
+
+<h2>IPV4 ADDRESSES
+<a name="IPV4 ADDRESSES"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The following
+ABNF describes the syntax netcalc accepts for IPv4
+input.</p>
+
+<p style="margin-left:14%; margin-top: 1em">ipv4 = ipv4addr
+[ &quot;/&quot; cidr4 / &quot;:&quot; port / &quot;/&quot;
+cidr4 &quot;:&quot; port ]</p>
+
+<p style="margin-left:14%; margin-top: 1em">ipv4addr = 3(
+octet4 &quot;.&quot; ) octet4</p>
+
+<p style="margin-left:14%; margin-top: 1em">octet4 = 2DIGIT
+<br>
+octet4 =/ ( &quot;0&quot; / &quot;1&quot; ) 2DIGIT <br>
+octet4 =/ &quot;2&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; ) DIGIT <br>
+octet4 =/ &quot;25&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; /
+&quot;5&quot; )</p>
+
+<p style="margin-left:14%; margin-top: 1em">cidr4 = DIGIT /
+( &quot;1&quot; / &quot;2&quot; / &quot;3&quot; ) DIGIT</p>
+
+<p style="margin-left:14%; margin-top: 1em">port = *1(
+&quot;1&quot; / &quot;2&quot; / &quot;3&quot; /
+&quot;4&quot; / &quot;5&quot; ) 4DIGIT <br>
+port =/ &quot;6&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; ) 3DIGIT <br>
+port =/ &quot;65&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; ) 2DIGIT <br>
+port =/ &quot;655&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; ) DIGIT <br>
+port =/ &quot;6553&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; /
+&quot;5&quot; )</p>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the IPv4 syntaxes supported by netcalc:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p style="margin-top: 1em">address</p></td>
+<td width="3%"></td>
+<td width="25%">
+
+
+<p style="margin-top: 1em">203.0.113.42</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with CIDR</p></td>
+<td width="3%"></td>
+<td width="25%">
+
+
+<p>203.0.113.42/29</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with port</p></td>
+<td width="3%"></td>
+<td width="25%">
+
+
+<p>203.0.113.42:8080</p></td>
+<td width="35%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with CIDR and port</p></td>
+<td width="3%"></td>
+<td width="25%">
+
+
+<p>203.0.113.42/29:8080</p></td>
+<td width="35%">
+</td></tr>
+</table>
+
+<h2>IPV6 ADDRESSES
+<a name="IPV6 ADDRESSES"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">The following
+ABNF describes the syntax netcalc accepts for IPv6
+input.</p>
+
+<p style="margin-left:14%; margin-top: 1em">ipv6 = ipv6addr
+<br>
+ipv6 =/ ipv6addr &quot;&quot; iface <br>
+ipv6 =/ ipv6addr &quot;/&quot; cidr6 <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;]&quot; <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;]/&quot; cidr6 <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;]:&quot; port <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;]/&quot; cidr6
+&quot;:&quot; port <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;&quot; iface
+&quot;]&quot; <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;&quot; iface
+&quot;]/&quot; cidr6 <br>
+ipv6 =/ &quot;[&quot; ipv6addr &quot;&quot; iface
+&quot;]/&quot; cidr6 &quot;:&quot; port</p>
+
+<p style="margin-left:14%; margin-top: 1em">ipv6addr = 7(
+node6 &quot;:&quot; ) ( node6 / &quot;:&quot; ) <br>
+ipv6addr =/ 1*7( node6 &quot;:&quot; ) &quot;:&quot; <br>
+ipv6addr =/ 1*6( node6 &quot;:&quot; ) &quot;:&quot; node6
+<br>
+ipv6addr =/ 1*5( node6 &quot;:&quot; ) 2( &quot;:&quot;
+node6 ) <br>
+ipv6addr =/ 1*4( node6 &quot;:&quot; ) 3( &quot;:&quot;
+node6 ) <br>
+ipv6addr =/ 1*3( node6 &quot;:&quot; ) 4( &quot;:&quot;
+node6 ) <br>
+ipv6addr =/ 1*2( node6 &quot;:&quot; ) 5( &quot;:&quot;
+node6 ) <br>
+ipv6addr =/ node6 &quot;:&quot; 6( &quot;:&quot; node6 )
+<br>
+ipv6addr =/ &quot;:&quot; 1*7( &quot;:&quot; node6 ) <br>
+ipv6addr =/ &quot;::&quot; <br>
+ipv6addr = 6( node6 &quot;:&quot; ) ipv4addr <br>
+ipv6addr =/ 1*5( node6 &quot;:&quot; ) &quot;:&quot;
+ipv4addr <br>
+ipv6addr =/ 1*4( node6 &quot;:&quot; ) 1( &quot;:&quot;
+node6 ) &quot;:&quot; ipv4addr <br>
+ipv6addr =/ 1*3( node6 &quot;:&quot; ) 2( &quot;:&quot;
+node6 ) &quot;:&quot; ipv4addr <br>
+ipv6addr =/ 1*2( node6 &quot;:&quot; ) 3( &quot;:&quot;
+node6 ) &quot;:&quot; ipv4addr <br>
+ipv6addr =/ ( node6 &quot;:&quot; ) 4( &quot;:&quot; node6 )
+&quot;:&quot; ipv4addr <br>
+ipv6addr =/ &quot;:&quot; *4( &quot;:&quot; node6 )
+&quot;:&quot; ipv4addr</p>
+
+<p style="margin-left:14%; margin-top: 1em">node6 =
+1*4HEXDIG</p>
+
+<p style="margin-left:14%; margin-top: 1em">cidr6 =
+1*2DIGIT <br>
+cidr6 =/ &quot;1&quot; ( &quot;0&quot; / &quot;1&quot; )
+DIGIT <br>
+cidr6 =/ &quot;12&quot; x30-38</p>
+
+<p style="margin-left:14%; margin-top: 1em">port = *1(
+&quot;1&quot; / &quot;2&quot; / &quot;3&quot; /
+&quot;4&quot; / &quot;5&quot; ) *4DIGIT <br>
+port =/ &quot;6&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; ) 3DIGIT <br>
+port =/ &quot;65&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; ) 2DIGIT <br>
+port =/ &quot;655&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; ) DIGIT <br>
+port =/ &quot;6553&quot; ( &quot;0&quot; / &quot;1&quot; /
+&quot;2&quot; / &quot;3&quot; / &quot;4&quot; /
+&quot;5&quot; )</p>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the IPv6 syntaxes supported by netcalc:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p style="margin-top: 1em">address</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+
+<p style="margin-top: 1em">2001:0db8:000f:0300:0000:0000:cb00:712a</p> </td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with 0 compression</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>2001:0db8:000f:0300::cb00:712a</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with 0 suppression</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>2001:db8:f:300:0:0:cb00:712a</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with both</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>2001:db8:f:300::cb00:712a</p></td>
+<td width="10%">
+</td></tr>
+</table>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the IPv6 syntaxes with IPv4 mapped addresses
+supported by netcalc:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p style="margin-top: 1em">address</p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+
+<p style="margin-top: 1em">2001:0db8:000f:0300:0000:0000:203.000.113.042</p> </td>
+<td width="3%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with 0 compression</p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>2001:0db8:000f:0300::203.000.113.042</p></td>
+<td width="3%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with 0 suppression</p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>2001:db8:f:300:0:0:203.0.113.42</p></td>
+<td width="3%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with both</p></td>
+<td width="3%"></td>
+<td width="57%">
+
+
+<p>2001:db8:f:300::203.0.113.42</p></td>
+<td width="3%">
+</td></tr>
+</table>
+
+<p style="margin-left:9%; margin-top: 1em">The following
+are examples of the IPv6 syntaxes with port, CIDR, and
+interface scope name using zero compression and zero
+suppression:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p style="margin-top: 1em">address</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p style="margin-top: 1em">2001:db8:f:300::cb00:712a</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>address</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712a]</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>address</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>2001:db8:f:300::cb00:712aeth0</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>address</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712aeth0]</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with CIDR</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>2001:db8:f:300::cb00:712a/64</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with CIDR</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712a]/64</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with CIDR</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712aeth0]/64</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with port</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712a]:8080</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with port</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712aeth0]:8080</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with port and CIDR</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712a]/64:8080</p></td>
+<td width="10%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="23%">
+
+
+<p>with port and CIDR</p></td>
+<td width="3%"></td>
+<td width="50%">
+
+
+<p>[2001:db8:f:300::cb00:712aeth0]/64:8080</p></td>
+<td width="10%">
+</td></tr>
+</table>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:9%; margin-top: 1em"><a href="../man3/libnetcalc.3.html"><i>libnetcalc</i>(3)</a>,
+<a href="../man1/netcalc.1.html"><i>netcalc</i>(1)</a></p>
+
+<h2>AUTHOR
+<a name="AUTHOR"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em">David M. Syzdek
+&lt;david@syzdek.net&gt;</p>
+
+<h2>ACKNOWLEDGEMENTS
+<a name="ACKNOWLEDGEMENTS"></a>
+</h2>
+
+
+<p style="margin-left:9%; margin-top: 1em"><b>Network
+Calculations Library</b> is developed and maintained by
+David M. Syzdek &lt;david@syzdek.net&gt;.</p>
+</body>
+</html>
